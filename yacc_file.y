@@ -65,8 +65,9 @@ maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {
             | number {
                 $$ = $1;
             }
-            | OPENING_BRACKET maths_expr CLOSING_BRACKET
-            ;
+            | OPENING_BRACKET maths_expr CLOSING_BRACKET {
+                $$ = $2;
+            }
 
 
 number :
@@ -87,7 +88,10 @@ logical_expression :
         | logical_expression L_OP_OR logical_expression2 {
             $$ = $1 || $3;
         }
-        | logical_expression2
+        | logical_expression2 {
+            $$ = $1;
+        }
+
 
 logical_expression2 :
         TRUE {
@@ -96,7 +100,9 @@ logical_expression2 :
         | FALSE {
             $$ = false;
         }
-        | OPENING_BRACKET logical_expression CLOSING_BRACES
+        | OPENING_BRACKET logical_expression CLOSING_BRACKET {
+            $$ = $2;
+        }
 
 %%
   

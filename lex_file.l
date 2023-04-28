@@ -34,15 +34,15 @@
 
 =                                   return OP_ASSIGN;
 ==                                  return OP_EQUAL;
-[<]                                 return OP_LESS;
 [<]=                                return OP_LESS_EQUAL;
->                                   return OP_GREATER;
->=                                  return OP_GREATER_EQUAL;
+[<]                                 return OP_LESS;
+[>]=                                return OP_GREATER_EQUAL;
+[>]                                 return OP_GREATER;
 
 [;]                                 return TERMINATOR;
 
-\(                                  return CLOSING_BRACKET;
-\)                                  return OPENING_BRACKET;
+\(                                  return OPENING_BRACKET;
+\)                                  return CLOSING_BRACKET;
 
 \{                                  return CLOSING_BRACES;
 \}                                  return OPENING_BRACES;
