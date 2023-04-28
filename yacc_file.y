@@ -17,7 +17,7 @@
 
 %token STRING
 %token INTEGER_NUMBER FLOAT_NUMBER
-%token TRUE FALSE
+%token BOOLEAN TRUE FALSE
 
 %token M_OP_PLUS M_OP_MINUS M_OP_MULT M_OP_DIV M_OP_MOD M_OP_POWER
 %left M_OP_PLUS M_OP_MINUS
@@ -40,13 +40,40 @@ program :
         ;
 sub_program : 
         expr TERMINATOR {
-            printf("Result = %d\n", $$);
+            printf("Expression = %d\n", $$);
         }
-        | IDENTIFIER OP_ASSIGN expr TERMINATOR {
-            printf("Variable with the value %d\n", $3);
-        }
+        | variable_declaration TERMINATOR
+        | variable_assignment TERMINATOR
         | IDENTIFIER TERMINATOR {
             printf("Variable\n");
+        }
+
+variable_declaration :
+        INT_TYPE IDENTIFIER {
+            printf("Int declared\n");
+        }
+        | FLOAT_TYPE IDENTIFIER {
+            printf("Float declared\n");
+        }
+        | STRING_TYPE IDENTIFIER {
+            printf("String declared\n");
+        }
+        | BOOLEAN_TYPE IDENTIFIER {
+            printf("Boolean declared\n");
+        }
+
+variable_assignment :
+        IDENTIFIER OP_ASSIGN expr {
+            printf("Assigned variable to expression\n");
+        }
+        | IDENTIFIER OP_ASSIGN STRING {
+            printf("Assigned variable to string\n");
+        }
+        | variable_declaration OP_ASSIGN expr {
+            printf("Declared and assigned variable to expression\n");
+        }
+        | variable_declaration OP_ASSIGN STRING {
+            printf("Declared and assigned variable to string\n");
         }
 
 expr :

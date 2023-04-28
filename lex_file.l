@@ -7,7 +7,7 @@
 
     void extern yyerror(const char*);
 
-    int lineNumber = 0;
+    int lineNumber = 1;
 %}
 
 
