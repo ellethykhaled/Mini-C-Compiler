@@ -3,8 +3,12 @@
     #include <stdio.h>
     #include <stdbool.h>
     #include <string.h>
+    #include <unistd.h>
+    
     extern void yyerror(const char *str);
     extern int yylex();
+    
+    extern FILE *yyin;
 %}
 
 %token INT_TYPE FLOAT_TYPE STRING_TYPE BOOLEAN_TYPE
@@ -21,16 +25,28 @@
 %right M_OP_POWER
 
 %token L_OP_NOT L_OP_AND L_OP_OR
-%token OP_ASSIGN OP_EQUAL OP_LESS OP_LESS_EQUAL OP_GREATER OP_GREATER_EQUAL
+%token OP_ASSIGN OP_EQUAL OP_NOT_EQUAL OP_LESS OP_LESS_EQUAL OP_GREATER OP_GREATER_EQUAL
 
 %token TERMINATOR CLOSING_BRACKET OPENING_BRACKET CLOSING_BRACES OPENING_BRACES
 
-%%
-root : 
-        expr {
-            printf("Result = %d\n", $$);
+%token TESTY_TOKEN
 
-            return 0;
+%%
+
+program :
+        sub_program
+        |
+        program sub_program
+        ;
+sub_program : 
+        expr TERMINATOR {
+            printf("Result = %d\n", $$);
+        }
+        | IDENTIFIER OP_ASSIGN expr TERMINATOR {
+            printf("Variable with the value %d\n", $3);
+        }
+        | IDENTIFIER TERMINATOR {
+            printf("Variable\n");
         }
 
 expr :
@@ -106,9 +122,13 @@ logical_expression2 :
 
 %%
   
-int main()
+int main(int argc, char *argv[])
 {
+    yyin = fopen(argv[1], "r");
+  
     yyparse();
+
+    fclose(yyin);
 
     return 0;
 }

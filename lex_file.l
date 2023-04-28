@@ -11,6 +11,7 @@
 %}
 
 
+/* ^(.)*\n                             { printf("%4d\t%s\n", ++lineNumber, yytext); return TESTY_TOKEN; } */
 %%
 
 [Ii]nt                              return INT_TYPE;
@@ -34,6 +35,7 @@
 
 =                                   return OP_ASSIGN;
 ==                                  return OP_EQUAL;
+!=                                  return OP_NOT_EQUAL;
 [<]=                                return OP_LESS_EQUAL;
 [<]                                 return OP_LESS;
 [>]=                                return OP_GREATER_EQUAL;
@@ -47,17 +49,15 @@
 \{                                  return CLOSING_BRACES;
 \}                                  return OPENING_BRACES;
 
-\n                                  lineNumber++; return 0;
+\n                                  lineNumber++;
 [ \t]+                              /* Ignore whitespace */;
 
-[_a-zA-Z][_a-zA-Z0-9]*              return IDENTIFIER;
+[_a-zA-Z][_a-zA-Z0-9]*              yylval=*yytext; return IDENTIFIER;
 
-[\"][_a-zA-Z0-9]*[\"]               return STRING;
+[\"][_a-zA-Z0-9]*[\"]               yylval=*yytext; return STRING;
 
 -?[0-9]+                              yylval=atoi(yytext); return INTEGER_NUMBER;
 -?[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?    yylval=atof(yytext); return FLOAT_NUMBER;
-
-.                                   { ECHO; yyerror("Lexical Error"); }
 
 %%
 
