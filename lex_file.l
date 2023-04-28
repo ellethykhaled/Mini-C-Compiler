@@ -16,13 +16,10 @@
 [Ii]nt                              return INT_TYPE;
 [Ff]loat                            return FLOAT_TYPE;
 [Ss]tr(ing)?                        return STRING_TYPE;
+[Bb]ool(ean)?                       return BOOLEAN_TYPE;
 
-[_a-zA-Z][_a-zA-Z0-9]*              return IDENTIFIER;
-
-[\"][_a-zA-Z0-9]*[\"]               return STRING;
-
-[0-9]+                              yylval=atoi(yytext); return INTEGER_NUMBER;
-[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?    yylval=atof(yytext); return FLOAT_NUMBER;
+[Tt]rue                             return TRUE;
+[Ff]alse                            return FALSE;
 
 [+]                                 return M_OP_PLUS;
 [-]                                 return M_OP_MINUS;
@@ -31,12 +28,9 @@
 [%]                                 return M_OP_MOD;
 \^                                  return M_OP_POWER;
 
-[Tt]rue                             yylval=atoi("1"); return TRUE_TOKEN;
-[Ff]alse                            yylval=atoi("0"); return FALSE_TOKEN;
-
-[!]                                 return L_OP_NOT;
-[&&]                                return L_OP_AND;
-[||]                                return L_OP_OR;
+[!]|([Nn](ot)|NOT)                  return L_OP_NOT;
+[&][&]|([Aa](nd)|AND)               return L_OP_AND;
+[|][|]|([Oo][Rr])                   return L_OP_OR;
 
 =                                   return OP_ASSIGN;
 ==                                  return OP_EQUAL;
@@ -55,6 +49,13 @@
 
 \n                                  lineNumber++; return 0;
 [ \t]+                              /* Ignore whitespace */;
+
+[_a-zA-Z][_a-zA-Z0-9]*              return IDENTIFIER;
+
+[\"][_a-zA-Z0-9]*[\"]               return STRING;
+
+-?[0-9]+                              yylval=atoi(yytext); return INTEGER_NUMBER;
+-?[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?    yylval=atof(yytext); return FLOAT_NUMBER;
 
 .                                   { ECHO; yyerror("Lexical Error"); }
 
