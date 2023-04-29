@@ -48,6 +48,7 @@ sub_program :
         | if_stmt
         | for_loop
         | while_loop { printf("While loop\n"); }
+        | do_while { printf("Repeat-until/Do-while loop\n"); }
         | switch_case { printf("Switch Case\n"); }
 
 switch_case :
@@ -73,6 +74,9 @@ single_line :
 while_loop :
         WHILE OPENING_BRACKET single_line CLOSING_BRACKET sub_program
         | WHILE OPENING_BRACKET single_line CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES
+do_while :
+        REPEAT OPENING_BRACES program CLOSING_BRACES WHILE single_line
+        | REPEAT sub_program WHILE single_line
 
 for_loop :
         FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET sub_program {

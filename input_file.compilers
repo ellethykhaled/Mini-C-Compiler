@@ -1,4 +1,4 @@
-While (x) {
-y;
-l;
-}
+repeat
+    x = x + 1;
+until 
+x == y

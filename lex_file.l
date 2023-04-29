@@ -24,9 +24,8 @@
 [Ff]alse                            return FALSE;
 
 [Ff]or                              return FOR;
-[Ww]hile                            return WHILE;
+[Ww]hile|[Uu]ntil                   return WHILE;
 [Rr]epeat|[Dd]o                     return REPEAT;
-[Uu]ntil                            return UNTIL;
 
 [Ii]f                               return IF;
 [Tt]hen                             return THEN;
