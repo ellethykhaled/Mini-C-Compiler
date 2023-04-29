@@ -46,20 +46,39 @@ program :
 sub_program : 
         single_line TERMINATOR
         | if_stmt
+        | for_loop
 
 single_line : 
-        expr {
-            printf("Expression = %d\n", $$);
-        }
+        expr
         | variable_declaration
         | variable_assignment
 
+for_loop :
+        FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET sub_program {
+            printf("For loop with single child\n");
+        }
+        | FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES {
+            printf("For loop with braces\n");
+        }
+
+line_or_null :
+    | single_line
+
 if_stmt :
-        IF OPENING_BRACKET expr CLOSING_BRACKET THEN sub_program {
+        IF OPENING_BRACKET single_line CLOSING_BRACKET THEN sub_program {
             printf("If statement with single child\n");
         }
-        | IF OPENING_BRACKET expr CLOSING_BRACKET THEN OPENING_BRACES program CLOSING_BRACES {
-               printf("If statement with braces\n");
+        | 
+        IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES program CLOSING_BRACES else_stmt {
+            printf("If statement with braces\n");
+        }
+
+else_stmt :
+        | ELSE sub_program {     
+            printf("Else statement with single child\n");
+        }
+        | ELSE OPENING_BRACES program CLOSING_BRACES else_stmt {
+            printf("Else statement with braces\n");
         }
 
 variable_declaration :
@@ -92,10 +111,10 @@ variable_assignment :
 
 expr :
         maths_expr {
-            $$ = $1;
+            printf("Mathematical Expression = %d\n", $$);
         }
         | logical_expression {
-            $$ = $1;
+            printf("Logical Expression = %d\n", $$);
         }
 
 maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {

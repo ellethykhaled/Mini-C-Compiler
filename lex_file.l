@@ -59,8 +59,8 @@
 \(                                  return OPENING_BRACKET;
 \)                                  return CLOSING_BRACKET;
 
-\{                                  return CLOSING_BRACES;
-\}                                  return OPENING_BRACES;
+\{                                  return OPENING_BRACES;
+\}                                  return CLOSING_BRACES;
 
 \n                                  lineNumber++;
 [ \t]+                              /* Ignore whitespace */;
