@@ -14,6 +14,7 @@
 /* ^(.)*\n                             { printf("%4d\t%s\n", ++lineNumber, yytext); return TESTY_TOKEN; } */
 %%
 
+[Cc]onst(ant)?                      return CONSTANT;
 [Ii]nt                              return INT_TYPE;
 [Ff]loat                            return FLOAT_TYPE;
 [Ss]tr(ing)?                        return STRING_TYPE;

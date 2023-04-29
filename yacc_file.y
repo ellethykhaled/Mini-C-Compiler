@@ -13,7 +13,7 @@
 
 %token INT_TYPE FLOAT_TYPE STRING_TYPE BOOLEAN_TYPE
 
-%token IDENTIFIER
+%token CONSTANT IDENTIFIER
 
 %token STRING
 %token INTEGER_NUMBER FLOAT_NUMBER
@@ -50,6 +50,7 @@ sub_program :
 
 single_line : 
         expr
+        | constant_variable_declaration
         | variable_declaration
         | variable_assignment
 
@@ -95,6 +96,11 @@ variable_declaration :
             printf("Boolean declared\n");
         }
 
+constant_variable_declaration :
+        CONSTANT variable_assignment {
+            printf("Declared constant variable\n");  
+        }
+
 variable_assignment :
         IDENTIFIER OP_ASSIGN expr {
             printf("Assigned expression to variable\n");
@@ -138,16 +144,20 @@ maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {
                     answer *= $1;
                 $$ = answer;
             }
-            | IDENTIFIER {
-                $$ = $1;
-            }
-            | number {
+            | identifier_or_number {
                 $$ = $1;
             }
             | OPENING_BRACKET maths_expr CLOSING_BRACKET {
                 $$ = $2;
             }
 
+identifier_or_number:
+            IDENTIFIER {
+                $$ = $1;
+            }
+            | number {
+                $$ = $1;
+            }
 
 number :
         INTEGER_NUMBER {
@@ -179,8 +189,31 @@ logical_expression2 :
         | FALSE {
             $$ = false;
         }
+        | comparison_expression {
+            $$ = $1;
+        }
         | OPENING_BRACKET logical_expression CLOSING_BRACKET {
             $$ = $2;
+        }
+
+comparison_expression :
+        identifier_or_number OP_EQUAL identifier_or_number {
+            $$ = true;
+        }
+        | identifier_or_number OP_NOT_EQUAL identifier_or_number {
+            $$ = true;
+        }
+        | identifier_or_number OP_LESS identifier_or_number {
+            $$ = true;
+        }
+        | identifier_or_number OP_LESS_EQUAL identifier_or_number {
+            $$ = true;
+        }
+        | identifier_or_number OP_GREATER identifier_or_number {
+            $$ = true;
+        }
+        | identifier_or_number OP_GREATER_EQUAL identifier_or_number {
+            $$ = true;
         }
 
 %%
