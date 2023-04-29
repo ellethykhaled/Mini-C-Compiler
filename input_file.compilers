@@ -1,6 +1,4 @@
-Switch x {
-    case x int y = 50;
-    default  {
-        y = 1;
-    }
+While (x) {
+y;
+l;
 }

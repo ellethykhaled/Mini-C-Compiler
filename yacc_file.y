@@ -47,9 +47,8 @@ sub_program :
         single_line TERMINATOR
         | if_stmt
         | for_loop
-        | switch_case {
-            printf("Switch Case\n");
-        }
+        | while_loop { printf("While loop\n"); }
+        | switch_case { printf("Switch Case\n"); }
 
 switch_case :
         SWITCH IDENTIFIER OPENING_BRACES switch_body switch_end CLOSING_BRACES
@@ -70,6 +69,10 @@ single_line :
         | constant_variable_declaration
         | variable_declaration
         | variable_assignment
+
+while_loop :
+        WHILE OPENING_BRACKET single_line CLOSING_BRACKET sub_program
+        | WHILE OPENING_BRACKET single_line CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES
 
 for_loop :
         FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET sub_program {
