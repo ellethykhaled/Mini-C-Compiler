@@ -47,6 +47,23 @@ sub_program :
         single_line TERMINATOR
         | if_stmt
         | for_loop
+        | switch_case {
+            printf("Switch Case\n");
+        }
+
+switch_case :
+        SWITCH IDENTIFIER OPENING_BRACES switch_body switch_end CLOSING_BRACES
+        | SWITCH IDENTIFIER OPENING_BRACES switch_end CLOSING_BRACES
+
+switch_body :
+        CASE identifier_or_number sub_program 
+        | CASE identifier_or_number OPENING_BRACES program CLOSING_BRACES 
+        | switch_body CASE identifier_or_number sub_program 
+        | switch_body CASE identifier_or_number OPENING_BRACES program CLOSING_BRACES 
+
+switch_end :
+        DEFAULT sub_program
+        | DEFAULT OPENING_BRACES program CLOSING_BRACES
 
 single_line : 
         expr
