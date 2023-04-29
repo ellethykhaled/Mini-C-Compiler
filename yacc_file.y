@@ -29,7 +29,11 @@
 
 %token TERMINATOR CLOSING_BRACKET OPENING_BRACKET CLOSING_BRACES OPENING_BRACES
 
-%token TESTY_TOKEN
+%token FOR WHILE REPEAT UNTIL
+
+%token IF THEN ELSE
+
+%token SWITCH CASE DEFAULT
 
 %%
 
@@ -38,14 +42,24 @@ program :
         |
         program sub_program
         ;
+
 sub_program : 
-        expr TERMINATOR {
+        single_line TERMINATOR
+        | if_stmt
+
+single_line : 
+        expr {
             printf("Expression = %d\n", $$);
         }
-        | variable_declaration TERMINATOR
-        | variable_assignment TERMINATOR
-        | IDENTIFIER TERMINATOR {
-            printf("Variable\n");
+        | variable_declaration
+        | variable_assignment
+
+if_stmt :
+        IF OPENING_BRACKET expr CLOSING_BRACKET THEN sub_program {
+            printf("If statement with single child\n");
+        }
+        | IF OPENING_BRACKET expr CLOSING_BRACKET THEN OPENING_BRACES program CLOSING_BRACES {
+               printf("If statement with braces\n");
         }
 
 variable_declaration :
@@ -64,16 +78,16 @@ variable_declaration :
 
 variable_assignment :
         IDENTIFIER OP_ASSIGN expr {
-            printf("Assigned variable to expression\n");
+            printf("Assigned expression to variable\n");
         }
         | IDENTIFIER OP_ASSIGN STRING {
-            printf("Assigned variable to string\n");
+            printf("Assigned string to variable\n");
         }
         | variable_declaration OP_ASSIGN expr {
-            printf("Declared and assigned variable to expression\n");
+            printf("Declared variable and assigned expression to it\n");
         }
         | variable_declaration OP_ASSIGN STRING {
-            printf("Declared and assigned variable to string\n");
+            printf("Declared variable and assigned string to it\n");
         }
 
 expr :
@@ -104,6 +118,9 @@ maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {
                 for (int i = 0; i < $3; i++)
                     answer *= $1;
                 $$ = answer;
+            }
+            | IDENTIFIER {
+                $$ = $1;
             }
             | number {
                 $$ = $1;

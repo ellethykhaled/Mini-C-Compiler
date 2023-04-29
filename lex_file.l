@@ -22,6 +22,19 @@
 [Tt]rue                             return TRUE;
 [Ff]alse                            return FALSE;
 
+[Ff]or                              return FOR;
+[Ww]hile                            return WHILE;
+[Rr]epeat|[Dd]o                     return REPEAT;
+[Uu]ntil                            return UNTIL;
+
+[Ii]f                               return IF;
+[Tt]hen                             return THEN;
+[Ee]lse                             return ELSE;
+
+[Ss]witch                           return SWITCH;
+[Cc]ase                             return CASE;
+[Dd]efault                          return DEFAULT;
+
 [+]                                 return M_OP_PLUS;
 [-]                                 return M_OP_MINUS;
 [*]                                 return M_OP_MULT;
