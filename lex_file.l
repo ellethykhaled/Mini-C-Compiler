@@ -33,10 +33,13 @@
 
 [Ss]witch|SWITCH                    return SWITCH;
 [Cc]ase|CASE                        return CASE;
-[Dd]efault|DEFAULT                  return DEFAULT;
+[Dd]ef(ault)?|DEF(AULT)?            return DEFAULT;
 
 [Ee]num|ENUM                        return ENUM;
 [,]                                 return COMMA;
+
+[Ff]un(c(tion)?)?|FUN(C(TION)?)?    return FUNCTION;
+([Cc]all|CALL):                     return CALL;
 
 [+]                                 return M_OP_PLUS;
 [-]                                 return M_OP_MINUS;
