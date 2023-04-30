@@ -17,7 +17,7 @@
 
 %token STRING
 %token INTEGER_NUMBER FLOAT_NUMBER
-%token BOOLEAN TRUE FALSE
+%token TRUE FALSE
 
 %token M_OP_PLUS M_OP_MINUS M_OP_MULT M_OP_DIV M_OP_MOD M_OP_POWER
 %left M_OP_PLUS M_OP_MINUS
@@ -29,7 +29,9 @@
 
 %token TERMINATOR CLOSING_BRACKET OPENING_BRACKET CLOSING_BRACES OPENING_BRACES
 
-%token FOR WHILE REPEAT UNTIL
+%token FOR WHILE REPEAT
+
+%token ENUM COMMA
 
 %token IF THEN ELSE
 
@@ -50,6 +52,15 @@ sub_program :
         | while_loop { printf("While loop\n"); }
         | do_while { printf("Repeat-until/Do-while loop\n"); }
         | switch_case { printf("Switch Case\n"); }
+        | enumumeration
+
+enumumeration :
+        ENUM IDENTIFIER OPENING_BRACES IDENTIFIER enum_body CLOSING_BRACES TERMINATOR {
+            printf("Enum\n");
+        }
+
+enum_body :
+        | COMMA IDENTIFIER enum_body
 
 switch_case :
         SWITCH IDENTIFIER OPENING_BRACES switch_body switch_end CLOSING_BRACES

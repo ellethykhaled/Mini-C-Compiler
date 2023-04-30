@@ -20,20 +20,23 @@
 [Ss]tr(ing)?                        return STRING_TYPE;
 [Bb]ool(ean)?                       return BOOLEAN_TYPE;
 
-[Tt]rue                             return TRUE;
-[Ff]alse                            return FALSE;
+[Tt]rue|TRUE                        return TRUE;
+[Ff]alse|FALSE                      return FALSE;
 
-[Ff]or                              return FOR;
-[Ww]hile|[Uu]ntil                   return WHILE;
-[Rr]epeat|[Dd]o                     return REPEAT;
+[Ff]or|FOR                          return FOR;
+[Ww]hile|[Uu]ntil|WHILE|UNTIL       return WHILE;
+[Rr]epeat|REPEAT|[Dd]o|DO           return REPEAT;
 
-[Ii]f                               return IF;
-[Tt]hen                             return THEN;
-[Ee]lse                             return ELSE;
+[Ii]f|IF                            return IF;
+[Tt]hen|THEN                        return THEN;
+[Ee]lse|ELSE                        return ELSE;
 
-[Ss]witch                           return SWITCH;
-[Cc]ase                             return CASE;
-[Dd]efault                          return DEFAULT;
+[Ss]witch|SWITCH                    return SWITCH;
+[Cc]ase|CASE                        return CASE;
+[Dd]efault|DEFAULT                  return DEFAULT;
+
+[Ee]num|ENUM                        return ENUM;
+[,]                                 return COMMA;
 
 [+]                                 return M_OP_PLUS;
 [-]                                 return M_OP_MINUS;
