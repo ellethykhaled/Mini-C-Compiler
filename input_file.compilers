@@ -1,9 +1,12 @@
 enum week { Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday };
 
 Func int x() {
-    
+    {*
+    }
 }
 
 Call:x(s,5, "type");
 
+{*
+x = 5;}
 x = y;

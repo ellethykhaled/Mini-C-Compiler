@@ -27,7 +27,7 @@
 %token L_OP_NOT L_OP_AND L_OP_OR
 %token OP_ASSIGN OP_EQUAL OP_NOT_EQUAL OP_LESS OP_LESS_EQUAL OP_GREATER OP_GREATER_EQUAL
 
-%token TERMINATOR CLOSING_BRACKET OPENING_BRACKET CLOSING_BRACES OPENING_BRACES
+%token TERMINATOR CLOSING_BRACKET OPENING_BLOCK_BRACES OPENING_BRACKET CLOSING_BRACES OPENING_BRACES
 
 %token FOR WHILE REPEAT
 
@@ -57,6 +57,11 @@ sub_program :
         | switch_case { printf("Switch case\n"); }
         | enumumeration
         | function_definition { printf("Function declaration\n"); }
+        | block_structure { printf("Block structure\n"); }
+
+block_structure :
+        OPENING_BLOCK_BRACES program CLOSING_BRACES
+        | OPENING_BLOCK_BRACES CLOSING_BRACES
 
 function_call :
         CALL IDENTIFIER OPENING_BRACKET function_arguments CLOSING_BRACKET

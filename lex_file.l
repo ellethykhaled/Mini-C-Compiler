@@ -66,6 +66,7 @@
 \)                                  return CLOSING_BRACKET;
 
 \{                                  return OPENING_BRACES;
+\{\*                                return OPENING_BLOCK_BRACES;
 \}                                  return CLOSING_BRACES;
 
 \n                                  lineNumber++;
