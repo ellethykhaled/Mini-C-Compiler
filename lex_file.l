@@ -40,6 +40,7 @@
 
 [Ff]un(c(tion)?)?|FUN(C(TION)?)?    return FUNCTION;
 ([Cc]all|CALL):                     return CALL;
+[Vv]oid|VOID                        return VOID_TYPE;
 
 [+]                                 return M_OP_PLUS;
 [-]                                 return M_OP_MINUS;
@@ -55,8 +56,8 @@
 =                                   return OP_ASSIGN;
 ==                                  return OP_EQUAL;
 !=                                  return OP_NOT_EQUAL;
-[<]=                                return OP_LESS_EQUAL;
-[<]                                 return OP_LESS;
+"<="                                return OP_LESS_EQUAL;
+"<"                                 return OP_LESS;
 [>]=                                return OP_GREATER_EQUAL;
 [>]                                 return OP_GREATER;
 
