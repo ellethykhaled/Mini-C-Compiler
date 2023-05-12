@@ -4,8 +4,10 @@
     #include <stdlib.h>
     #include <string.h>
     #include "y.tab.h"
+    #include <stdbool.h>
 
     void extern yyerror(const char*);
+    struct symbolItem * findSymbol(char* s);
 
     int lineNumber = 1;
 %}
@@ -73,7 +75,7 @@
 \n                                  lineNumber++;
 [ \t]+                              /* Ignore whitespace */;
 
-[_a-zA-Z][_a-zA-Z0-9]*              return IDENTIFIER;
+[_a-zA-Z][_a-zA-Z0-9]*              yylval.sValue = findSymbol(yytext); return IDENTIFIER;
 
 [\"][_a-zA-Z0-9]*[\"]               yylval.cValue=yytext; return STRING;
 

@@ -2,9 +2,13 @@
     /*Definition section */
     #include <stdio.h>
     #include <stdbool.h>
+    #include <stdio.h>
     #include <string.h>
     #include <unistd.h>
-    #include "header.h"
+    #ifndef HEADER_H
+    #define HEADER_H
+        #include "functions.c"
+    #endif
     
     extern void yyerror(const char *str);
     extern int yylex();
@@ -181,10 +185,18 @@ constant_variable_declaration :
         }
 
 variable_or_function_declaration :
-        INT_TYPE IDENTIFIER
-        | FLOAT_TYPE IDENTIFIER
-        | STRING_TYPE IDENTIFIER
-        | BOOLEAN_TYPE IDENTIFIER
+        INT_TYPE IDENTIFIER {
+            printf("Int %s declared\n", $2->name);
+        }
+        | FLOAT_TYPE IDENTIFIER {
+            printf("Float %s declared\n", $2->name);
+        }
+        | STRING_TYPE IDENTIFIER {
+            printf("String %s declared\n", $2->name);
+        }
+        | BOOLEAN_TYPE IDENTIFIER {
+            printf("Boolean %s declared\n", $2->name);
+        }
 
 variable_assignment :
         IDENTIFIER OP_ASSIGN expr {
@@ -248,7 +260,7 @@ return_value :
 
 number :
         INTEGER_NUMBER {
-            $$ = $1;
+            $$ = (int) $1;
         }
         | FLOAT_NUMBER {
             $$ = $1;
