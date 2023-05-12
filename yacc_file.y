@@ -4,6 +4,7 @@
     #include <stdbool.h>
     #include <string.h>
     #include <unistd.h>
+    #include "header.h"
     
     extern void yyerror(const char *str);
     extern int yylex();
@@ -13,10 +14,9 @@
 
 %token INT_TYPE FLOAT_TYPE STRING_TYPE BOOLEAN_TYPE
 
-%token CONSTANT IDENTIFIER
+%token CONSTANT
 
 %token STRING
-%token INTEGER_NUMBER FLOAT_NUMBER
 %token TRUE FALSE
 
 %token M_OP_PLUS M_OP_MINUS M_OP_MULT M_OP_DIV M_OP_MOD M_OP_POWER
@@ -37,8 +37,21 @@
 
 %token SWITCH CASE DEFAULT
 
-%token FUNCTION CALL
+%token FUNCTION CALL VOID_TYPE
 
+%union {
+    struct symbolItem *sValue;
+
+    float fValue;
+    int iValue;
+    char * cValue;
+}
+
+%token <sValue> IDENTIFIER
+%token <iValue> INTEGER_NUMBER
+%token <fValue> FLOAT_NUMBER
+
+%type <fValue> expr maths_expr number return_value logical_expression logical_expression2 comparison_expression
 
 %%
 
@@ -75,6 +88,8 @@ function_arguments2 :
 function_definition :
         FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES
         | FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES
+        | FUNCTION VOID_TYPE OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES
+        | FUNCTION VOID_TYPE OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES
 
 function_parameters :
         | return_value function_parameters2
@@ -181,10 +196,10 @@ variable_assignment :
 
 expr :
         maths_expr {
-            printf("Mathematical Expression = %d\n", $$);
+            // printf("Mathematical Expression = %d\n", $$);
         }
         | logical_expression {
-            printf("Logical Expression = %d\n", $$);
+            // printf("Logical Expression = %d\n", $$);
         }
 
 maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {
@@ -200,7 +215,7 @@ maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {
             $$ = $1 / $3;
         }
         | maths_expr M_OP_MOD maths_expr %prec M_OP_MOD {
-            $$ = $1 % $3;
+            $$ = (int) $1 % (int) $3;
         }
         | maths_expr M_OP_POWER maths_expr %prec M_OP_POWER {
             int answer = 1;
@@ -217,18 +232,18 @@ maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {
 
 return_value :
         IDENTIFIER {
-                $$ = $1;
+            $$ = 1;
             }
         | number {
-            $$ = $1;
+            $$ = 1;
         }
         | STRING {
-            $$ = true;
+            $$ = 1;
         }
         | function_call {
             printf("Function call\n");
+            $$ = 1;
             /* Dummy return */
-            $$ = false;
         }
 
 number :
@@ -241,7 +256,7 @@ number :
 
 logical_expression :
         L_OP_NOT logical_expression2 {
-            $$ = !$1;
+            $$ = false;
         }
         | logical_expression L_OP_AND logical_expression2 {
             $$ = $1 && $3;
