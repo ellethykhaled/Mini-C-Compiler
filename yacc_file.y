@@ -129,9 +129,7 @@ switch_end :
 single_line : 
         expr
         | constant_variable_declaration
-        | variable_or_function_declaration {
-            printf("Variable declared\n");
-        }
+        | variable_or_function_declaration
         | variable_assignment
 
 while_loop :
