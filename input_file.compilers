@@ -1,8 +1,9 @@
-String x;
-Int x;
-Float y;
-Boolean khaled;
+function Int a() {
 
-function VOID k() {
+}
 
+int k;
+
+if (y) then {
+    int k;
 }

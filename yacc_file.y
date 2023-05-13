@@ -13,6 +13,8 @@
     extern int yylex();
     
     extern FILE *yyin;
+
+    int lineNumber = 1;
 %}
 
 %token INT_TYPE FLOAT_TYPE STRING_TYPE BOOLEAN_TYPE
@@ -44,17 +46,21 @@
 %union {
     struct symbolItem *sValue;
 
+    int sIndex;
+    char * sName;
+
     float fValue;
     int iValue;
     char * cValue;
 }
 
-%token <sValue> IDENTIFIER
+%token <sName> IDENTIFIER
 %token <iValue> INTEGER_NUMBER
 %token <fValue> FLOAT_NUMBER
 %token <cValue> STRING
 
 %type <fValue> expr maths_expr number return_value logical_expression logical_expression2 comparison_expression
+%type <sIndex> variable_or_function_declaration
 
 %%
 
@@ -72,7 +78,7 @@ sub_program :
         | do_while { printf("Repeat-until/Do-while loop\n"); }
         | switch_case { printf("Switch case\n"); }
         | enumumeration
-        | function_definition { printf("Function declaration\n"); }
+        | function_definition
         | block_structure { printf("Block structure\n"); }
 
 block_structure :
@@ -89,10 +95,29 @@ function_arguments2 :
         | COMMA return_value function_arguments2
 
 function_definition :
-        FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES
-        | FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES
-        | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES
-        | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES
+        FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES {
+            // $2->isFunction = true;
+            // $2->scopeLevel = scopeLevel;
+            // printf("Function %s of type %s defined\n", $2->name, $2->type);
+        }
+        | FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES {
+            // symbolTable[symbolCount].isFunction = true;
+            // symbolTable[symbolCount].scopeLevel = scopeLevel;
+            // printf("Here\n");
+            // printf("Function %s of type %s defined\n", symbolTable[symbolCount].name, symbolTable[symbolCount].type);
+        }
+        | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES {
+            // $3->type = TYPE_VOID;
+            // $3->isFunction = true;
+            // $3->scopeLevel = scopeLevel;
+            // printf("Function %s of type %s defined\n", $3->name, $3->type);
+        }
+        | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES {
+            // $3->type = TYPE_VOID;
+            // $3->isFunction = true;
+            // $3->scopeLevel = scopeLevel;
+            // printf("Function %s of type %s defined\n", $3->name, $3->type);
+        }
 
 function_parameters :
         | return_value function_parameters2
@@ -183,16 +208,28 @@ constant_variable_declaration :
 
 variable_or_function_declaration :
         INT_TYPE IDENTIFIER {
-            printf("Int %s declared\n", $2->name);
+            // Get the symbol index from the symbol name
+            char * symbolName = $2;
+            int symbolIndex = getSymbolIndex(symbolName);
+            
+            // Declare a new symbol in case of no symbol found or we are in a sub scope
+            if (symbolIndex == -1 || symbolTable[symbolIndex].scopeLevel < scopeLevel) {
+                $$ = declareNewSymbol(symbolName, TYPE_INT);
+            }
+            else {
+                yyerror("Symbol already declared");
+            }
         }
         | FLOAT_TYPE IDENTIFIER {
-            printf("Float %s declared\n", $2->name);
+            printf("Here Int %s", $2);
+            // printf("Here Float");
+            // $2->type = TYPE_FLOAT;
         }
         | STRING_TYPE IDENTIFIER {
-            printf("String %s declared\n", $2->name);
+            // $2->type = TYPE_STRING;
         }
         | BOOLEAN_TYPE IDENTIFIER {
-            printf("Boolean %s declared\n", $2->name);
+            // $2->type = TYPE_BOOL;
         }
 
 variable_assignment :
@@ -265,7 +302,7 @@ number :
 
 logical_expression :
         L_OP_NOT logical_expression2 {
-            $$ = false;
+            $$ = !$2;
         }
         | logical_expression L_OP_AND logical_expression2 {
             $$ = $1 && $3;
@@ -322,11 +359,15 @@ comparison_expression :
   
 int main(int argc, char *argv[])
 {
+    initSymbolTable();
+
     yyin = fopen(argv[1], "r");
   
     yyparse();
 
     fclose(yyin);
+
+    printSymbolTable();
 
     return 0;
 }

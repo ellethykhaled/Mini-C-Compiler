@@ -7,9 +7,8 @@
     #include <stdbool.h>
 
     void extern yyerror(const char*);
-    struct symbolItem * findSymbol(char* s);
-
-    int lineNumber = 1;
+    int extern getSymbolIndex(char* s);
+    int extern lineNumber, scopeLevel;
 %}
 
 
@@ -17,8 +16,8 @@
 %%
 
 [Cc]onst(ant)?                      return CONSTANT;
-[Ii]nt                              return INT_TYPE;
-[Ff]loat                            return FLOAT_TYPE;
+[Ii]nt|INT                          return INT_TYPE;
+[Ff]loat|FLOAT                      return FLOAT_TYPE;
 [Ss]tr(ing)?                        return STRING_TYPE;
 [Bb]ool(ean)?                       return BOOLEAN_TYPE;
 
@@ -68,16 +67,16 @@
 \(                                  return OPENING_BRACKET;
 \)                                  return CLOSING_BRACKET;
 
-\{                                  return OPENING_BRACES;
-\{\*                                return OPENING_BLOCK_BRACES;
-\}                                  return CLOSING_BRACES;
+\{                                  scopeLevel++; return OPENING_BRACES;
+\{\*                                scopeLevel++; return OPENING_BLOCK_BRACES;
+\}                                  scopeLevel--; return CLOSING_BRACES;
 
 \n                                  lineNumber++;
 [ \t]+                              /* Ignore whitespace */;
 
-[_a-zA-Z][_a-zA-Z0-9]*              yylval.sValue = findSymbol(yytext); return IDENTIFIER;
+[_a-zA-Z][_a-zA-Z0-9]*              yylval.sName=strdup(yytext); return IDENTIFIER;
 
-[\"][_a-zA-Z0-9]*[\"]               yylval.cValue=yytext; return STRING;
+[\"][_a-zA-Z0-9]*[\"]               yylval.cValue=strdup(yytext); return STRING;
 
 -?[0-9]+                              yylval.iValue=atoi(yytext); return INTEGER_NUMBER;
 -?[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?    yylval.fValue=atof(yytext); return FLOAT_NUMBER;

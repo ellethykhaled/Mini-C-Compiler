@@ -1,30 +1,46 @@
 #include "header.h"
 
-struct symbolItem * findSymbol(char* s) {
+void initSymbolTable() {
+    // Initialize all elements in the symbolTable
+    for (int i = 0; i < MAX_SYMBOL_NUMBER; i++) {
+        symbolTable[i].type = "";
+        symbolTable[i].scopeLevel = -1;
+    }
+}
 
-    struct symbolItem * symItem;
-    struct symbolItem * nearestSymbol = NULL;
+int getSymbolIndex(char* s) {
+    if (symbolCount == MAX_SYMBOL_NUMBER) {
+        // In case the symbol count exceeded the maximum symbol count
+        char * errorMessage = "Number of symbols exceeded ";
+        sprintf(errorMessage, "%d\n", MAX_SYMBOL_NUMBER);
 
-    for (symItem = symbolTable; symItem < &symbolTable[MAX_SYMBOL_NUMBER] ; symItem++) {
-        
+        yyerror(errorMessage);
+    }
+
+    int nearestSymbolIndex = -1;
+
+    for (int i = 0; i < symbolCount; i++) {
         // Check if we looped on all declared symbols
-        if(!symItem->name) {
+        if(!symbolTable[i].name) {
             // Return the nearest symbol based on scope-level if any
-            if (nearestSymbol != NULL)
-                return nearestSymbol;
-            symItem->name = strdup(s);
-            return symItem;
+            if (nearestSymbolIndex != -1)
+                return nearestSymbolIndex;
+            return i;
         }
 
         // Check if the name matches, assign the nearest symbol
-        if (symItem->name && !strcmp(symItem->name, s))
-            nearestSymbol = symItem;
+        if (strcmp(symbolTable[i].name, s) == 0)
+            nearestSymbolIndex = i;
     }
+    return nearestSymbolIndex;
+}
 
-    char * errorMessage = "Number of symbols exceeded ";
-    sprintf(errorMessage, "%d\n", MAX_SYMBOL_NUMBER);
-
-    yyerror(errorMessage);
+int declareNewSymbol(char* id, char* type) {
+    symbolTable[symbolCount].name = id;
+    symbolTable[symbolCount].type = type;
+    symbolTable[symbolCount].scopeLevel = scopeLevel;
+    symbolCount++;
+    return symbolCount - 1;
 }
 
 void printSymbolTable() {

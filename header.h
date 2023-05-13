@@ -4,6 +4,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define TYPE_STRING "String"
+#define TYPE_INT "Int"
+#define TYPE_FLOAT "Float"
+#define TYPE_BOOL "Boolean"
+#define TYPE_VOID "Void"
+
 extern void yyerror(const char *str);
 
 int symbolCount = 0;
@@ -24,6 +30,10 @@ struct symbolItem {
 }
 symbolTable[MAX_SYMBOL_NUMBER];
 
-void printSymbolTable();
+void initSymbolTable();
 
-struct symbolItem * findSymbol(char* s);
+int getSymbolIndex(char* s);
+
+int declareNewSymbol(char* id, char* type);
+
+void printSymbolTable();
