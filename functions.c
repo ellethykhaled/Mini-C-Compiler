@@ -64,7 +64,7 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
     // In case of value float, case it in case of number 
     if (valueType == TYPE_FLOAT) {
         if (symbolTable[symbolIndex].type == TYPE_FLOAT) {
-            symbolTable[symbolIndex].value = *(float*) value;
+            symbolTable[symbolIndex].fValue = *(float*) value;
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
             
@@ -94,7 +94,7 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
      // In case of value integer, case it in case of number
     else if (valueType == TYPE_INT) {
         if (symbolTable[symbolIndex].type == TYPE_FLOAT) {
-            symbolTable[symbolIndex].value = (float) *(int*) value;
+            symbolTable[symbolIndex].fValue = (float) *(int*) value;
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
             

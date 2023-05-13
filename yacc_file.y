@@ -110,7 +110,7 @@ function_definition :
 
             // If the symbol already is declared in the same scope-level, handle the error
             if (resultIndex == -2)
-                yyerror("Symbol already declared");
+                yyerror("Symbol already declared\n");
             
             symbolTable[resultIndex].isFunction = true;
         }
@@ -121,7 +121,7 @@ function_definition :
 
             // If the symbol already is declared in the same scope-level, handle the error
             if (resultIndex == -2)
-                yyerror("Symbol already declared");
+                yyerror("Symbol already declared\n");
             
             symbolTable[resultIndex].isFunction = true;
         }
@@ -140,7 +140,7 @@ enumumeration :
 
             // If the symbol already is declared in the same scope-level, handle the error
             if (resultIndex == -2)
-                yyerror("Symbol already declared");
+                yyerror("Symbol already declared\n");
 
             // Get the symbol index from the enum name
             char * firstElement = $4;
@@ -148,7 +148,7 @@ enumumeration :
 
             // If the symbol already is declared in the same scope-level, handle the error
             if (resultIndex == -2)
-                yyerror("Symbol already declared");            
+                yyerror("Symbol already declared\n");            
         }
 
 enum_body :
@@ -235,7 +235,7 @@ variable_or_function_declaration :
 
             // If the symbol already is declared in the same scope-level, handle the error
             if (result == -2)
-                yyerror("Symbol already declared");
+                yyerror("Symbol already declared\n");
             
             $$ = result;
         }
@@ -246,7 +246,7 @@ variable_or_function_declaration :
 
             // If the symbol already is declared in the same scope-level, handle the error
             if (result == -2)
-                yyerror("Symbol already declared");
+                yyerror("Symbol already declared\n");
             
             $$ = result;
         }
@@ -257,7 +257,7 @@ variable_or_function_declaration :
 
             // If the symbol already is declared in the same scope-level, handle the error
             if (result == -2)
-                yyerror("Symbol already declared");
+                yyerror("Symbol already declared\n");
             
             $$ = result;
         }
@@ -268,7 +268,7 @@ variable_or_function_declaration :
 
             // If the symbol already is declared in the same scope-level, handle the error
             if (result == -2)
-                yyerror("Symbol already declared");
+                yyerror("Symbol already declared\n");
             
             $$ = result;
         }
@@ -277,9 +277,19 @@ variable_assignment :
         IDENTIFIER OP_ASSIGN expr {
             int symbolIndex = getSymbolIndex($1);
             if (symbolIndex == -1) {
-                yyerror("Symbol undeclared");
+                yyerror("Undeclared Symbol\n");
             }
-            int assignmentStatus = assignValue(symbolIndex, (void*)&$3, TYPE_FLOAT);
+            int assignmentStatus;
+            if ($3 == GLOBAL_STRING) {
+                assignmentStatus = assignValue(symbolIndex, globalString, TYPE_STRING);
+            }
+            else
+                assignmentStatus = assignValue(symbolIndex, (void*)&$3, TYPE_FLOAT);
+            
+            if (assignmentStatus == ERROR_TYPE_MISMATCH)
+                yyerror("Type mismatch\n");
+            else if (assignmentStatus == ERROR_UNKNOWN)
+                yyerror("Unknown error\n");
         }
         | variable_or_function_declaration OP_ASSIGN expr {
             printf("Declared variable and assigned expression to it\n");
@@ -296,18 +306,28 @@ expr :
         }
 
 maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {
+            if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
             $$ = $1 + $3;
         }
         | maths_expr M_OP_MINUS maths_expr %prec M_OP_MINUS {
+            if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
             $$ = $1 - $3;
         }
         | maths_expr M_OP_MULT maths_expr %prec M_OP_MULT {
+            if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
             $$ = $1 * $3;
         }
         | maths_expr M_OP_DIV maths_expr %prec M_OP_DIV {
+            if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
             $$ = $1 / $3;
         }
         | maths_expr M_OP_MOD maths_expr %prec M_OP_MOD {
+            if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
             $$ = (int) $1 % (int) $3;
         }
         | maths_expr M_OP_POWER maths_expr %prec M_OP_POWER {
@@ -317,7 +337,26 @@ maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {
             $$ = answer;
         }
         | return_value {
-            $$ = $1;
+            if ($1 == ERROR_UNDECLARED)
+                yyerror("Undeclared symbol\n");
+            else if ($1 == ERROR_UNINITIALIZED)
+                yyerror("Uninitialized symbol\n");
+            else if ($1 == GLOBAL_STRING){
+                $$ = GLOBAL_STRING;
+            }
+            else if ($1 == GLOBAL_NUMBER)
+                $$ = globalNumber;
+            else {
+                int symbolIndex = (int) $1;
+                if (symbolTable[symbolIndex].type == TYPE_STRING){
+                    globalString = strdup(symbolTable[symbolIndex].stringValue);
+                    $$ = GLOBAL_STRING;
+                }
+                else if (symbolTable[symbolIndex].type == TYPE_INT || symbolTable[symbolIndex].type == TYPE_BOOL)
+                    $$ = symbolTable[symbolIndex].value;
+                else if (symbolTable[symbolIndex].type == TYPE_FLOAT)
+                    $$ = symbolTable[symbolIndex].fValue;
+            }
         }
         | OPENING_BRACKET maths_expr CLOSING_BRACKET {
             $$ = $2;
@@ -325,17 +364,32 @@ maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {
 
 return_value :
         IDENTIFIER {
-            $$ = 1;
+            int symbolIndex = getSymbolIndex($1);
+            // In case of undeclared symbol
+            if (symbolIndex == -1) {
+                $$ = ERROR_UNDECLARED;
             }
-        | number {
-            $$ = $1;
+            // In case of uninitialized symbol
+            else if (symbolTable[symbolIndex].isInitialized != true) {
+                $$ = ERROR_UNINITIALIZED;
+            }
+            // Otherwise return the symbol index
+            else
+                $$ = symbolIndex;
         }
         | STRING {
-            $$ = 1;
+            // Return the global string indicator
+            globalString = strdup($1);
+            $$ = GLOBAL_STRING;
+        }
+        | number {
+            // Return the global number indicator
+            globalNumber = $1;
+            $$ = GLOBAL_NUMBER;
         }
         | function_call {
             printf("Function call\n");
-            $$ = 1;
+            $$ = MAX_SYMBOL_NUMBER + 3;
             /* Dummy return */
         }
 
@@ -378,26 +432,38 @@ logical_expression2 :
 
 comparison_expression :
         return_value OP_EQUAL return_value {
+            if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
             /* Dummy return */
             $$ = true;
         }
         | return_value OP_NOT_EQUAL return_value {
+            if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
             /* Dummy return */
             $$ = true;
         }
         | return_value OP_LESS return_value {
+            if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
             /* Dummy return */
             $$ = true;
         }
         | return_value OP_LESS_EQUAL return_value {
+            if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
             /* Dummy return */
             $$ = true;
         }
         | return_value OP_GREATER return_value {
+            if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
             /* Dummy return */
             $$ = true;
         }
         | return_value OP_GREATER_EQUAL return_value {
+            if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
             /* Dummy return */
             $$ = true;
         }

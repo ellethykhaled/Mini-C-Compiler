@@ -13,15 +13,22 @@
 
 #define ERROR_DECLARED -2
 #define ERROR_UNDECLARED -3
-#define ERROR_TYPE_MISMATCH -4
-#define ERROR_CONSTANT_REASSIGNMENT -5
-#define ERROR -6
+#define ERROR_UNINITIALIZED -4
+#define ERROR_TYPE_MISMATCH -5
+#define ERROR_CONSTANT_REASSIGNMENT -6
 #define ERROR_UNKNOWN -100
+
+#define GLOBAL_NUMBER (MAX_SYMBOL_NUMBER + 1)
+#define GLOBAL_STRING (MAX_SYMBOL_NUMBER + 2)
+
 
 extern void yyerror(const char *str);
 
 int symbolCount = 0;
 int scopeLevel = 0;
+
+float globalNumber;
+char * globalString;
 
 struct symbolItem {
     char* type;

@@ -1,18 +1,17 @@
-Enum e {k, l, m};
+Float z;
+int y;
 
-String x;
-int z;
-Float y;
-Boolean khaled;
+string s;
 
-z = 5;
+z = 5^2;
 
-z = 6;
+y = z;
 
-x = "omar";
+s = "khaled";
 
-khaled = false;
-khaled = true;
+s = "omar";
+
+z = "5";
 
 fun void f() {
 
