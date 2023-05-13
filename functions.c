@@ -20,4 +20,9 @@ struct symbolItem * findSymbol(char* s) {
         if (symItem->name && !strcmp(symItem->name, s))
             nearestSymbol = symItem;
     }
+
+    char * errorMessage = "Number of symbols exceeded ";
+    sprintf(errorMessage, "%d\n", MAX_SYMBOL_NUMBER);
+    
+    yyerror(errorMessage);
 }
