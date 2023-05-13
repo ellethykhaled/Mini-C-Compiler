@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern void yyerror(const char *str);
+
 int symbolCount = 0;
 int scopeLevel = 0;
 

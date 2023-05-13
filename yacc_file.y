@@ -10,7 +10,6 @@
         #include "functions.c"
     #endif
     
-    extern void yyerror(const char *str);
     extern int yylex();
     
     extern FILE *yyin;
@@ -20,7 +19,6 @@
 
 %token CONSTANT
 
-%token STRING
 %token TRUE FALSE
 
 %token M_OP_PLUS M_OP_MINUS M_OP_MULT M_OP_DIV M_OP_MOD M_OP_POWER
@@ -54,6 +52,7 @@
 %token <sValue> IDENTIFIER
 %token <iValue> INTEGER_NUMBER
 %token <fValue> FLOAT_NUMBER
+%token <cValue> STRING
 
 %type <fValue> expr maths_expr number return_value logical_expression logical_expression2 comparison_expression
 
