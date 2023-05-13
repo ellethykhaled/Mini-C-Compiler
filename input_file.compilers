@@ -6,6 +6,10 @@ function void v() {
     
 }
 
+function void q() {
+    
+}
+
 int k;
 bool b;
 

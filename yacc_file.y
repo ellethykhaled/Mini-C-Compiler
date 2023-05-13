@@ -104,14 +104,26 @@ function_definition :
             symbolTable[symbolIndex].isFunction = true;
         }
         | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES {
-            // int symbolIndex = $3;
-            // symbolTable[symbolIndex].isFunction = true;
+            // Get the symbol index from the symbol name
+            char * symbolName = $3;
+            int resultIndex = searchAndDeclare(symbolName, TYPE_VOID);
+
+            // If the symbol already is declared in the same scope-level, handle the error
+            if (resultIndex == -2)
+                yyerror("Symbol already declared");
+            
+            symbolTable[resultIndex].isFunction = true;
         }
         | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES {
-            // $3->type = TYPE_VOID;
-            // $3->isFunction = true;
-            // $3->scopeLevel = scopeLevel;
-            // printf("Function %s of type %s defined\n", $3->name, $3->type);
+            // Get the symbol index from the symbol name
+            char * symbolName = $3;
+            int resultIndex = searchAndDeclare(symbolName, TYPE_VOID);
+
+            // If the symbol already is declared in the same scope-level, handle the error
+            if (resultIndex == -2)
+                yyerror("Symbol already declared");
+            
+            symbolTable[resultIndex].isFunction = true;
         }
 
 function_parameters :

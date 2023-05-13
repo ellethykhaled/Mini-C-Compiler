@@ -36,11 +36,12 @@ int getSymbolIndex(char* s) {
 }
 
 int declareNewSymbol(char* id, char* type) {
+    // Set the symbol name, type and scope level then increment the symbol count 
     symbolTable[symbolCount].name = id;
     symbolTable[symbolCount].type = type;
     symbolTable[symbolCount].scopeLevel = scopeLevel;
-    symbolCount++;
-    return symbolCount - 1;
+
+    return symbolCount++;
 }
 
 int searchAndDeclare(char* symbolName, char* type) {
@@ -57,9 +58,11 @@ int searchAndDeclare(char* symbolName, char* type) {
 void printSymbolTable() {
     printf("Symbol Table:\n");
     for(int i = 0; i < symbolCount; i++) {
+        // Print format in case of function
         if (symbolTable[i].isFunction == true)
-            printf("%s\t %s\t Function\n", symbolTable[i].type, symbolTable[i].name);
+            printf("%s\t %s\t function\n", symbolTable[i].type, symbolTable[i].name);
         else {
+        // Print format in case of non-function
             if (symbolTable[i].type == TYPE_STRING)
                 printf("%s\t %s\t %s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].stringValue);
             else
