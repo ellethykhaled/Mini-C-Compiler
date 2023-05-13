@@ -23,6 +23,12 @@ struct symbolItem * findSymbol(char* s) {
 
     char * errorMessage = "Number of symbols exceeded ";
     sprintf(errorMessage, "%d\n", MAX_SYMBOL_NUMBER);
-    
+
     yyerror(errorMessage);
+}
+
+void printSymbolTable() {
+    printf("Symbol Table:\n");
+    for(int i = 0; i < symbolCount; i++)
+        printf("%s\t %s\t %f\t %s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].value, symbolTable[i].stringValue);
 }
