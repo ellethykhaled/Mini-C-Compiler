@@ -1,5 +1,6 @@
 #define MAX_SYMBOL_NUMBER 1000
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 

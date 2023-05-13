@@ -2,3 +2,7 @@ String x;
 Int x;
 Float y;
 Boolean khaled;
+
+function VOID k() {
+
+}

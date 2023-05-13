@@ -9,6 +9,7 @@ struct symbolItem * findSymbol(char* s) {
         
         // Check if we looped on all declared symbols
         if(!symItem->name) {
+            // Return the nearest symbol based on scope-level if any
             if (nearestSymbol != NULL)
                 return nearestSymbol;
             symItem->name = strdup(s);
