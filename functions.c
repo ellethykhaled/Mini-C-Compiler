@@ -43,8 +43,27 @@ int declareNewSymbol(char* id, char* type) {
     return symbolCount - 1;
 }
 
+int searchAndDeclare(char* symbolName, char* type) {
+    // Get the symbol index from the symbol name
+    int symbolIndex = getSymbolIndex(symbolName);
+    
+    // Declare a new symbol in case of no symbol found or we are in a sub scope
+    if (symbolIndex == -1 || symbolTable[symbolIndex].scopeLevel < scopeLevel)
+        return declareNewSymbol(symbolName, type);
+    else
+        return -2;
+}
+
 void printSymbolTable() {
     printf("Symbol Table:\n");
-    for(int i = 0; i < symbolCount; i++)
-        printf("%s\t %s\t %f\t %s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].value, symbolTable[i].stringValue);
+    for(int i = 0; i < symbolCount; i++) {
+        if (symbolTable[i].isFunction == true)
+            printf("%s\t %s\t Function\n", symbolTable[i].type, symbolTable[i].name);
+        else {
+            if (symbolTable[i].type == TYPE_STRING)
+                printf("%s\t %s\t %s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].stringValue);
+            else
+                printf("%s\t %s\t %f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].value);
+        }
+    }
 }

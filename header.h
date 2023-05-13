@@ -32,6 +32,8 @@ symbolTable[MAX_SYMBOL_NUMBER];
 
 void initSymbolTable();
 
+int searchAndDeclare(char* id, char* type);
+
 int getSymbolIndex(char* s);
 
 int declareNewSymbol(char* id, char* type);

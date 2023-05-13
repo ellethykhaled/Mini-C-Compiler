@@ -2,7 +2,14 @@ function Int a() {
 
 }
 
+function void v() {
+    
+}
+
 int k;
+bool b;
+
+Str s;
 
 if (y) then {
     int k;

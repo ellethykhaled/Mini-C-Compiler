@@ -96,21 +96,16 @@ function_arguments2 :
 
 function_definition :
         FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES {
-            // $2->isFunction = true;
-            // $2->scopeLevel = scopeLevel;
-            // printf("Function %s of type %s defined\n", $2->name, $2->type);
+            int symbolIndex = $2;
+            symbolTable[symbolIndex].isFunction = true;
         }
         | FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES {
-            // symbolTable[symbolCount].isFunction = true;
-            // symbolTable[symbolCount].scopeLevel = scopeLevel;
-            // printf("Here\n");
-            // printf("Function %s of type %s defined\n", symbolTable[symbolCount].name, symbolTable[symbolCount].type);
+            int symbolIndex = $2;
+            symbolTable[symbolIndex].isFunction = true;
         }
         | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES {
-            // $3->type = TYPE_VOID;
-            // $3->isFunction = true;
-            // $3->scopeLevel = scopeLevel;
-            // printf("Function %s of type %s defined\n", $3->name, $3->type);
+            // int symbolIndex = $3;
+            // symbolTable[symbolIndex].isFunction = true;
         }
         | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES {
             // $3->type = TYPE_VOID;
@@ -210,26 +205,46 @@ variable_or_function_declaration :
         INT_TYPE IDENTIFIER {
             // Get the symbol index from the symbol name
             char * symbolName = $2;
-            int symbolIndex = getSymbolIndex(symbolName);
-            
-            // Declare a new symbol in case of no symbol found or we are in a sub scope
-            if (symbolIndex == -1 || symbolTable[symbolIndex].scopeLevel < scopeLevel) {
-                $$ = declareNewSymbol(symbolName, TYPE_INT);
-            }
-            else {
+            int result = searchAndDeclare(symbolName, TYPE_INT);
+
+            // If the symbol already is declared in the same scope-level, handle the error
+            if (result == -2)
                 yyerror("Symbol already declared");
-            }
+            
+            $$ = result;
         }
         | FLOAT_TYPE IDENTIFIER {
-            printf("Here Int %s", $2);
-            // printf("Here Float");
-            // $2->type = TYPE_FLOAT;
+            // Get the symbol index from the symbol name
+            char * symbolName = $2;
+            int result = searchAndDeclare(symbolName, TYPE_FLOAT);
+
+            // If the symbol already is declared in the same scope-level, handle the error
+            if (result == -2)
+                yyerror("Symbol already declared");
+            
+            $$ = result;
         }
         | STRING_TYPE IDENTIFIER {
-            // $2->type = TYPE_STRING;
+            // Get the symbol index from the symbol name
+            char * symbolName = $2;
+            int result = searchAndDeclare(symbolName, TYPE_STRING);
+
+            // If the symbol already is declared in the same scope-level, handle the error
+            if (result == -2)
+                yyerror("Symbol already declared");
+            
+            $$ = result;
         }
         | BOOLEAN_TYPE IDENTIFIER {
-            // $2->type = TYPE_BOOL;
+            // Get the symbol index from the symbol name
+            char * symbolName = $2;
+            int result = searchAndDeclare(symbolName, TYPE_BOOL);
+
+            // If the symbol already is declared in the same scope-level, handle the error
+            if (result == -2)
+                yyerror("Symbol already declared");
+            
+            $$ = result;
         }
 
 variable_assignment :
