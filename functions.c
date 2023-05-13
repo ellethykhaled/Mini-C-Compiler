@@ -56,7 +56,7 @@ int searchAndDeclare(char* symbolName, char* type) {
 }
 
 void printSymbolTable() {
-    printf("Symbol Table:\n");
+    printf("\n     Symbol-Table\n");
     for(int i = 0; i < symbolCount; i++) {
         // Print format in case of function
         if (symbolTable[i].isFunction == true)
@@ -69,4 +69,5 @@ void printSymbolTable() {
                 printf("%s\t %s\t %f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].value);
         }
     }
+    printf("\n");
 }

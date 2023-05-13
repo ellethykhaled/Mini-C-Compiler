@@ -134,7 +134,21 @@ function_parameters2 :
 
 enumumeration :
         ENUM IDENTIFIER OPENING_BRACES IDENTIFIER enum_body CLOSING_BRACES TERMINATOR {
-            printf("Enum\n");
+            // Get the symbol index from the enum name
+            char * enumName = $2;
+            int resultIndex = searchAndDeclare(enumName, TYPE_ENUM);
+
+            // If the symbol already is declared in the same scope-level, handle the error
+            if (resultIndex == -2)
+                yyerror("Symbol already declared");
+
+            // Get the symbol index from the enum name
+            char * firstElement = $4;
+            resultIndex = searchAndDeclare(firstElement, TYPE_ENUM_ELEMENT);
+
+            // If the symbol already is declared in the same scope-level, handle the error
+            if (resultIndex == -2)
+                yyerror("Symbol already declared");            
         }
 
 enum_body :

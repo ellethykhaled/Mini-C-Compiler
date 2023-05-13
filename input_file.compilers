@@ -1,20 +1,6 @@
-function Int a() {
+Enum e {k};
 
-}
-
-function void v() {
-    
-}
-
-function void q() {
-    
-}
-
-int k;
-bool b;
-
-Str s;
-
-if (y) then {
-    int k;
-}
+String x;
+Int l;
+Float y;
+Boolean khaled;

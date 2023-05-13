@@ -9,6 +9,8 @@
 #define TYPE_FLOAT "Float"
 #define TYPE_BOOL "Boolean"
 #define TYPE_VOID "Void"
+#define TYPE_ENUM "Enum"
+#define TYPE_ENUM_ELEMENT "Enum-e"
 
 extern void yyerror(const char *str);
 
