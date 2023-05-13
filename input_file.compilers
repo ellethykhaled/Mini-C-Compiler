@@ -1,6 +1,19 @@
-Enum e {k};
+Enum e {k, l, m};
 
 String x;
-Int l;
+int z;
 Float y;
 Boolean khaled;
+
+z = 5;
+
+z = 6;
+
+x = "omar";
+
+khaled = false;
+khaled = true;
+
+fun void f() {
+
+}

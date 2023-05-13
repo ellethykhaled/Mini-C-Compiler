@@ -10,7 +10,13 @@
 #define TYPE_BOOL "Boolean"
 #define TYPE_VOID "Void"
 #define TYPE_ENUM "Enum"
-#define TYPE_ENUM_ELEMENT "Enum-e"
+
+#define ERROR_DECLARED -2
+#define ERROR_UNDECLARED -3
+#define ERROR_TYPE_MISMATCH -4
+#define ERROR_CONSTANT_REASSIGNMENT -5
+#define ERROR -6
+#define ERROR_UNKNOWN -100
 
 extern void yyerror(const char *str);
 
@@ -21,7 +27,8 @@ struct symbolItem {
     char* type;
 
     char *name;
-    float value;
+    int value;
+    float fValue;
     char* stringValue;
 
     bool isFunction;
@@ -39,5 +46,7 @@ int searchAndDeclare(char* id, char* type);
 int getSymbolIndex(char* s);
 
 int declareNewSymbol(char* id, char* type);
+
+int assignValue(int symbolIndex, void* value, char* valueType);
 
 void printSymbolTable();

@@ -144,7 +144,7 @@ enumumeration :
 
             // Get the symbol index from the enum name
             char * firstElement = $4;
-            resultIndex = searchAndDeclare(firstElement, TYPE_ENUM_ELEMENT);
+            resultIndex = searchAndDeclare(firstElement, TYPE_INT);
 
             // If the symbol already is declared in the same scope-level, handle the error
             if (resultIndex == -2)
@@ -275,7 +275,11 @@ variable_or_function_declaration :
 
 variable_assignment :
         IDENTIFIER OP_ASSIGN expr {
-            printf("Assigned expression to variable\n");
+            int symbolIndex = getSymbolIndex($1);
+            if (symbolIndex == -1) {
+                yyerror("Symbol undeclared");
+            }
+            int assignmentStatus = assignValue(symbolIndex, (void*)&$3, TYPE_FLOAT);
         }
         | variable_or_function_declaration OP_ASSIGN expr {
             printf("Declared variable and assigned expression to it\n");
@@ -284,8 +288,10 @@ variable_assignment :
 expr :
         maths_expr {
             // printf("Mathematical Expression = %d\n", $$);
+            $$ = $1;
         }
         | logical_expression {
+            $$ = $1;
             // printf("Logical Expression = %d\n", $$);
         }
 
@@ -322,7 +328,7 @@ return_value :
             $$ = 1;
             }
         | number {
-            $$ = 1;
+            $$ = $1;
         }
         | STRING {
             $$ = 1;

@@ -55,18 +55,104 @@ int searchAndDeclare(char* symbolName, char* type) {
         return -2;
 }
 
+int assignValue(int symbolIndex, void* value, char* valueType) {
+    // In case the symbol is a constant and is being initialized
+    if (symbolTable[symbolIndex].isConstant == true && symbolTable[symbolIndex].isInitialized == true) {
+        return ERROR_CONSTANT_REASSIGNMENT;
+    }
+    
+    // In case of value float, case it in case of number 
+    if (valueType == TYPE_FLOAT) {
+        if (symbolTable[symbolIndex].type == TYPE_FLOAT) {
+            symbolTable[symbolIndex].value = *(float*) value;
+            // Mark the symbol as being initialized
+            symbolTable[symbolIndex].isInitialized = true;
+            
+            return symbolIndex;
+        }
+        else if (symbolTable[symbolIndex].type == TYPE_INT) {
+            symbolTable[symbolIndex].value = (int) *(float*) value;
+            // Mark the symbol as being initialized
+            symbolTable[symbolIndex].isInitialized = true;
+            
+            return symbolIndex;
+        }
+        else if (symbolTable[symbolIndex].type == TYPE_BOOL) {
+            symbolTable[symbolIndex].value = (int) *(float*) value;
+            if ((int) *(float*) value == 0)
+                symbolTable[symbolIndex].value = 0;
+            else
+                symbolTable[symbolIndex].value = 1;
+            // Mark the symbol as being initialized
+            symbolTable[symbolIndex].isInitialized = true;
+            
+            return symbolIndex;
+        }
+        else
+            return ERROR_TYPE_MISMATCH;
+    }
+     // In case of value integer, case it in case of number
+    else if (valueType == TYPE_INT) {
+        if (symbolTable[symbolIndex].type == TYPE_FLOAT) {
+            symbolTable[symbolIndex].value = (float) *(int*) value;
+            // Mark the symbol as being initialized
+            symbolTable[symbolIndex].isInitialized = true;
+            
+            return symbolIndex;
+        }
+        else if (symbolTable[symbolIndex].type == TYPE_INT) {
+            symbolTable[symbolIndex].value = *(int*) value;
+            // Mark the symbol as being initialized
+            symbolTable[symbolIndex].isInitialized = true;
+            
+            return symbolIndex;
+        }
+        else
+            return ERROR_TYPE_MISMATCH;
+    }
+    // In case of value bool, case it in case of bool
+    else if (valueType == TYPE_BOOL) {
+        if (symbolTable[symbolIndex].type == TYPE_BOOL) {
+            symbolTable[symbolIndex].value = *(bool*) value;
+            // Mark the symbol as being initialized
+            symbolTable[symbolIndex].isInitialized = true;
+            
+            return symbolIndex;
+        }
+        else
+            return ERROR_TYPE_MISMATCH;
+    }
+    // In case of value string, case it in case of string
+    else if (valueType == TYPE_STRING) {
+        if (symbolTable[symbolIndex].type == TYPE_STRING) {
+            symbolTable[symbolIndex].stringValue = strdup((char*) value);
+            // Mark the symbol as being initialized
+            symbolTable[symbolIndex].isInitialized = true;
+
+            return symbolIndex;
+        }
+        else
+            return ERROR_TYPE_MISMATCH;
+    }
+
+    return ERROR_UNKNOWN;
+}
+
 void printSymbolTable() {
-    printf("\n     Symbol-Table\n");
+    printf("\t\t    Symbol-Table\n");
+    printf("Type\t\tName\t\tInit\tValue\n");
     for(int i = 0; i < symbolCount; i++) {
         // Print format in case of function
         if (symbolTable[i].isFunction == true)
-            printf("%s\t %s\t function\n", symbolTable[i].type, symbolTable[i].name);
+            printf("%s\t\t%s\t\t_\tfunction\n", symbolTable[i].type, symbolTable[i].name);
         else {
         // Print format in case of non-function
             if (symbolTable[i].type == TYPE_STRING)
-                printf("%s\t %s\t %s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].stringValue);
-            else
-                printf("%s\t %s\t %f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].value);
+                printf("%s\t\t%s\t\t%d\t%s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].stringValue);
+            else if (symbolTable[i].type == TYPE_FLOAT)
+                printf("%s\t\t%s\t\t%d\t%f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].fValue);
+            else if (symbolTable[i].type == TYPE_BOOL || symbolTable[i].type == TYPE_INT)
+                printf("%s\t\t%s\t\t%d\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].value);
         }
     }
     printf("\n");
