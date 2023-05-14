@@ -59,7 +59,7 @@
 %token <fValue> FLOAT_NUMBER
 %token <cValue> STRING
 
-%type <iValue> variable_assignment comparison_expression
+%type <iValue> variable_assignment comparison_expression function_call constant_variable_declaration single_line
 %type <fValue> expr maths_expr number return_value logical_expression logical_expression2
 %type <sIndex> variable_or_function_declaration
 
@@ -87,7 +87,15 @@ block_structure :
         | OPENING_BLOCK_BRACES CLOSING_BRACES
 
 function_call :
-        CALL IDENTIFIER OPENING_BRACKET function_arguments CLOSING_BRACKET
+        CALL IDENTIFIER OPENING_BRACKET function_arguments CLOSING_BRACKET {
+            // Get the symbol from the symbol table
+            int symbolIndex = getSymbolIndex($2);
+            if (symbolIndex == -1)
+                yyerror("Undeclared Symbol\n");
+
+            // Return the symbol index
+            $$ = symbolIndex;
+        }
 
 function_arguments :
         | return_value function_arguments2
@@ -160,38 +168,42 @@ switch_case :
         | SWITCH IDENTIFIER OPENING_BRACES switch_end CLOSING_BRACES
 
 switch_body :
-        CASE return_value sub_program 
-        | CASE return_value OPENING_BRACES program CLOSING_BRACES 
+        CASE return_value OPENING_BRACES program CLOSING_BRACES 
         | CASE return_value OPENING_BRACES CLOSING_BRACES 
-        | switch_body CASE return_value sub_program 
         | switch_body CASE return_value OPENING_BRACES program CLOSING_BRACES 
         | switch_body CASE return_value OPENING_BRACES CLOSING_BRACES 
 
 switch_end :
-        DEFAULT sub_program
-        | DEFAULT OPENING_BRACES program CLOSING_BRACES
+        DEFAULT OPENING_BRACES program CLOSING_BRACES
         | DEFAULT OPENING_BRACES CLOSING_BRACES
 
 single_line : 
-        expr
-        | constant_variable_declaration
-        | variable_or_function_declaration
-        | variable_assignment
+        expr {
+            // Return the symbol index
+            $$ = $1;
+        }
+        | constant_variable_declaration {
+            // Return the symbol index
+            $$ = $1;
+        }
+        | variable_or_function_declaration {
+            // Return the symbol index
+            $$ = $1;
+        }
+        | variable_assignment {
+            // Return the symbol index
+            $$ = $1;
+        }
 
 while_loop :
-        WHILE OPENING_BRACKET single_line CLOSING_BRACKET sub_program
-        | WHILE OPENING_BRACKET single_line CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES
+        WHILE OPENING_BRACKET single_line CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES
         | WHILE OPENING_BRACKET single_line CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES
 do_while :
         REPEAT OPENING_BRACES program CLOSING_BRACES WHILE single_line
         | REPEAT OPENING_BRACES CLOSING_BRACES WHILE single_line
-        | REPEAT sub_program WHILE single_line
 
 for_loop :
-        FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET sub_program {
-            printf("For loop with single child\n");
-        }
-        | FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES {
+        FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES {
             printf("For loop with braces\n");
         }
         | FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES {
@@ -202,10 +214,7 @@ line_or_null :
     | single_line
 
 if_stmt :
-        IF OPENING_BRACKET single_line CLOSING_BRACKET THEN sub_program {
-            printf("If statement with single child\n");
-        }
-        | IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES program CLOSING_BRACES else_stmt {
+        IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES program CLOSING_BRACES else_stmt {
             printf("If statement with braces\n");
         }
         | IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES CLOSING_BRACES else_stmt {
@@ -213,9 +222,6 @@ if_stmt :
         }
 
 else_stmt :
-        | ELSE sub_program {     
-            printf("Else statement with single child\n");
-        }
         | ELSE OPENING_BRACES program CLOSING_BRACES else_stmt {
             printf("Else statement with braces\n");
         }
@@ -233,6 +239,8 @@ constant_variable_declaration :
             int symbolIndex = $2;
 
             symbolTable[symbolIndex].isConstant = true;
+
+            $$ = symbolIndex;
         }
 
 variable_or_function_declaration :
@@ -329,12 +337,12 @@ variable_assignment :
 
 expr :
         maths_expr {
-            // printf("Mathematical Expression = %d\n", $$);
+            // Return the symbol index or global reference (string or number)
             $$ = $1;
         }
         | logical_expression {
+            // Return the symbol index or global reference (string or number)
             $$ = $1;
-            // printf("Logical Expression = %d\n", $$);
         }
 
 maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {
@@ -420,9 +428,8 @@ return_value :
             $$ = GLOBAL_NUMBER;
         }
         | function_call {
-            printf("Function call\n");
-            $$ = MAX_SYMBOL_NUMBER + 3;
-            /* Dummy return */
+            // Return the symbol index for the function
+            $$ = $1;
         }
 
 number :
