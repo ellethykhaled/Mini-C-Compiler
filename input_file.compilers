@@ -7,11 +7,16 @@ z = 5^2;
 
 y = z;
 
+bool b;
+
+int i = 60;
+
+const i = 70;
+
 s = "khaled";
 
-s = "omar";
+string s2 = "50";
 
-z = "5";
 
 fun void f() {
 

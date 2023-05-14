@@ -140,19 +140,20 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
 
 void printSymbolTable() {
     printf("\t\t    Symbol-Table\n");
-    printf("Type\t\tName\t\tInit\tValue\n");
+    // I|C indicated initialized and constant
+    printf("Type\t\tName\t\tI|C\tValue\n");
     for(int i = 0; i < symbolCount; i++) {
         // Print format in case of function
         if (symbolTable[i].isFunction == true)
-            printf("%s\t\t%s\t\t_\tfunction\n", symbolTable[i].type, symbolTable[i].name);
+            printf("%s\t\t%s\t\t _ \tfunction\n", symbolTable[i].type, symbolTable[i].name);
         else {
         // Print format in case of non-function
             if (symbolTable[i].type == TYPE_STRING)
-                printf("%s\t\t%s\t\t%d\t%s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].stringValue);
+                printf("%s\t\t%s\t\t%d-%d\t%s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].stringValue);
             else if (symbolTable[i].type == TYPE_FLOAT)
-                printf("%s\t\t%s\t\t%d\t%f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].fValue);
+                printf("%s\t\t%s\t\t%d-%d\t%f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].fValue);
             else if (symbolTable[i].type == TYPE_BOOL || symbolTable[i].type == TYPE_INT)
-                printf("%s\t\t%s\t\t%d\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].value);
+                printf("%s\t\t%s\t\t%d-%d\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].value);
         }
     }
     printf("\n");

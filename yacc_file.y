@@ -59,6 +59,7 @@
 %token <fValue> FLOAT_NUMBER
 %token <cValue> STRING
 
+%type <iValue> variable_assignment
 %type <fValue> expr maths_expr number return_value logical_expression logical_expression2 comparison_expression
 %type <sIndex> variable_or_function_declaration
 
@@ -109,7 +110,7 @@ function_definition :
             int resultIndex = searchAndDeclare(symbolName, TYPE_VOID);
 
             // If the symbol already is declared in the same scope-level, handle the error
-            if (resultIndex == -2)
+            if (resultIndex == ERROR_DECLARED)
                 yyerror("Symbol already declared\n");
             
             symbolTable[resultIndex].isFunction = true;
@@ -120,7 +121,7 @@ function_definition :
             int resultIndex = searchAndDeclare(symbolName, TYPE_VOID);
 
             // If the symbol already is declared in the same scope-level, handle the error
-            if (resultIndex == -2)
+            if (resultIndex == ERROR_DECLARED)
                 yyerror("Symbol already declared\n");
             
             symbolTable[resultIndex].isFunction = true;
@@ -139,7 +140,7 @@ enumumeration :
             int resultIndex = searchAndDeclare(enumName, TYPE_ENUM);
 
             // If the symbol already is declared in the same scope-level, handle the error
-            if (resultIndex == -2)
+            if (resultIndex == ERROR_DECLARED)
                 yyerror("Symbol already declared\n");
 
             // Get the symbol index from the enum name
@@ -147,7 +148,7 @@ enumumeration :
             resultIndex = searchAndDeclare(firstElement, TYPE_INT);
 
             // If the symbol already is declared in the same scope-level, handle the error
-            if (resultIndex == -2)
+            if (resultIndex == ERROR_DECLARED)
                 yyerror("Symbol already declared\n");            
         }
 
@@ -224,7 +225,9 @@ else_stmt :
 
 constant_variable_declaration :
         CONSTANT variable_assignment {
-            printf("Declared constant variable\n");  
+            int symbolIndex = $2;
+
+            symbolTable[symbolIndex].isConstant = true;
         }
 
 variable_or_function_declaration :
@@ -234,9 +237,10 @@ variable_or_function_declaration :
             int result = searchAndDeclare(symbolName, TYPE_INT);
 
             // If the symbol already is declared in the same scope-level, handle the error
-            if (result == -2)
+            if (result == ERROR_DECLARED)
                 yyerror("Symbol already declared\n");
             
+            // Return the symbol index
             $$ = result;
         }
         | FLOAT_TYPE IDENTIFIER {
@@ -245,9 +249,10 @@ variable_or_function_declaration :
             int result = searchAndDeclare(symbolName, TYPE_FLOAT);
 
             // If the symbol already is declared in the same scope-level, handle the error
-            if (result == -2)
+            if (result == ERROR_DECLARED)
                 yyerror("Symbol already declared\n");
             
+            // Return the symbol index
             $$ = result;
         }
         | STRING_TYPE IDENTIFIER {
@@ -256,9 +261,10 @@ variable_or_function_declaration :
             int result = searchAndDeclare(symbolName, TYPE_STRING);
 
             // If the symbol already is declared in the same scope-level, handle the error
-            if (result == -2)
+            if (result == ERROR_DECLARED)
                 yyerror("Symbol already declared\n");
             
+            // Return the symbol index
             $$ = result;
         }
         | BOOLEAN_TYPE IDENTIFIER {
@@ -267,22 +273,22 @@ variable_or_function_declaration :
             int result = searchAndDeclare(symbolName, TYPE_BOOL);
 
             // If the symbol already is declared in the same scope-level, handle the error
-            if (result == -2)
+            if (result == ERROR_DECLARED)
                 yyerror("Symbol already declared\n");
             
+            // Return the symbol index
             $$ = result;
         }
 
 variable_assignment :
         IDENTIFIER OP_ASSIGN expr {
             int symbolIndex = getSymbolIndex($1);
-            if (symbolIndex == -1) {
+            if (symbolIndex == -1)
                 yyerror("Undeclared Symbol\n");
-            }
+
             int assignmentStatus;
-            if ($3 == GLOBAL_STRING) {
+            if ($3 == GLOBAL_STRING)
                 assignmentStatus = assignValue(symbolIndex, globalString, TYPE_STRING);
-            }
             else
                 assignmentStatus = assignValue(symbolIndex, (void*)&$3, TYPE_FLOAT);
             
@@ -290,9 +296,22 @@ variable_assignment :
                 yyerror("Type mismatch\n");
             else if (assignmentStatus == ERROR_UNKNOWN)
                 yyerror("Unknown error\n");
+            
+            // The assignmentStatus holds the symbolIndex if any
+            $$ = assignmentStatus;
         }
         | variable_or_function_declaration OP_ASSIGN expr {
-            printf("Declared variable and assigned expression to it\n");
+            // Declare and assign a variable
+            int symbolIndex = $1;
+
+            int assignmentStatus;
+            if ($3 == GLOBAL_STRING)
+                assignmentStatus = assignValue(symbolIndex, globalString, TYPE_STRING);
+            else
+                assignmentStatus = assignValue(symbolIndex, (void*)&$3, TYPE_FLOAT);
+            
+            // The assignmentStatus holds the symbolIndex if any
+            $$ = assignmentStatus;
         }
 
 expr :
