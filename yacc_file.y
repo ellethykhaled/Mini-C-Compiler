@@ -225,6 +225,11 @@ else_stmt :
 
 constant_variable_declaration :
         CONSTANT variable_assignment {
+            // Using this grammar rule, a non-constant variable can be set as a constant after declaration
+            // i.e.:
+            // int i = 60;
+            // const i = ay 7aga; // can be -> const i = i;
+            // now i is a constant with the new assigned value
             int symbolIndex = $2;
 
             symbolTable[symbolIndex].isConstant = true;
