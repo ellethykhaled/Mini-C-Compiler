@@ -13,7 +13,8 @@ int i = 60;
 
 const i = i;
 
-s = "khaled";
+const s = "khaled";
+
 
 string s2 = "50";
 

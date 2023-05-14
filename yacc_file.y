@@ -297,7 +297,9 @@ variable_assignment :
             else
                 assignmentStatus = assignValue(symbolIndex, (void*)&$3, TYPE_FLOAT);
             
-            if (assignmentStatus == ERROR_TYPE_MISMATCH)
+            if (assignmentStatus == ERROR_CONSTANT_REASSIGNMENT)
+                yyerror("Constant reassigment\n");
+            else if (assignmentStatus == ERROR_TYPE_MISMATCH)
                 yyerror("Type mismatch\n");
             else if (assignmentStatus == ERROR_UNKNOWN)
                 yyerror("Unknown error\n");
@@ -315,6 +317,12 @@ variable_assignment :
             else
                 assignmentStatus = assignValue(symbolIndex, (void*)&$3, TYPE_FLOAT);
             
+            if (assignmentStatus == ERROR_CONSTANT_REASSIGNMENT)
+                yyerror("Constant reassigment\n");
+            else if (assignmentStatus == ERROR_TYPE_MISMATCH)
+                yyerror("Type mismatch\n");
+            else if (assignmentStatus == ERROR_UNKNOWN)
+                yyerror("Unknown error\n");
             // The assignmentStatus holds the symbolIndex if any
             $$ = assignmentStatus;
         }
