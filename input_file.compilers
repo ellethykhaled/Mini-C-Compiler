@@ -7,6 +7,15 @@ x = 60;
 
 bool b = !x or w == 50;
 
+int y;
+
+if (int y) then{
+
+    y = 60;
+}
+
+y = 50;
+
 fun void f() {
 
 }

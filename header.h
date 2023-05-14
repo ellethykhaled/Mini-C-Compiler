@@ -66,4 +66,6 @@ int assignValue(int symbolIndex, void* value, char* valueType);
 
 int processComparator(float first, float second, char * operatorType);
 
+void deleteLatestScope();
+
 void printSymbolTable();

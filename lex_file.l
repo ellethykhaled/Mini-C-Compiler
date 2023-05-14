@@ -8,6 +8,7 @@
 
     void extern yyerror(const char*);
     int extern getSymbolIndex(char* s);
+    int extern deleteLatestScope();
     int extern lineNumber, scopeLevel;
 %}
 
@@ -64,12 +65,12 @@
 
 [;]                                 return TERMINATOR;
 
-\(                                  return OPENING_BRACKET;
-\)                                  return CLOSING_BRACKET;
+\(                                  scopeLevel++; return OPENING_BRACKET;
+\)                                  scopeLevel--; return CLOSING_BRACKET;
 
 \{                                  scopeLevel++; return OPENING_BRACES;
 \{\*                                scopeLevel++; return OPENING_BLOCK_BRACES;
-\}                                  scopeLevel--; return CLOSING_BRACES;
+\}                                  deleteLatestScope(); scopeLevel--; return CLOSING_BRACES;
 
 \n                                  lineNumber++;
 [ \t]+                              /* Ignore whitespace */;

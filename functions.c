@@ -193,22 +193,36 @@ int processComparator(float first, float second, char * operatorType) {
     return ERROR_UNKNOWN;
 }
 
+void deleteLatestScope() {
+    for (int i = 0; i < symbolCount; i++)
+    {
+        int currentScopeLevel = symbolTable[i].scopeLevel;
+
+        if (currentScopeLevel == scopeLevel) {
+            symbolCount = i;
+            break;
+        }
+    }
+    
+}
+
 void printSymbolTable() {
-    printf("\t\t    Symbol-Table\n");
+    printf("================================================================\n");
+    printf("\t\t\t    Symbol-Table\n");
     // I|C indicated initialized and constant
-    printf("Type\t\tName\t\tI|C\tValue\n");
+    printf("Type\t\tName\t\tI|C\tValue\t\tScope\n");
     for(int i = 0; i < symbolCount; i++) {
         // Print format in case of function
         if (symbolTable[i].isFunction == true)
-            printf("%s\t\t%s\t\t _ \tfunction\n", symbolTable[i].type, symbolTable[i].name);
+            printf("%s\t\t%s\t\t _ \tfunction\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].scopeLevel);
         else {
         // Print format in case of non-function
             if (symbolTable[i].type == TYPE_STRING)
-                printf("%s\t\t%s\t\t%d-%d\t%s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].stringValue);
+                printf("%s\t\t%s\t\t%d-%d\t%s\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].stringValue, symbolTable[i].scopeLevel);
             else if (symbolTable[i].type == TYPE_FLOAT)
-                printf("%s\t\t%s\t\t%d-%d\t%f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].fValue);
+                printf("%s\t\t%s\t\t%d-%d\t%f\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].fValue, symbolTable[i].scopeLevel);
             else if (symbolTable[i].type == TYPE_BOOL || symbolTable[i].type == TYPE_INT)
-                printf("%s\t\t%s\t\t%d-%d\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].value);
+                printf("%s\t\t%s\t\t%d-%d\t%d\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].value, symbolTable[i].scopeLevel);
         }
     }
     printf("\n");

@@ -72,8 +72,12 @@ program :
         ;
 
 sub_program : 
-        single_line TERMINATOR
-        | if_stmt
+        single_line TERMINATOR {
+            printSymbolTable();
+        }
+        | if_stmt {
+            printSymbolTable();
+        }
         | for_loop
         | while_loop { printf("While loop\n"); }
         | do_while { printf("Repeat-until/Do-while loop\n"); }
@@ -579,8 +583,6 @@ int main(int argc, char *argv[])
     yyparse();
 
     fclose(yyin);
-
-    printSymbolTable();
 
     return 0;
 }
