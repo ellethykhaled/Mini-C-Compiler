@@ -59,8 +59,8 @@
 %token <fValue> FLOAT_NUMBER
 %token <cValue> STRING
 
-%type <iValue> variable_assignment
-%type <fValue> expr maths_expr number return_value logical_expression logical_expression2 comparison_expression
+%type <iValue> variable_assignment comparison_expression
+%type <fValue> expr maths_expr number return_value logical_expression logical_expression2
 %type <sIndex> variable_or_function_declaration
 
 %%
@@ -437,6 +437,25 @@ logical_expression :
         L_OP_NOT logical_expression2 {
             $$ = !$2;
         }
+        | L_OP_NOT return_value {
+            // Parse the value in case of not being a string
+            int symbolIndex = $2;
+            float value;
+            if (symbolIndex == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
+            else if (symbolIndex == GLOBAL_NUMBER)
+                value = globalNumber;
+            else {
+                if (symbolTable[symbolIndex].type == TYPE_FLOAT)
+                    value = symbolTable[symbolIndex].fValue;
+                else
+                    value = symbolTable[symbolIndex].value;
+            }
+            if (value == 0)
+                $$ = 1;
+            else
+                $$ = 0;
+        }
         | logical_expression L_OP_AND logical_expression2 {
             $$ = $1 && $3;
         }
@@ -466,38 +485,80 @@ comparison_expression :
         return_value OP_EQUAL return_value {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
-            /* Dummy return */
-            $$ = true;
+
+            // Send the two incoming values for parsing and the comparator
+            int result = processComparator($1, $3, EQ_OP);
+
+            if (result == TWO_NUMBERS_COMPARISON)
+                yyerror("Failed to compare two direct values\n");
+            
+            // Return the output of the comparison
+            $$ = result;
         }
         | return_value OP_NOT_EQUAL return_value {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
-            /* Dummy return */
-            $$ = true;
+
+            // Send the two incoming values for parsing and the comparator
+            int result = processComparator($1, $3, NEQ_OP);
+
+            if (result == TWO_NUMBERS_COMPARISON)
+                yyerror("Failed to compare two direct values\n");
+            
+            // Return the output of the comparison
+            $$ = result;
         }
         | return_value OP_LESS return_value {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
-            /* Dummy return */
-            $$ = true;
+
+            // Send the two incoming values for parsing and the comparator
+            int result = processComparator($1, $3, LS_OP);
+
+            if (result == TWO_NUMBERS_COMPARISON)
+                yyerror("Failed to compare two direct values\n");
+            
+            // Return the output of the comparison
+            $$ = result;
         }
         | return_value OP_LESS_EQUAL return_value {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
-            /* Dummy return */
-            $$ = true;
+
+            // Send the two incoming values for parsing and the comparator
+            int result = processComparator($1, $3, LSE_OP);
+
+            if (result == TWO_NUMBERS_COMPARISON)
+                yyerror("Failed to compare two direct values\n");
+            
+            // Return the output of the comparison
+            $$ = result;
         }
         | return_value OP_GREATER return_value {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
-            /* Dummy return */
-            $$ = true;
+
+            // Send the two incoming values for parsing and the comparator
+            int result = processComparator($1, $3, GR_OP);
+
+            if (result == TWO_NUMBERS_COMPARISON)
+                yyerror("Failed to compare two direct values\n");
+            
+            // Return the output of the comparison
+            $$ = result;
         }
         | return_value OP_GREATER_EQUAL return_value {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
-            /* Dummy return */
-            $$ = true;
+
+            // Send the two incoming values for parsing and the comparator
+            int result = processComparator($1, $3, GRE_OP);
+
+            if (result == TWO_NUMBERS_COMPARISON)
+                yyerror("Failed to compare two direct values\n");
+            
+            // Return the output of the comparison
+            $$ = result;
         }
 
 %%

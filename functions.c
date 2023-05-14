@@ -138,6 +138,54 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
     return ERROR_UNKNOWN;
 }
 
+int processComparator(float first, float second, char * operatorType) {
+    float firstValue, secondValue;
+
+    bool isFirstGlobal = false;
+    bool isSecondGlobal = false;
+
+    if (first == GLOBAL_NUMBER) {
+        firstValue = globalNumber;
+        isFirstGlobal = true;
+    }
+    else {
+        int symbolIndex = first;
+        if (symbolTable[symbolIndex].type == TYPE_FLOAT)
+            firstValue = symbolTable[symbolIndex].fValue;
+        else
+            firstValue = symbolTable[symbolIndex].value;
+    }
+    if (second == GLOBAL_NUMBER) {
+        secondValue = globalNumber;
+        isSecondGlobal = true;
+    }
+    else {
+        int symbolIndex = second;
+        if (symbolTable[symbolIndex].type == TYPE_FLOAT)
+            secondValue = symbolTable[symbolIndex].fValue;
+        else
+            secondValue = symbolTable[symbolIndex].value;
+    }
+
+    if (isFirstGlobal && isSecondGlobal)
+        return TWO_NUMBERS_COMPARISON;
+    
+    if (operatorType == EQ_OP)
+        return firstValue == secondValue;
+    else if (operatorType == NEQ_OP) 
+        return firstValue != secondValue;
+    else if (operatorType == GR_OP) 
+        return firstValue > secondValue;
+    else if (operatorType == GRE_OP) 
+        return firstValue >= secondValue;
+    else if (operatorType == LS_OP) 
+        return firstValue < secondValue;
+    else if (operatorType == LSE_OP) 
+        return firstValue <= secondValue;
+    
+    return ERROR_UNKNOWN;
+}
+
 void printSymbolTable() {
     printf("\t\t    Symbol-Table\n");
     // I|C indicated initialized and constant

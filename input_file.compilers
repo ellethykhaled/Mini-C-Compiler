@@ -1,24 +1,7 @@
-Float z;
-int y;
+int x = 50;
 
-string s;
+int w = x;
 
-z = 5^2;
+x = 60;
 
-y = z;
-
-bool b;
-
-int i = 60;
-
-const i = i;
-
-const s = "khaled";
-
-
-string s2 = "50";
-
-
-fun void f() {
-
-}
+bool b = !x;

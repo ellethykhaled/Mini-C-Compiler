@@ -11,11 +11,19 @@
 #define TYPE_VOID "Void"
 #define TYPE_ENUM "Enum"
 
+#define EQ_OP "=="
+#define NEQ_OP "!="
+#define GR_OP ">"
+#define GRE_OP ">="
+#define LS_OP "<"
+#define LSE_OP "<="
+
 #define ERROR_DECLARED -2
 #define ERROR_UNDECLARED -3
 #define ERROR_UNINITIALIZED -4
 #define ERROR_TYPE_MISMATCH -5
 #define ERROR_CONSTANT_REASSIGNMENT -6
+#define TWO_NUMBERS_COMPARISON -7
 #define ERROR_UNKNOWN -100
 
 #define GLOBAL_NUMBER (MAX_SYMBOL_NUMBER + 1)
@@ -55,5 +63,7 @@ int getSymbolIndex(char* s);
 int declareNewSymbol(char* id, char* type);
 
 int assignValue(int symbolIndex, void* value, char* valueType);
+
+int processComparator(float first, float second, char * operatorType);
 
 void printSymbolTable();
