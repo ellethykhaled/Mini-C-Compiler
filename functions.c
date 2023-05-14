@@ -141,9 +141,11 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
 int processComparator(float first, float second, char * operatorType) {
     float firstValue, secondValue;
 
+    // Flags to check if both incoming operands are direct values
     bool isFirstGlobal = false;
     bool isSecondGlobal = false;
 
+    // Parsing the first incoming value
     if (first == GLOBAL_NUMBER) {
         firstValue = globalNumber;
         isFirstGlobal = true;
@@ -155,6 +157,9 @@ int processComparator(float first, float second, char * operatorType) {
         else
             firstValue = symbolTable[symbolIndex].value;
     }
+
+    
+    // Parsing the second incoming value
     if (second == GLOBAL_NUMBER) {
         secondValue = globalNumber;
         isSecondGlobal = true;
@@ -167,9 +172,11 @@ int processComparator(float first, float second, char * operatorType) {
             secondValue = symbolTable[symbolIndex].value;
     }
 
+    // Return error status in case both operands are direct numbers
     if (isFirstGlobal && isSecondGlobal)
         return TWO_NUMBERS_COMPARISON;
     
+    // Return the value based on the operator
     if (operatorType == EQ_OP)
         return firstValue == secondValue;
     else if (operatorType == NEQ_OP) 

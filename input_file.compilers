@@ -4,4 +4,4 @@ int w = x;
 
 x = 60;
 
-bool b = !x;
+bool b = !x or w == 50;
