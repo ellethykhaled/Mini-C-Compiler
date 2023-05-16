@@ -1,5 +1,5 @@
 %{
-    /*Definition section */
+    /* Definition section */
     #include <stdio.h>
     #include <stdbool.h>
     #include <stdio.h>
@@ -59,30 +59,28 @@
 %token <fValue> FLOAT_NUMBER
 %token <cValue> STRING
 
-%type <iValue> variable_assignment comparison_expression function_call constant_variable_declaration single_line
+%type <iValue> variable_assignment comparison_expression function_call constant_variable_declaration single_line enum_body
 %type <fValue> expr maths_expr number return_value logical_expression logical_expression2
 %type <sIndex> variable_or_function_declaration
 
 %%
 
 program :
-        sub_program
+        sub_program {
+            printSymbolTable();
+        }
         |
         program sub_program
         ;
 
 sub_program : 
-        single_line TERMINATOR {
-            printSymbolTable();
-        }
-        | if_stmt {
-            printSymbolTable();
-        }
+        single_line TERMINATOR
+        | if_stmt
         | for_loop
         | while_loop { printf("While loop\n"); }
         | do_while { printf("Repeat-until/Do-while loop\n"); }
         | switch_case { printf("Switch case\n"); }
-        | enumumeration
+        | enumeration
         | function_definition
         | block_structure { printf("Block structure\n"); }
 
@@ -145,27 +143,48 @@ function_parameters :
 function_parameters2 :
         | COMMA return_value function_parameters2
 
-enumumeration :
+enumeration :
         ENUM IDENTIFIER OPENING_BRACES IDENTIFIER enum_body CLOSING_BRACES TERMINATOR {
             // Get the symbol index from the enum name
-            char * enumName = $2;
-            int resultIndex = searchAndDeclare(enumName, TYPE_ENUM);
+            char * firstElement = $4;
+            int resultIndex = searchAndDeclare(firstElement, TYPE_INT);
 
             // If the symbol already is declared in the same scope-level, handle the error
             if (resultIndex == ERROR_DECLARED)
                 yyerror("Symbol already declared\n");
+                
+            int startIndex, endIndex;
+            if ($5 != ENUM_END) {
+                // Start index is the incoming value from the enum_body
+                startIndex = $5;
+                // End index is the index of the first element of the enum
+                endIndex = resultIndex;
+
+                sortEnumElements(startIndex, endIndex);
+            }
+            else {
+                startIndex = resultIndex;
+                endIndex = resultIndex;
+            }
 
             // Get the symbol index from the enum name
-            char * firstElement = $4;
-            resultIndex = searchAndDeclare(firstElement, TYPE_INT);
+            char * enumName = $2;
 
-            // If the symbol already is declared in the same scope-level, handle the error
-            if (resultIndex == ERROR_DECLARED)
-                yyerror("Symbol already declared\n");            
+            assignEnumElements(startIndex, endIndex, enumName);
         }
 
 enum_body :
-        | COMMA IDENTIFIER enum_body
+        { $$ = ENUM_END; } | COMMA IDENTIFIER enum_body {
+            // Get the symbol index from the identifier name
+            int resultIndex = searchAndDeclare($2, TYPE_INT);
+            // If the symbol already is declared in the same scope-level, handle the error
+            if (resultIndex == ERROR_DECLARED)
+                yyerror("Symbol already declared\n");
+            if ($3 == ENUM_END)
+                $$ = resultIndex;
+            else
+                $$ = $3;
+        }
 
 switch_case :
         SWITCH IDENTIFIER OPENING_BRACES switch_body switch_end CLOSING_BRACES
@@ -583,6 +602,8 @@ int main(int argc, char *argv[])
     yyparse();
 
     fclose(yyin);
+
+    printSymbolTable();
 
     return 0;
 }

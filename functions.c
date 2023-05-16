@@ -52,7 +52,7 @@ int searchAndDeclare(char* symbolName, char* type) {
     if (symbolIndex == -1 || symbolTable[symbolIndex].scopeLevel < scopeLevel)
         return declareNewSymbol(symbolName, type);
     else
-        return -2;
+        return ERROR_DECLARED;
 }
 
 int assignValue(int symbolIndex, void* value, char* valueType) {
@@ -204,6 +204,63 @@ void deleteLatestScope() {
         }
     }
     
+}
+
+void sortEnumElements(int startIndex, int endIndex) {
+    // First loop for sorting reversed elements (all elements except enum name and first element)
+    for (int i = startIndex; i < (endIndex - 1 + startIndex) / 2; i++)
+    {
+        int topCap = endIndex - 1 - (i - startIndex);
+        char* tempName = symbolTable[i].name;
+        symbolTable[i].name = symbolTable[topCap].name;
+        symbolTable[topCap].name = tempName;
+    }
+
+    // Second loop to consider the first element
+    char * temp;
+    for (int i = startIndex; i <= endIndex; i++)
+    {
+        int prevIndex = i - 1;
+        if (prevIndex == startIndex - 1)
+            prevIndex = endIndex;
+
+        char * prevName = strdup(temp);
+        temp = strdup(symbolTable[i].name);
+        symbolTable[i].name = strdup(prevName);
+    }
+}
+
+void assignEnumElements(int startIndex, int endIndex, char * enumName) {
+
+    // Get the symbol index from the symbol name
+    int symbolIndex = getSymbolIndex(enumName);
+
+    // Declare a new symbol in case of no symbol found or we are in a sub scope
+    if (symbolIndex == -1 || symbolTable[symbolIndex].scopeLevel < scopeLevel)
+    {
+        // Set the symbol name, type and scope level then increment the symbol count 
+        for (int i = endIndex + 1; i > startIndex; i--) {
+            symbolTable[i].name = symbolTable[i - 1].name;
+            symbolTable[i].type = TYPE_INT;
+            symbolTable[i].scopeLevel = scopeLevel;
+        }
+
+        // Declare the enum's symbol
+        symbolTable[startIndex].name = enumName;
+        symbolTable[startIndex].type = TYPE_ENUM;
+        symbolTable[startIndex].scopeLevel = scopeLevel;
+        symbolCount++;
+    }
+    else
+        yyerror("Symbol declared");
+        
+    // Assign ascending values to enum elements;
+    int value = 0;
+    for (int i = startIndex + 1; i <= endIndex + 1; i++) {
+        symbolTable[i].value = value++;
+        symbolTable[i].isInitialized = true;
+        symbolTable[i].isConstant = true;
+    }
 }
 
 void printSymbolTable() {

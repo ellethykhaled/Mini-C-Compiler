@@ -24,6 +24,7 @@
 #define ERROR_TYPE_MISMATCH -5
 #define ERROR_CONSTANT_REASSIGNMENT -6
 #define TWO_NUMBERS_COMPARISON -7
+#define ENUM_END -8
 #define ERROR_UNKNOWN -100
 
 #define GLOBAL_NUMBER (MAX_SYMBOL_NUMBER + 1)
@@ -67,5 +68,9 @@ int assignValue(int symbolIndex, void* value, char* valueType);
 int processComparator(float first, float second, char * operatorType);
 
 void deleteLatestScope();
+
+void sortEnumElements(int startIndex, int endIndex);
+
+void assignEnumElements(int startIndex, int endIndex, char * enumName);
 
 void printSymbolTable();
