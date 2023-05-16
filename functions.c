@@ -223,6 +223,8 @@ void printSymbolTable() {
                 printf("%s\t\t%s\t\t%d-%d\t%f\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].fValue, symbolTable[i].scopeLevel);
             else if (symbolTable[i].type == TYPE_BOOL || symbolTable[i].type == TYPE_INT)
                 printf("%s\t\t%s\t\t%d-%d\t%d\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].value, symbolTable[i].scopeLevel);
+            else if (symbolTable[i].type == TYPE_ENUM)
+                printf("%s\t\t%s\t\t _ \tenum\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].scopeLevel);
         }
     }
     printf("\n");
