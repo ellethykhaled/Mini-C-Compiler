@@ -42,6 +42,7 @@
 
 [Ff]un(c(tion)?)?|FUN(C(TION)?)?    return FUNCTION;
 ([Cc]all|CALL):                     return CALL;
+([Rr]et(urn)?|RET(URN)?)            return RETURN;
 [Vv]oid|VOID                        return VOID_TYPE;
 
 [+]                                 return M_OP_PLUS;
@@ -52,6 +53,7 @@
 \^                                  return M_OP_POWER;
 
 [!]|([Nn](ot)|NOT)                  return L_OP_NOT;
+[Ee]x(act)?|EX(ACT)?                return L_OP_EXACT;
 [&][&]|([Aa](nd)|AND)               return L_OP_AND;
 [|][|]|([Oo][Rr])                   return L_OP_OR;
 
@@ -79,8 +81,8 @@
 
 [\"][_a-zA-Z0-9]*[\"]               yylval.cValue=strdup(yytext); return STRING;
 
--?[0-9]+                              yylval.iValue=atoi(yytext); return INTEGER_NUMBER;
--?[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?    yylval.fValue=atof(yytext); return FLOAT_NUMBER;
+-?[0-9]+                            yylval.iValue=atoi(yytext); return INTEGER_NUMBER;
+-?[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?  yylval.fValue=atof(yytext); return FLOAT_NUMBER;
 
 %%
 

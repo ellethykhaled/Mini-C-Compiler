@@ -28,12 +28,13 @@
 %left M_OP_MULT M_OP_DIV M_OP_MOD
 %right M_OP_POWER
 
-%token L_OP_NOT L_OP_AND L_OP_OR
+%token L_OP_NOT L_OP_EXACT L_OP_AND L_OP_OR
 %token OP_ASSIGN OP_EQUAL OP_NOT_EQUAL OP_LESS OP_LESS_EQUAL OP_GREATER OP_GREATER_EQUAL
 
 %token TERMINATOR CLOSING_BRACKET OPENING_BLOCK_BRACES OPENING_BRACKET CLOSING_BRACES OPENING_BRACES
 
 %token FOR WHILE REPEAT
+%token RETURN
 
 %token ENUM COMMA
 
@@ -66,15 +67,20 @@
 %%
 
 program :
-        sub_program {
-            printSymbolTable();
+        sub_program
+        | program sub_program
+        | RETURN return_value {
+            // Completely ignored in case of non-functions
         }
-        |
-        program sub_program
+        | RETURN VOID_TYPE {
+            // Completely ignored in case of non-functions
+        }
         ;
 
 sub_program : 
-        single_line TERMINATOR
+        single_line TERMINATOR {
+            printSymbolTable();
+        }
         | if_stmt
         | for_loop
         | while_loop { printf("While loop\n"); }
@@ -106,15 +112,16 @@ function_arguments2 :
         | COMMA return_value function_arguments2
 
 function_definition :
-        FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES {
+        FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program RETURN return_value TERMINATOR CLOSING_BRACES {
+            int symbolIndex = $2;
+            symbolTable[symbolIndex].isFunction = true;
+
+        }
+        | FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES RETURN return_value TERMINATOR CLOSING_BRACES {
             int symbolIndex = $2;
             symbolTable[symbolIndex].isFunction = true;
         }
-        | FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES {
-            int symbolIndex = $2;
-            symbolTable[symbolIndex].isFunction = true;
-        }
-        | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES {
+        | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program RETURN VOID_TYPE TERMINATOR CLOSING_BRACES {
             // Get the symbol index from the symbol name
             char * symbolName = $3;
             int resultIndex = searchAndDeclare(symbolName, TYPE_VOID);
@@ -125,7 +132,7 @@ function_definition :
             
             symbolTable[resultIndex].isFunction = true;
         }
-        | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES {
+        | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES RETURN VOID_TYPE TERMINATOR CLOSING_BRACES {
             // Get the symbol index from the symbol name
             char * symbolName = $3;
             int resultIndex = searchAndDeclare(symbolName, TYPE_VOID);
@@ -227,14 +234,14 @@ do_while :
 
 for_loop :
         FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES {
-            printf("For loop with braces\n");
         }
         | FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES {
-            printf("For loop with empty braces\n");
         }
 
 line_or_null :
-    | single_line
+    | single_line {
+        printSymbolTable();
+    }
 
 if_stmt :
         IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES program CLOSING_BRACES else_stmt {
@@ -464,6 +471,18 @@ number :
         }
 
 logical_expression :
+        logical_expression L_OP_AND logical_expression2 {
+            $$ = $1 && $3;
+        }
+        | logical_expression L_OP_OR logical_expression2 {
+            $$ = $1 || $3;
+        }
+        | logical_expression2 {
+            $$ = $1;
+        }
+
+
+logical_expression2 :
         L_OP_NOT logical_expression2 {
             $$ = !$2;
         }
@@ -486,19 +505,26 @@ logical_expression :
             else
                 $$ = 0;
         }
-        | logical_expression L_OP_AND logical_expression2 {
-            $$ = $1 && $3;
+        | L_OP_EXACT return_value {
+            // Parse the value in case of not being a string
+            int symbolIndex = $2;
+            float value;
+            if (symbolIndex == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
+            else if (symbolIndex == GLOBAL_NUMBER)
+                value = globalNumber;
+            else {
+                if (symbolTable[symbolIndex].type == TYPE_FLOAT)
+                    value = symbolTable[symbolIndex].fValue;
+                else
+                    value = symbolTable[symbolIndex].value;
+            }
+            if (value == 0)
+                $$ = 0;
+            else
+                $$ = 1;
         }
-        | logical_expression L_OP_OR logical_expression2 {
-            $$ = $1 || $3;
-        }
-        | logical_expression2 {
-            $$ = $1;
-        }
-
-
-logical_expression2 :
-        TRUE {
+        | TRUE {
             $$ = true;
         }
         | FALSE {
