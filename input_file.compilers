@@ -5,5 +5,5 @@ fun string f() {
 
     string s = "omar";
     
-    return s;
+    return "void";
 }

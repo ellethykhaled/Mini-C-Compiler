@@ -5,6 +5,7 @@ void initSymbolTable() {
     for (int i = 0; i < MAX_SYMBOL_NUMBER; i++) {
         symbolTable[i].type = "";
         symbolTable[i].scopeLevel = -1;
+        symbolTable[i].isCertain = true;
     }
 }
 
@@ -261,6 +262,28 @@ void assignEnumElements(int startIndex, int endIndex, char * enumName) {
         symbolTable[i].isInitialized = true;
         symbolTable[i].isConstant = true;
     }
+}
+
+int defineNonVoidFunction(int functionIndex, int returnIndex) {
+    int assignmentStatus;
+    if (returnIndex == GLOBAL_STRING)
+        // Try to assign the global string
+        assignmentStatus = assignValue(functionIndex, (void*)&globalString, TYPE_STRING);
+    else if (returnIndex == GLOBAL_NUMBER)
+        // Try to assign the global number
+        assignmentStatus = assignValue(functionIndex, (void*)&globalNumber, TYPE_FLOAT);
+    else {
+        if (symbolTable[returnIndex].type == TYPE_FLOAT)
+            // Try to assign the float from incoming from the identifier
+            assignmentStatus = assignValue(functionIndex, (void*)&symbolTable[returnIndex].fValue, TYPE_FLOAT);
+        else if (symbolTable[returnIndex].type == TYPE_INT || symbolTable[returnIndex].type == TYPE_BOOL)
+            // Try to assign the int/bool from incoming from the identifier
+            assignmentStatus = assignValue(functionIndex, (void*)&symbolTable[returnIndex].value, TYPE_INT);
+        else if (symbolTable[returnIndex].type == TYPE_STRING)
+            // Try to assign the string from incoming from the identifier
+            assignmentStatus = assignValue(functionIndex, (void*)&symbolTable[returnIndex].stringValue, TYPE_STRING);
+    }
+    return assignmentStatus;
 }
 
 void printSymbolTable() {

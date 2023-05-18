@@ -77,4 +77,6 @@ void sortEnumElements(int startIndex, int endIndex);
 
 void assignEnumElements(int startIndex, int endIndex, char * enumName);
 
+int defineNonVoidFunction(int functionIndex, int returnIndex);
+
 void printSymbolTable();

@@ -113,34 +113,34 @@ function_arguments2 :
 
 function_definition :
         FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program RETURN return_value TERMINATOR CLOSING_BRACES {
-            int symbolIndex = $2;
-            symbolTable[symbolIndex].isFunction = true;
+            int functionIndex = $2;
+            symbolTable[functionIndex].isFunction = true;
 
             int returnResult = $9;
 
-            int assignmentStatus;
             if (returnResult == ERROR_UNDECLARED)
                 yyerror("Symbol undeclared");
             else if (returnResult == ERROR_UNINITIALIZED)
                 yyerror("Symbol uninitialized");
-            else if (returnResult == GLOBAL_STRING)
-                assignmentStatus = assignValue(symbolIndex, (void*)&globalString, TYPE_STRING);
-            else if (returnResult == GLOBAL_NUMBER)
-                assignmentStatus = assignValue(symbolIndex, (void*)&globalNumber, TYPE_FLOAT);
-            else {
-                if (symbolTable[returnResult].type == TYPE_FLOAT)
-                    assignmentStatus = assignValue(symbolIndex, (void*)&symbolTable[returnResult].fValue, TYPE_FLOAT);
-                else if (symbolTable[returnResult].type == TYPE_INT || symbolTable[returnResult].type == TYPE_BOOL)
-                    assignmentStatus = assignValue(symbolIndex, (void*)&symbolTable[returnResult].value, TYPE_INT);
-                else if (symbolTable[returnResult].type == TYPE_STRING)
-                    assignmentStatus = assignValue(symbolIndex, (void*)&symbolTable[returnResult].stringValue, TYPE_STRING);
-            }
+            
+            int assignmentStatus = defineNonVoidFunction(functionIndex, returnResult);
             if (assignmentStatus == ERROR_TYPE_MISMATCH)
                 yyerror("Type mismatch");
         }
         | FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES RETURN return_value TERMINATOR CLOSING_BRACES {
-            int symbolIndex = $2;
-            symbolTable[symbolIndex].isFunction = true;
+            int functionIndex = $2;
+            symbolTable[functionIndex].isFunction = true;
+
+            int returnResult = $8;
+
+            if (returnResult == ERROR_UNDECLARED)
+                yyerror("Symbol undeclared");
+            else if (returnResult == ERROR_UNINITIALIZED)
+                yyerror("Symbol uninitialized");
+            
+            int assignmentStatus = defineNonVoidFunction(functionIndex, returnResult);
+            if (assignmentStatus == ERROR_TYPE_MISMATCH)
+                yyerror("Type mismatch");
         }
         | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program RETURN VOID_TYPE TERMINATOR CLOSING_BRACES {
             // Get the symbol index from the symbol name
