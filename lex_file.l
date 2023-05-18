@@ -9,6 +9,7 @@
     void extern yyerror(const char*);
     int extern getSymbolIndex(char* s);
     int extern deleteLatestScope();
+    void extern destroySymbolTable();
     int extern lineNumber, scopeLevel;
 %}
 
@@ -95,5 +96,6 @@ void yyerror(const char *str)
 {
     fprintf(stderr, "%s\nLine: %d\n", str, lineNumber);
     
+    destroySymbolTable();
     exit(0);
 }

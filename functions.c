@@ -286,7 +286,38 @@ int defineNonVoidFunction(int functionIndex, int returnIndex) {
             // Try to assign the string from incoming from the identifier
             assignmentStatus = assignValue(functionIndex, (void*)&symbolTable[returnIndex].stringValue, TYPE_STRING);
     }
+
+    if (globalParametersCount > 0) {
+        symbolTable[functionIndex].parameters = globalParameters;
+        symbolTable[functionIndex].parametersCount = globalParametersCount;
+    }
+    globalParametersCount = 0;
+    globalParameters = NULL;
+
     return assignmentStatus;
+}
+
+void addArgumentParameter(int symbolIndex) {
+    // Add the argument to the array of parameters
+    globalParameters = realloc(globalParameters, (globalParametersCount + 1) * sizeof(int));
+    for (int i = globalParametersCount; i > 0; i--)
+        globalParameters[i] = globalParameters[i - 1];
+    
+    // A function that adds the type of parameter/argument to the array of paramters
+    if (symbolIndex == GLOBAL_NUMBER)
+        globalParameters[0] = PARAMETER_FLOAT;
+    else if (symbolIndex == GLOBAL_STRING)
+        globalParameters[0] = PARAMETER_STRING;
+    else if (symbolTable[symbolIndex].type == TYPE_INT)
+        globalParameters[0] = PARAMETER_INT;
+    else if (symbolTable[symbolIndex].type == TYPE_FLOAT)
+        globalParameters[0] = PARAMETER_FLOAT;
+    else if (symbolTable[symbolIndex].type == TYPE_STRING)
+        globalParameters[0] = PARAMETER_STRING;
+    else if (symbolTable[symbolIndex].type == TYPE_BOOL)
+        globalParameters[0] = PARAMETER_BOOL;
+            
+    globalParametersCount++;
 }
 
 void printSymbolTable() {
@@ -298,10 +329,9 @@ void printSymbolTable() {
         // Print format in case of function
         if (symbolTable[i].isFunction == true) {
             printf("%s\t\t%s\t\t _ \tfunction\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].scopeLevel);
-
-            // Print parameters if any
+            // Print parameter types by order if any
+            printf("---Function parameters: ");
             if (symbolTable[i].parametersCount > 0) {
-                printf("Function parameters: ");
                 for (int j = 0; j < symbolTable[i].parametersCount; j++) {
                     if (symbolTable[i].parameters[j] == PARAMETER_INT)
                         printf("Integer");
@@ -316,6 +346,8 @@ void printSymbolTable() {
                 }
                 printf("\n");
             }
+            else
+                printf("None\n");
         }
         else {
         // Print format in case of non-function

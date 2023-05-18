@@ -79,7 +79,7 @@ program :
 
 sub_program : 
         single_line TERMINATOR {
-            printSymbolTable();
+            // printSymbolTable();
         }
         | if_stmt
         | for_loop
@@ -101,15 +101,62 @@ function_call :
             if (symbolIndex == -1)
                 yyerror("Undeclared Symbol\n");
 
+            if (symbolTable[symbolIndex].parametersCount > globalParametersCount) {
+                printf("Arguments missing, found %d and required %d\n", globalParametersCount, symbolTable[symbolIndex].parametersCount);
+                yyerror("Arguments missing\n");
+            }
+            else if (symbolTable[symbolIndex].parametersCount < globalParametersCount) {
+                printf("A lot of arguments are provided, found %d and required %d\n", globalParametersCount, symbolTable[symbolIndex].parametersCount);
+                yyerror("A lot of arguments are provided\n");
+            }
+            else {
+                for (int i = 0; i < globalParametersCount; i++) {
+                    if (symbolTable[symbolIndex].parameters[i] != globalParameters[i]) {
+                        printf("Parameter #%d type mismatch %d, %d\n", i + 1, symbolTable[symbolIndex].parameters[i], globalParameters[i]);
+                        yyerror("Parameter type mismatch\n");
+                        break;
+                    }
+                }
+            }
+            
+            globalParametersCount = 0;
+            globalParameters = NULL;
+
             // Return the symbol index
             $$ = symbolIndex;
         }
 
 function_arguments :
-        | return_value function_arguments2
+        { 
+            globalParametersCount = 0;
+            globalParameters = NULL;
+        }
+        | return_value function_arguments2  {
+            int returnResult = $1;
+            // Check if there is an issue with the incoming value
+            if (returnResult == ERROR_UNDECLARED) {
+                yyerror("Undeclared symbol\n");
+            }
+            if (returnResult == ERROR_UNINITIALIZED) {
+                yyerror("Undeclared symbol\n");
+            }
 
-function_arguments2 :
-        | COMMA return_value function_arguments2
+            addArgumentParameter(returnResult);
+        }
+
+function_arguments2 :   
+        | COMMA return_value function_arguments2 {   
+            int returnResult = $2;
+            // Check if there is an issue with the incoming value
+            if (returnResult == ERROR_UNDECLARED) {
+                yyerror("Undeclared symbol\n");
+            }
+            if (returnResult == ERROR_UNINITIALIZED) {
+                yyerror("Undeclared symbol\n");
+            }
+
+            addArgumentParameter(returnResult);
+        }
 
 function_definition :
         FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program RETURN return_value TERMINATOR CLOSING_BRACES {
@@ -126,14 +173,6 @@ function_definition :
             int assignmentStatus = defineNonVoidFunction(functionIndex, returnResult);
             if (assignmentStatus == ERROR_TYPE_MISMATCH)
                 yyerror("Type mismatch");
-            
-            if (globalParametersCount > 0) {
-                symbolTable[functionIndex].parameters = globalParameters;
-                symbolTable[functionIndex].parametersCount = globalParametersCount;
-                
-                globalParametersCount = 0;
-                globalParameters = NULL;
-            }
         }
         | FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES RETURN return_value TERMINATOR CLOSING_BRACES {
             int functionIndex = $2;
@@ -178,43 +217,35 @@ function_definition :
         }
 
 function_parameters :
+        { 
+            globalParametersCount = 0;
+            globalParameters = NULL;
+        }
         | variable_or_function_declaration function_parameters2 {
-            globalParameters = realloc(globalParameters, (globalParametersCount + 1) * sizeof(int));
+            int returnResult = $1;
+            // Check if there is an issue with the incoming value
+            if (returnResult == ERROR_UNDECLARED) {
+                yyerror("Undeclared symbol\n");
+            }
+            if (returnResult == ERROR_UNINITIALIZED) {
+                yyerror("Undeclared symbol\n");
+            }
 
-            for (int i = globalParametersCount; i > 0; i--)
-                globalParameters[i] = globalParameters[i - 1];
-            
-            int symbolIndex = $1;
-            if (symbolTable[symbolIndex].type == TYPE_INT) 
-                globalParameters[0] = PARAMETER_INT;
-            else if (symbolTable[symbolIndex].type == TYPE_FLOAT) 
-                globalParameters[0] = PARAMETER_FLOAT;
-            else if (symbolTable[symbolIndex].type == TYPE_STRING) 
-                globalParameters[0] = PARAMETER_STRING;
-            else if (symbolTable[symbolIndex].type == TYPE_BOOL) 
-                globalParameters[0] = PARAMETER_BOOL;
-                
-            globalParametersCount++;
+            addArgumentParameter(returnResult);
         }
 
 function_parameters2 :
         | COMMA variable_or_function_declaration function_parameters2 {
-            globalParameters = realloc(globalParameters, (globalParametersCount + 1) * sizeof(int));
+            int returnResult = $2;
+            // Check if there is an issue with the incoming value
+            if (returnResult == ERROR_UNDECLARED) {
+                yyerror("Undeclared symbol\n");
+            }
+            if (returnResult == ERROR_UNINITIALIZED) {
+                yyerror("Undeclared symbol\n");
+            }
 
-            for (int i = globalParametersCount; i > 0; i--)
-                globalParameters[i] = globalParameters[i - 1];
-            
-            int symbolIndex = $2;
-            if (symbolTable[symbolIndex].type == TYPE_INT) 
-                globalParameters[0] = PARAMETER_INT;
-            else if (symbolTable[symbolIndex].type == TYPE_FLOAT) 
-                globalParameters[0] = PARAMETER_FLOAT;
-            else if (symbolTable[symbolIndex].type == TYPE_STRING) 
-                globalParameters[0] = PARAMETER_STRING;
-            else if (symbolTable[symbolIndex].type == TYPE_BOOL) 
-                globalParameters[0] = PARAMETER_BOOL;
-                
-            globalParametersCount++;
+            addArgumentParameter(returnResult);
         }
 
 enumeration :

@@ -90,6 +90,8 @@ void assignEnumElements(int startIndex, int endIndex, char * enumName);
 
 int defineNonVoidFunction(int functionIndex, int returnIndex);
 
+void addArgumentParameter(int symbolIndex);
+
 void printSymbolTable();
 
 void destroySymbolTable();
