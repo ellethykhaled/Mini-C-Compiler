@@ -27,11 +27,10 @@
 #define ENUM_END -8
 #define ERROR_UNKNOWN -100
 
-#define PARAMETER_END       -101
-#define PARAMETER_INT       -102
-#define PARAMETER_FLOAT     -103
-#define PARAMETER_BOOL      -104
-#define PARAMETER_STRING    -105
+#define PARAMETER_INT       -101
+#define PARAMETER_FLOAT     -102
+#define PARAMETER_BOOL      -103
+#define PARAMETER_STRING    -104
 
 #define GLOBAL_NUMBER (MAX_SYMBOL_NUMBER + 1)
 #define GLOBAL_STRING (MAX_SYMBOL_NUMBER + 2)
