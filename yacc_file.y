@@ -60,7 +60,7 @@
 %token <fValue> FLOAT_NUMBER
 %token <cValue> STRING
 
-%type <iValue> variable_assignment comparison_expression function_call constant_variable_declaration single_line enum_body
+%type <iValue> variable_assignment comparison_expression function_call constant_variable_declaration single_line enum_body function_definition
 %type <fValue> expr maths_expr number return_value logical_expression logical_expression2
 %type <sIndex> variable_or_function_declaration
 
@@ -116,6 +116,27 @@ function_definition :
             int symbolIndex = $2;
             symbolTable[symbolIndex].isFunction = true;
 
+            int returnResult = $9;
+
+            int assignmentStatus;
+            if (returnResult == ERROR_UNDECLARED)
+                yyerror("Symbol undeclared");
+            else if (returnResult == ERROR_UNINITIALIZED)
+                yyerror("Symbol uninitialized");
+            else if (returnResult == GLOBAL_STRING)
+                assignmentStatus = assignValue(symbolIndex, (void*)&globalString, TYPE_STRING);
+            else if (returnResult == GLOBAL_NUMBER)
+                assignmentStatus = assignValue(symbolIndex, (void*)&globalNumber, TYPE_FLOAT);
+            else {
+                if (symbolTable[returnResult].type == TYPE_FLOAT)
+                    assignmentStatus = assignValue(symbolIndex, (void*)&symbolTable[returnResult].fValue, TYPE_FLOAT);
+                else if (symbolTable[returnResult].type == TYPE_INT || symbolTable[returnResult].type == TYPE_BOOL)
+                    assignmentStatus = assignValue(symbolIndex, (void*)&symbolTable[returnResult].value, TYPE_INT);
+                else if (symbolTable[returnResult].type == TYPE_STRING)
+                    assignmentStatus = assignValue(symbolIndex, (void*)&symbolTable[returnResult].stringValue, TYPE_STRING);
+            }
+            if (assignmentStatus == ERROR_TYPE_MISMATCH)
+                yyerror("Type mismatch");
         }
         | FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES RETURN return_value TERMINATOR CLOSING_BRACES {
             int symbolIndex = $2;
@@ -131,6 +152,8 @@ function_definition :
                 yyerror("Symbol already declared\n");
             
             symbolTable[resultIndex].isFunction = true;
+            
+            $$ = GLOBAL_VOID;
         }
         | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES RETURN VOID_TYPE TERMINATOR CLOSING_BRACES {
             // Get the symbol index from the symbol name
@@ -142,6 +165,8 @@ function_definition :
                 yyerror("Symbol already declared\n");
             
             symbolTable[resultIndex].isFunction = true;
+
+            $$ = GLOBAL_VOID;
         }
 
 function_parameters :

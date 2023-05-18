@@ -29,7 +29,9 @@
 
 #define GLOBAL_NUMBER (MAX_SYMBOL_NUMBER + 1)
 #define GLOBAL_STRING (MAX_SYMBOL_NUMBER + 2)
+#define GLOBAL_VOID (MAX_SYMBOL_NUMBER + 3)
 
+#define GLOBAL_UNCERTAIN (2 * MAX_SYMBOL_NUMBER)
 
 extern void yyerror(const char *str);
 
@@ -50,6 +52,8 @@ struct symbolItem {
     bool isFunction;
     bool isConstant;
     bool isInitialized;
+
+    bool isCertain;
 
     int scopeLevel;
 }
