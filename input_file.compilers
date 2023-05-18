@@ -1,9 +1,13 @@
 int i = 5;
 
-fun string f() {
+fun int f(int y, string z) {
     int x = 5;
 
-    string s = "omar";
+    string s = "string";
     
-    return "void";
+    return x;
 }
+
+int t = call:f();
+
+int x;

@@ -27,6 +27,12 @@
 #define ENUM_END -8
 #define ERROR_UNKNOWN -100
 
+#define PARAMETER_END       -101
+#define PARAMETER_INT       -102
+#define PARAMETER_FLOAT     -103
+#define PARAMETER_BOOL      -104
+#define PARAMETER_STRING    -105
+
 #define GLOBAL_NUMBER (MAX_SYMBOL_NUMBER + 1)
 #define GLOBAL_STRING (MAX_SYMBOL_NUMBER + 2)
 #define GLOBAL_VOID (MAX_SYMBOL_NUMBER + 3)
@@ -41,15 +47,21 @@ int scopeLevel = 0;
 float globalNumber;
 char * globalString;
 
+int globalParametersCount = 0;
+int* globalParameters = NULL;
+
 struct symbolItem {
     char* type;
 
-    char *name;
+    char* name;
     int value;
     float fValue;
     char* stringValue;
 
     bool isFunction;
+    int* parameters;
+    int parametersCount;
+
     bool isConstant;
     bool isInitialized;
 
@@ -80,3 +92,5 @@ void assignEnumElements(int startIndex, int endIndex, char * enumName);
 int defineNonVoidFunction(int functionIndex, int returnIndex);
 
 void printSymbolTable();
+
+void destroySymbolTable();

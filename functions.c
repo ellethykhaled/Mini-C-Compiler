@@ -6,6 +6,9 @@ void initSymbolTable() {
         symbolTable[i].type = "";
         symbolTable[i].scopeLevel = -1;
         symbolTable[i].isCertain = true;
+
+        symbolTable[i].parameters = NULL;
+        symbolTable[i].parametersCount = 0;
     }
 }
 
@@ -293,8 +296,27 @@ void printSymbolTable() {
     printf("Type\t\tName\t\tI|C\tValue\t\tScope\n");
     for(int i = 0; i < symbolCount; i++) {
         // Print format in case of function
-        if (symbolTable[i].isFunction == true)
+        if (symbolTable[i].isFunction == true) {
             printf("%s\t\t%s\t\t _ \tfunction\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].scopeLevel);
+
+            // Print parameters if any
+            if (symbolTable[i].parametersCount > 0) {
+                printf("Function parameters: ");
+                for (int j = 0; j < symbolTable[i].parametersCount; j++) {
+                    if (symbolTable[i].parameters[j] == PARAMETER_INT)
+                        printf("Integer");
+                    else if (symbolTable[i].parameters[j] == PARAMETER_FLOAT)
+                        printf("Float");
+                    else if (symbolTable[i].parameters[j] == PARAMETER_BOOL)
+                        printf("Boolean");
+                    else if (symbolTable[i].parameters[j] == PARAMETER_STRING)
+                        printf("String");
+                    if (j != symbolTable[i].parametersCount - 1)
+                        printf(" - ");
+                }
+                printf("\n");
+            }
+        }
         else {
         // Print format in case of non-function
             if (symbolTable[i].type == TYPE_STRING)
@@ -308,4 +330,9 @@ void printSymbolTable() {
         }
     }
     printf("\n");
+}
+
+void destroySymbolTable() {
+    for (int i = 0; i < symbolCount; i++)
+        free(symbolTable[i].parameters);
 }

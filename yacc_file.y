@@ -126,6 +126,14 @@ function_definition :
             int assignmentStatus = defineNonVoidFunction(functionIndex, returnResult);
             if (assignmentStatus == ERROR_TYPE_MISMATCH)
                 yyerror("Type mismatch");
+            
+            if (globalParametersCount > 0) {
+                symbolTable[functionIndex].parameters = globalParameters;
+                symbolTable[functionIndex].parametersCount = globalParametersCount;
+                
+                globalParametersCount = 0;
+                globalParameters = NULL;
+            }
         }
         | FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES RETURN return_value TERMINATOR CLOSING_BRACES {
             int functionIndex = $2;
@@ -170,10 +178,44 @@ function_definition :
         }
 
 function_parameters :
-        | return_value function_parameters2
+        | variable_or_function_declaration function_parameters2 {
+            globalParameters = realloc(globalParameters, (globalParametersCount + 1) * sizeof(int));
+
+            for (int i = globalParametersCount; i > 0; i--)
+                globalParameters[i] = globalParameters[i - 1];
+            
+            int symbolIndex = $1;
+            if (symbolTable[symbolIndex].type == TYPE_INT) 
+                globalParameters[0] = PARAMETER_INT;
+            else if (symbolTable[symbolIndex].type == TYPE_FLOAT) 
+                globalParameters[0] = PARAMETER_FLOAT;
+            else if (symbolTable[symbolIndex].type == TYPE_STRING) 
+                globalParameters[0] = PARAMETER_STRING;
+            else if (symbolTable[symbolIndex].type == TYPE_BOOL) 
+                globalParameters[0] = PARAMETER_BOOL;
+                
+            globalParametersCount++;
+        }
 
 function_parameters2 :
-        | COMMA return_value function_parameters2
+        | COMMA variable_or_function_declaration function_parameters2 {
+            globalParameters = realloc(globalParameters, (globalParametersCount + 1) * sizeof(int));
+
+            for (int i = globalParametersCount; i > 0; i--)
+                globalParameters[i] = globalParameters[i - 1];
+            
+            int symbolIndex = $2;
+            if (symbolTable[symbolIndex].type == TYPE_INT) 
+                globalParameters[0] = PARAMETER_INT;
+            else if (symbolTable[symbolIndex].type == TYPE_FLOAT) 
+                globalParameters[0] = PARAMETER_FLOAT;
+            else if (symbolTable[symbolIndex].type == TYPE_STRING) 
+                globalParameters[0] = PARAMETER_STRING;
+            else if (symbolTable[symbolIndex].type == TYPE_BOOL) 
+                globalParameters[0] = PARAMETER_BOOL;
+                
+            globalParametersCount++;
+        }
 
 enumeration :
         ENUM IDENTIFIER OPENING_BRACES IDENTIFIER enum_body CLOSING_BRACES TERMINATOR {
