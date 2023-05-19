@@ -1,28 +1,60 @@
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		0-0-1-0		0		0
+
+============================================================================
+			    Symbol-Table
+Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+
+============================================================================
+			    Symbol-Table
+Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		0-0-1-0		0		0
+
+============================================================================
+			    Symbol-Table
+Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
+
+============================================================================
+			    Symbol-Table
+Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		1-0-0-0		0		0
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		1-0-0-0		0		0
 Int		x		1-0-0-0		1		0
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		1-0-0-0		0		0
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|1|-		0		function
 -> Function parameters: None
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		0-0-1-0		0		0
@@ -30,6 +62,8 @@ Int		x		0-0-1-0		0		0
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		1
@@ -37,6 +71,8 @@ Int		x		1-0-1-0		0		1
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		1
@@ -45,6 +81,8 @@ Boolean	o		0-0-1-0		0		0
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		1
@@ -53,6 +91,8 @@ Boolean	o		1-0-1-0		0		0
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -61,6 +101,8 @@ Boolean	o		1-0-1-0		0		0
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -69,6 +111,8 @@ Boolean	o		1-0-1-0		0		0
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -77,6 +121,8 @@ Boolean	o		1-0-1-0		0		0
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -86,6 +132,8 @@ String	s		0-0-1-0		0		(null)
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -95,6 +143,8 @@ String	s		1-0-1-0		0		"not ok"
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -105,6 +155,8 @@ Float		f		0-0-1-0		0		0.000000
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -115,6 +167,8 @@ Float		f		1-0-1-0		0		5.000000
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -126,6 +180,8 @@ Boolean	b		0-0-1-0		0		0
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -137,6 +193,8 @@ Boolean	b		1-0-1-0		0		0
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -148,6 +206,8 @@ Boolean	b		1-0-1-1		0		0
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -159,6 +219,8 @@ Boolean	b		1-0-1-1		0		0
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -171,6 +233,8 @@ Int		i		0-0-1-0		1		0
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -183,6 +247,8 @@ Int		i		1-0-1-0		1		0
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5
@@ -195,6 +261,8 @@ Int		i		1-0-0-1		1		1
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
+Int		u		1-0-1-0		0		8
+Int		t		1-0-1-0		0		22
 Int		f1		-|-|0|-		0		function
 -> Function parameters: Integer
 Int		x		1-0-1-0		0		5

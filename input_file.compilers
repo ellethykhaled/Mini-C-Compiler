@@ -1,3 +1,6 @@
+int u = 8;
+
+int t = 5 + 9 + 4 * 2;
 
 fun int f1(int x) {
     return x;

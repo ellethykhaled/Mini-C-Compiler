@@ -8,4 +8,4 @@ mv y.tab.h yacc_file.tab.h
 
 cc lex.yy.c yacc_file.tab.c -o program.exe
 
-./program.exe ./input_file.compilers ./symtbl.log ./quad.log
+./program.exe ./input_file.compilers ./symtbl.log ./quad.log ./error.txt

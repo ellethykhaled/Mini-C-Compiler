@@ -43,6 +43,7 @@
 extern void yyerror(const char *str);
 
 FILE* symbolTableFile;
+FILE* errorsFile;
 
 int symbolCount = 0;
 int scopeLevel = 0;

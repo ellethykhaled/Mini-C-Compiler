@@ -523,21 +523,69 @@ maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
             $$ = $1 + $3;
+
+            // Store the value stored in the register to the variable
+            char tempBuffer1[3];
+            sprintf(tempBuffer1, "R%d", currentRegister - 2);
+
+            char tempBuffer2[3];
+            sprintf(tempBuffer2, "R%d", currentRegister - 1);
+
+            char tempBuffer3[3];
+            sprintf(tempBuffer3, "R%d", currentRegister++);
+
+            addQuadruple(ADD, tempBuffer1, tempBuffer2, tempBuffer3);
         }
         | maths_expr M_OP_MINUS maths_expr %prec M_OP_MINUS {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
             $$ = $1 - $3;
+
+            // Store the value stored in the register to the variable
+            char tempBuffer1[3];
+            sprintf(tempBuffer1, "R%d", currentRegister - 2);
+
+            char tempBuffer2[3];
+            sprintf(tempBuffer2, "R%d", currentRegister - 1);
+
+            char tempBuffer3[3];
+            sprintf(tempBuffer3, "R%d", currentRegister++);
+
+            addQuadruple(SUB, tempBuffer1, tempBuffer2, tempBuffer3);
         }
         | maths_expr M_OP_MULT maths_expr %prec M_OP_MULT {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
             $$ = $1 * $3;
+
+            // Store the value stored in the register to the variable
+            char tempBuffer1[3];
+            sprintf(tempBuffer1, "R%d", currentRegister - 2);
+
+            char tempBuffer2[3];
+            sprintf(tempBuffer2, "R%d", currentRegister - 1);
+
+            char tempBuffer3[3];
+            sprintf(tempBuffer3, "R%d", currentRegister++);
+
+            addQuadruple(MUL, tempBuffer1, tempBuffer2, tempBuffer3);
         }
         | maths_expr M_OP_DIV maths_expr %prec M_OP_DIV {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
             $$ = $1 / $3;
+
+            // Store the value stored in the register to the variable
+            char tempBuffer1[3];
+            sprintf(tempBuffer1, "R%d", currentRegister - 2);
+
+            char tempBuffer2[3];
+            sprintf(tempBuffer2, "R%d", currentRegister - 1);
+
+            char tempBuffer3[3];
+            sprintf(tempBuffer3, "R%d", currentRegister++);
+
+            addQuadruple(DIV, tempBuffer1, tempBuffer2, tempBuffer3);
         }
         | maths_expr M_OP_MOD maths_expr %prec M_OP_MOD {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
@@ -883,8 +931,8 @@ int main(int argc, char *argv[])
     yyin = fopen(argv[1], "r");
 
     symbolTableFile = fopen(argv[2], "w");
-    
     quadruplesFile = fopen(argv[3], "w");
+    errorsFile = fopen(argv[4], "w");
   
     yyparse();
 
@@ -897,6 +945,7 @@ int main(int argc, char *argv[])
 
     fclose(symbolTableFile);
     fclose(quadruplesFile);
+    fclose(errorsFile);
 
     return 0;
 }
