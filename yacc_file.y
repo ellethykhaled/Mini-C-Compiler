@@ -83,7 +83,7 @@ sub_program :
         }
         | if_stmt { }
         | for_loop { printSymbolTable(); }
-        | while_loop { printf("While loop\n"); }
+        | while_loop { printSymbolTable(); }
         | do_while { printf("Repeat-until/Do-while loop\n"); }
         | switch_case { printf("Switch case\n"); }
         | enumeration
@@ -587,8 +587,10 @@ return_value :
                 $$ = ERROR_UNINITIALIZED;
             }
             // Otherwise return the symbol index
-            else
+            else {
+                symbolTable[symbolIndex].isUsed = true;
                 $$ = symbolIndex;
+            }
         }
         | STRING {
             // Return the global string indicator

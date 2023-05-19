@@ -7,6 +7,7 @@ void initSymbolTable() {
         symbolTable[i].scopeLevel = -1;
         symbolTable[i].isCertain = true;
         symbolTable[i].isInitialized = false;
+        symbolTable[i].isUsed = false;
 
         symbolTable[i].parameters = NULL;
         symbolTable[i].parametersCount = 0;
@@ -50,6 +51,7 @@ int declareNewSymbol(char* id, char* type) {
     symbolTable[symbolCount].isInitialized = false;
     symbolTable[symbolCount].isCertain = true;
     symbolTable[symbolCount].isFunction = false;
+    symbolTable[symbolCount].isUsed = false;
 
     free(symbolTable[symbolCount].parameters);
     symbolTable[symbolCount].parameters = NULL;
@@ -433,15 +435,15 @@ void ifStatementLogic(int conditionResult) {
 void printSymbolTable() {
     fprintf(symbolTableFile, "============================================================================\n");
     fprintf(symbolTableFile, "\t\t\t    Symbol-Table\n");
-    // I|C|A indicated initialized, constant and akeed (certain)
-    fprintf(symbolTableFile, "Type\t\tName\t\tI|C|A\t\tScope\t\tValue\n");
+    // I|C|A|U indicates initialized, constant, akeed (certain) and used
+    fprintf(symbolTableFile, "Type\t\tName\t\tI|C|A|U\t\tScope\t\tValue\n");
     for(int i = 0; i < symbolCount; i++) {
         // Print format in case of function
         if (symbolTable[i].isFunction == true) {
             if (symbolTable[i].type == TYPE_INT)
-                fprintf(symbolTableFile, "%s\t\t\t%s\t\t\t_|_|%d\t\t%d\t\t\tfunction\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isCertain, symbolTable[i].scopeLevel);
+                fprintf(symbolTableFile, "%s\t\t\t%s\t\t\t-|-|%d|-\t\t%d\t\t\tfunction\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isCertain, symbolTable[i].scopeLevel);
             else
-                fprintf(symbolTableFile, "%s\t\t%s\t\t\t_|_|%d\t\t%d\t\t\tfunction\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isCertain, symbolTable[i].scopeLevel);
+                fprintf(symbolTableFile, "%s\t\t%s\t\t\t-|-|%d|-\t\t%d\t\t\tfunction\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isCertain, symbolTable[i].scopeLevel);
             // Print parameter types by order if any
             fprintf(symbolTableFile, "-> Function parameters: ");
             if (symbolTable[i].parametersCount > 0) {
@@ -465,15 +467,15 @@ void printSymbolTable() {
         else {
         // Print format in case of non-function
             if (symbolTable[i].type == TYPE_STRING)
-                fprintf(symbolTableFile, "%s\t\t%s\t\t\t%d-%d-%d\t\t%d\t\t\t%s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].stringValue);
+                fprintf(symbolTableFile, "%s\t\t%s\t\t\t%d-%d-%d-%d\t\t%d\t\t\t%s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].isUsed == true, symbolTable[i].scopeLevel, symbolTable[i].stringValue);
             else if (symbolTable[i].type == TYPE_FLOAT)
-                fprintf(symbolTableFile, "%s\t\t%s\t\t\t%d-%d-%d\t\t%d\t\t\t%f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].fValue);
+                fprintf(symbolTableFile, "%s\t\t%s\t\t\t%d-%d-%d-%d\t\t%d\t\t\t%f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].isUsed == true, symbolTable[i].scopeLevel, symbolTable[i].fValue);
             else if (symbolTable[i].type == TYPE_INT)
-                fprintf(symbolTableFile, "%s\t\t\t%s\t\t\t%d-%d-%d\t\t%d\t\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].value);
+                fprintf(symbolTableFile, "%s\t\t\t%s\t\t\t%d-%d-%d-%d\t\t%d\t\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].isUsed == true, symbolTable[i].scopeLevel, symbolTable[i].value);
             else if (symbolTable[i].type == TYPE_BOOL || symbolTable[i].type == TYPE_INT)
-                fprintf(symbolTableFile, "%s\t\t%s\t\t\t%d-%d-%d\t\t%d\t\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].value);
+                fprintf(symbolTableFile, "%s\t\t%s\t\t\t%d-%d-%d-%d\t\t%d\t\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].isUsed == true, symbolTable[i].scopeLevel, symbolTable[i].value);
             else if (symbolTable[i].type == TYPE_ENUM)
-                fprintf(symbolTableFile, "%s\t\t\t%s\t\t\t  _  \t\t%d\t\t\tenum\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].scopeLevel);
+                fprintf(symbolTableFile, "%s\t\t\t%s\t\t\t   _   \t\t%d\t\t\tenum\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].scopeLevel);
         }
     }
     fprintf(symbolTableFile, "\n");

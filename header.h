@@ -69,6 +69,7 @@ struct symbolItem {
 
     bool isConstant;
     bool isInitialized;
+    bool isUsed;
 
     bool isCertain;
 
