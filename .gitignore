@@ -4,3 +4,5 @@ y.tab.c
 program.exe
 lex.yy.c
 .vscode/settings.json
+yacc_file.tab.c
+yacc_file.tab.h
