@@ -4,4 +4,4 @@ yacc -d yacc_file.y
 
 cc lex.yy.c y.tab.c -o program.exe
 
-./program.exe ./input_file.compilers
+./program.exe ./input_file.compilers ./symtbl.log

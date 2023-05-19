@@ -40,8 +40,11 @@
 
 extern void yyerror(const char *str);
 
+FILE* symbolTableFile;
+
 int symbolCount = 0;
 int scopeLevel = 0;
+int lineNumber = 1;
 
 float globalNumber;
 char * globalString;
@@ -94,6 +97,8 @@ void assignEnumElements(int startIndex, int endIndex, char * enumName);
 int defineNonVoidFunction(int functionIndex, int returnIndex);
 
 void addArgumentParameter(int symbolIndex);
+
+void ifStatementLogic(int conditionResult);
 
 void printSymbolTable();
 

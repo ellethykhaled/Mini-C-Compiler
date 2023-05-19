@@ -93,7 +93,7 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
             if (symbolTable[symbolIndex].fValue == GLOBAL_UNCERTAIN)
                 symbolTable[symbolIndex].isCertain = false;
             else
-                symbolTable[symbolIndex].isCertain = true;
+                symbolTable[symbolIndex].isCertain = symbolTable[symbolIndex].isCertain && true;
 
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
@@ -107,7 +107,7 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
             if (symbolTable[symbolIndex].value == GLOBAL_UNCERTAIN)
                 symbolTable[symbolIndex].isCertain = false;
             else
-                symbolTable[symbolIndex].isCertain = true;
+                symbolTable[symbolIndex].isCertain = symbolTable[symbolIndex].isCertain && true;
 
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
@@ -125,7 +125,7 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
             if (symbolTable[symbolIndex].value == GLOBAL_UNCERTAIN)
                 symbolTable[symbolIndex].isCertain = false;
             else
-                symbolTable[symbolIndex].isCertain = true;
+                symbolTable[symbolIndex].isCertain = symbolTable[symbolIndex].isCertain && true;
 
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
@@ -144,7 +144,7 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
             if (symbolTable[symbolIndex].fValue == GLOBAL_UNCERTAIN)
                 symbolTable[symbolIndex].isCertain = false;
             else
-                symbolTable[symbolIndex].isCertain = true;
+                symbolTable[symbolIndex].isCertain = symbolTable[symbolIndex].isCertain && true;
 
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
@@ -158,7 +158,7 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
             if (symbolTable[symbolIndex].value == GLOBAL_UNCERTAIN)
                 symbolTable[symbolIndex].isCertain = false;
             else
-                symbolTable[symbolIndex].isCertain = true;
+                symbolTable[symbolIndex].isCertain = symbolTable[symbolIndex].isCertain && true;
 
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
@@ -177,7 +177,7 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
             if (symbolTable[symbolIndex].value == GLOBAL_UNCERTAIN)
                 symbolTable[symbolIndex].isCertain = false;
             else
-                symbolTable[symbolIndex].isCertain = true;
+                symbolTable[symbolIndex].isCertain = symbolTable[symbolIndex].isCertain && true;
         
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
@@ -201,7 +201,7 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
 
             // Assert uncertainty if any
             if (globalCertainString)
-                symbolTable[symbolIndex].isCertain = true;
+                symbolTable[symbolIndex].isCertain = symbolTable[symbolIndex].isCertain && true;
             else
                 symbolTable[symbolIndex].isCertain = false;
             
@@ -401,48 +401,82 @@ void addArgumentParameter(int symbolIndex) {
     globalParametersCount++;
 }
 
+void ifStatementLogic(int conditionResult) {
+    if (conditionResult == GLOBAL_STRING)
+        yyerror("Type mismatch\n");
+    if (conditionResult == GLOBAL_UNCERTAIN)  {
+        printf("Uncertain if\n");
+    }
+    else if (conditionResult == GLOBAL_NUMBER) {
+        if (globalNumber == 0)
+            printf("Warning: Never entering the if statement before line %d\n", lineNumber);
+        else 
+            printf("Warning: Unnecessary if statement before line %d\n", lineNumber);
+    }
+    else {
+        if (symbolTable[conditionResult].isCertain == true) {
+            bool result;
+            if (symbolTable[conditionResult].type == TYPE_BOOL || symbolTable[conditionResult].type == TYPE_INT)
+                result = symbolTable[conditionResult].value != 0;
+            else if (symbolTable[conditionResult].type == TYPE_FLOAT)
+                result = symbolTable[conditionResult].fValue != 0;
+            else
+                yyerror("If statement requires a proper condition\n");
+            if (result == 0)
+                printf("Warning: Never entering the if statement before line %d\n", lineNumber);
+            else 
+                printf("Warning: Unnecessary if statement before line %d\n", lineNumber);
+        }
+    }
+}
+
 void printSymbolTable() {
-    printf("============================================================================\n");
-    printf("\t\t\t    Symbol-Table\n");
+    fprintf(symbolTableFile, "============================================================================\n");
+    fprintf(symbolTableFile, "\t\t\t    Symbol-Table\n");
     // I|C|A indicated initialized, constant and akeed (certain)
-    printf("Type\t\tName\t\tI|C|A\t\tScope\t\tValue\n");
+    fprintf(symbolTableFile, "Type\t\tName\t\tI|C|A\t\tScope\t\tValue\n");
     for(int i = 0; i < symbolCount; i++) {
         // Print format in case of function
         if (symbolTable[i].isFunction == true) {
-            printf("%s\t\t%s\t\t_|_|%d\t\t%d\t\tfunction\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isCertain, symbolTable[i].scopeLevel);
+            if (symbolTable[i].type == TYPE_INT)
+                fprintf(symbolTableFile, "%s\t\t\t%s\t\t\t_|_|%d\t\t%d\t\t\tfunction\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isCertain, symbolTable[i].scopeLevel);
+            else
+                fprintf(symbolTableFile, "%s\t\t%s\t\t\t_|_|%d\t\t%d\t\t\tfunction\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isCertain, symbolTable[i].scopeLevel);
             // Print parameter types by order if any
-            printf("-> Function parameters: ");
+            fprintf(symbolTableFile, "-> Function parameters: ");
             if (symbolTable[i].parametersCount > 0) {
                 for (int j = 0; j < symbolTable[i].parametersCount; j++) {
                     if (symbolTable[i].parameters[j] == PARAMETER_INT)
-                        printf("Integer");
+                        fprintf(symbolTableFile, "Integer");
                     else if (symbolTable[i].parameters[j] == PARAMETER_FLOAT)
-                        printf("Float");
+                        fprintf(symbolTableFile, "Float");
                     else if (symbolTable[i].parameters[j] == PARAMETER_BOOL)
-                        printf("Boolean");
+                        fprintf(symbolTableFile, "Boolean");
                     else if (symbolTable[i].parameters[j] == PARAMETER_STRING)
-                        printf("String");
+                        fprintf(symbolTableFile, "String");
                     if (j != symbolTable[i].parametersCount - 1)
-                        printf(" - ");
+                        fprintf(symbolTableFile, " - ");
                 }
-                printf("\n");
+                fprintf(symbolTableFile, "\n");
             }
             else
-                printf("None\n");
+                fprintf(symbolTableFile, "None\n");
         }
         else {
         // Print format in case of non-function
             if (symbolTable[i].type == TYPE_STRING)
-                printf("%s\t\t%s\t\t%d-%d-%d\t\t%d\t\t%s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].stringValue);
+                fprintf(symbolTableFile, "%s\t\t%s\t\t\t%d-%d-%d\t\t%d\t\t\t%s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].stringValue);
             else if (symbolTable[i].type == TYPE_FLOAT)
-                printf("%s\t\t%s\t\t%d-%d-%d\t\t%d\t\t%f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].fValue);
+                fprintf(symbolTableFile, "%s\t\t%s\t\t\t%d-%d-%d\t\t%d\t\t\t%f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].fValue);
+            else if (symbolTable[i].type == TYPE_INT)
+                fprintf(symbolTableFile, "%s\t\t\t%s\t\t\t%d-%d-%d\t\t%d\t\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].value);
             else if (symbolTable[i].type == TYPE_BOOL || symbolTable[i].type == TYPE_INT)
-                printf("%s\t\t%s\t\t%d-%d-%d\t\t%d\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].value);
+                fprintf(symbolTableFile, "%s\t\t%s\t\t\t%d-%d-%d\t\t%d\t\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].value);
             else if (symbolTable[i].type == TYPE_ENUM)
-                printf("%s\t\t%s\t\t  _  \t\t%d\t\tenum\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].scopeLevel);
+                fprintf(symbolTableFile, "%s\t\t\t%s\t\t\t  _  \t\t%d\t\t\tenum\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].scopeLevel);
         }
     }
-    printf("\n");
+    fprintf(symbolTableFile, "\n");
 }
 
 void destroySymbolTable() {

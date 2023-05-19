@@ -14,7 +14,7 @@
     
     extern FILE *yyin;
 
-    int lineNumber = 1;
+    extern int lineNumber;
 %}
 
 %token INT_TYPE FLOAT_TYPE STRING_TYPE BOOLEAN_TYPE
@@ -81,8 +81,8 @@ sub_program :
         single_line TERMINATOR {
             printSymbolTable();
         }
-        | if_stmt
-        | for_loop
+        | if_stmt { }
+        | for_loop { printSymbolTable(); }
         | while_loop { printf("While loop\n"); }
         | do_while { printf("Repeat-until/Do-while loop\n"); }
         | switch_case { printf("Switch case\n"); }
@@ -365,44 +365,18 @@ line_or_null :
 
 if_stmt :
         IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES program CLOSING_BRACES else_stmt {
-            int lineResult = $3;
-            if (lineResult == GLOBAL_STRING)
-                yyerror("Type mismatch\n");
-            if (lineResult == GLOBAL_UNCERTAIN)  {
-                printf("Uncertain if\n");
-            }
-            else if (lineResult == GLOBAL_NUMBER) {
-                if (globalNumber == 0)
-                    printf("Warning: Never entering the if statement before line %d\n", lineNumber);
-                else 
-                    printf("Warning: Unnecessary if statement before line %d\n", lineNumber);
-            }
-            else {
-                if (symbolTable[lineResult].isCertain == true) {
-                    bool result;
-                    if (symbolTable[lineResult].type == TYPE_BOOL || symbolTable[lineResult].type == TYPE_INT)
-                        result = symbolTable[lineResult].value != 0;
-                    else if (symbolTable[lineResult].type == TYPE_FLOAT)
-                        result = symbolTable[lineResult].fValue != 0;
-                    else
-                        yyerror("If statement requires a proper condition\n");
-                    if (result == 0)
-                        printf("Warning: Never entering the if statement before line %d\n", lineNumber);
-                    else 
-                        printf("Warning: Unnecessary if statement before line %d\n", lineNumber);
-                }
-            }
+            printSymbolTable();
         }
         | IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES CLOSING_BRACES else_stmt {
-            printf("If statement with empty braces\n");
+            printSymbolTable();
         }
 
 else_stmt :
         | ELSE OPENING_BRACES program CLOSING_BRACES else_stmt {
-            printf("Else statement with braces\n");
+            printSymbolTable();
         }
         | ELSE OPENING_BRACES CLOSING_BRACES else_stmt {
-            printf("Else statement with empty braces\n");
+            printSymbolTable();
         }
 
 constant_variable_declaration :
@@ -879,12 +853,16 @@ int main(int argc, char *argv[])
     initSymbolTable();
 
     yyin = fopen(argv[1], "r");
+
+    symbolTableFile = fopen(argv[2], "w");
   
     yyparse();
 
     fclose(yyin);
 
     printSymbolTable();
+
+    destroySymbolTable();
 
     return 0;
 }

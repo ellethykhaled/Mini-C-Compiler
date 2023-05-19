@@ -81,7 +81,7 @@
 
 [_a-zA-Z][_a-zA-Z0-9]*              yylval.sName=strdup(yytext); return IDENTIFIER;
 
-[\"][_a-zA-Z0-9]*[\"]               yylval.cValue=strdup(yytext); return STRING;
+[\"][_a-zA-Z0-9 ]*[\"]              yylval.cValue=strdup(yytext); return STRING;
 
 -?[0-9]+                            yylval.iValue=atoi(yytext); return INTEGER_NUMBER;
 -?[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?  yylval.fValue=atof(yytext); return FLOAT_NUMBER;
