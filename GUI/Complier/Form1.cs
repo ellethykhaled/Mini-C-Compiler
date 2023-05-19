@@ -43,6 +43,10 @@ namespace Complier
             {
                 File.Delete(symtblPath);
             }
+            if (File.Exists(errorPath))
+            {
+                File.Delete(errorPath);
+            }
 
 
             TextWriter txt = new StreamWriter(@"..\\..\\..\\..\\input_file.compilers");
@@ -56,7 +60,7 @@ namespace Complier
             System.Diagnostics.Process.Start("cmd.exe", "/C D: & cd D:\\Uni\\Spring23\\Compilers\\Project\\Compilers-Project & run.bat");
             // wait for the process to finish and then read the output files
             // if symtbl.log or quad.log doesnt exist wait for 1 more second
-            while (!File.Exists(quadPath) || !File.Exists(symtblPath))
+            while (!File.Exists(quadPath) || !File.Exists(symtblPath) || !File.Exists(errorPath))
             {
                 System.Threading.Thread.Sleep(100);
             }
