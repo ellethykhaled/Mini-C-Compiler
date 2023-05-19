@@ -2987,6 +2987,8 @@ int main(int argc, char *argv[])
     yyin = fopen(argv[1], "r");
 
     symbolTableFile = fopen(argv[2], "w");
+    
+    quadruplesFile = fopen(argv[3], "w");
   
     yyparse();
 
@@ -2995,6 +2997,9 @@ int main(int argc, char *argv[])
     printSymbolTable();
 
     destroySymbolTable();
+
+    fclose(symbolTableFile);
+    fclose(quadruplesFile);
 
     return 0;
 }
