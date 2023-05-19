@@ -365,9 +365,13 @@ line_or_null :
 
 if_stmt :
         IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES program CLOSING_BRACES else_stmt {
+            printf("Here %d\n", $3);
+            ifStatementLogic($3);
             printSymbolTable();
         }
         | IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES CLOSING_BRACES else_stmt {
+            printf("Here %d\n", $3);
+            ifStatementLogic($3);
             printSymbolTable();
         }
 
@@ -494,7 +498,16 @@ variable_assignment :
 expr :
         maths_expr {
             // Return the symbol index or global reference (string or number)
-            $$ = $1;
+            if ($1 == GLOBAL_STRING)
+                $$ = GLOBAL_STRING;
+            else if ($1 == GLOBAL_VOID)
+                $$ = GLOBAL_VOID;
+            else if ($1 == GLOBAL_NUMBER)
+                $$ = globalNumber;
+            else if ($1 == GLOBAL_UNCERTAIN)
+                $$ = GLOBAL_UNCERTAIN;
+            else
+                $$ = $1;
         }
         | logical_expression {
             // Return the symbol index or global reference (string or number)

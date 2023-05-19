@@ -404,6 +404,7 @@ void addArgumentParameter(int symbolIndex) {
 }
 
 void ifStatementLogic(int conditionResult) {
+    printf("Here if Logic %s\n", symbolTable[conditionResult].name);
     if (conditionResult == GLOBAL_STRING)
         yyerror("Type mismatch\n");
     if (conditionResult == GLOBAL_UNCERTAIN)  {
@@ -416,19 +417,12 @@ void ifStatementLogic(int conditionResult) {
             printf("Warning: Unnecessary if statement before line %d\n", lineNumber);
     }
     else {
-        if (symbolTable[conditionResult].isCertain == true) {
-            bool result;
-            if (symbolTable[conditionResult].type == TYPE_BOOL || symbolTable[conditionResult].type == TYPE_INT)
-                result = symbolTable[conditionResult].value != 0;
-            else if (symbolTable[conditionResult].type == TYPE_FLOAT)
-                result = symbolTable[conditionResult].fValue != 0;
-            else
-                yyerror("If statement requires a proper condition\n");
-            if (result == 0)
-                printf("Warning: Never entering the if statement before line %d\n", lineNumber);
-            else 
-                printf("Warning: Unnecessary if statement before line %d\n", lineNumber);
-        }
+        bool result = conditionResult != 0;
+
+        if (result == 0)
+            printf("Warning: Never entering the if statement before line %d\n", lineNumber);
+        else 
+            printf("Warning: Unnecessary if statement before line %d\n", lineNumber);
     }
 }
 

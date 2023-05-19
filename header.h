@@ -1,8 +1,10 @@
-#define MAX_SYMBOL_NUMBER 1000
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+
+/* Symbol Table definitions section */
+#define MAX_SYMBOL_NUMBER 1000
 
 #define TYPE_STRING "String"
 #define TYPE_INT "Int"
@@ -104,3 +106,21 @@ void ifStatementLogic(int conditionResult);
 void printSymbolTable();
 
 void destroySymbolTable();
+
+
+/* Quadruples definitions section */
+#define MAX_QUADRUPLE_COUNT 2000
+
+int quadrupleCount = 0;
+
+FILE* quadruplesFile;
+
+// Data structure for quadruples
+struct Quadruple {
+    char* operator;
+    char* operand1;
+    char* operand2;
+    char* result;
+} quadruples[MAX_QUADRUPLE_COUNT];
+
+void addQuadruple(char* op, char* op1, char* op2, char* res);
