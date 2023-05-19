@@ -343,7 +343,34 @@ line_or_null :
 
 if_stmt :
         IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES program CLOSING_BRACES else_stmt {
-            printf("If statement with braces\n");
+            int lineResult = $3;
+            printf("Here %d\n", lineResult);
+            if (lineResult == GLOBAL_STRING)
+                yyerror("Type mismatch\n");
+            if (lineResult == GLOBAL_UNCERTAIN)  {
+                printf("Uncertain if\n");
+            }
+            else if (lineResult == GLOBAL_NUMBER) {
+                if (globalNumber == 0)
+                    printf("Warning: Never entering the if statement before line %d\n", lineNumber);
+                else 
+                    printf("Warning: Unnecessary if statement before line %d\n", lineNumber);
+            }
+            else {
+                if (symbolTable[lineResult].isCertain == true) {
+                    bool result;
+                    if (symbolTable[lineResult].type == TYPE_BOOL || symbolTable[lineResult].type == TYPE_INT)
+                        result = symbolTable[lineResult].value != 0;
+                    else if (symbolTable[lineResult].type == TYPE_FLOAT)
+                        result = symbolTable[lineResult].fValue != 0;
+                    else
+                        yyerror("If statement requires a proper condition\n");
+                    if (result == 0)
+                        printf("Warning: Never entering the if statement before line %d\n", lineNumber);
+                    else 
+                        printf("Warning: Unnecessary if statement before line %d\n", lineNumber);
+                }
+            }
         }
         | IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES CLOSING_BRACES else_stmt {
             printf("If statement with empty braces\n");
@@ -512,14 +539,25 @@ maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {
             else if ($1 == GLOBAL_STRING){
                 $$ = GLOBAL_STRING;
             }
-            else if ($1 == GLOBAL_NUMBER)
+            else if ($1 == GLOBAL_NUMBER){
                 $$ = globalNumber;
+            }
             else {
                 int symbolIndex = (int) $1;
                 if (symbolTable[symbolIndex].type == TYPE_STRING){
-                    globalString = strdup(symbolTable[symbolIndex].stringValue);
+
+                    // Check if certain
+                    globalCertainString = symbolTable[symbolIndex].isCertain;
+                    if (globalCertainString)
+                        globalString = strdup(symbolTable[symbolIndex].stringValue);
+                    else
+                    // The else here is to prevent segmentation error in further propagation
+                        globalString = strdup("?");
+
                     $$ = GLOBAL_STRING;
                 }
+                else if (symbolTable[symbolIndex].isCertain == false)
+                    $$ = GLOBAL_UNCERTAIN;
                 else if (symbolTable[symbolIndex].type == TYPE_INT || symbolTable[symbolIndex].type == TYPE_BOOL)
                     $$ = symbolTable[symbolIndex].value;
                 else if (symbolTable[symbolIndex].type == TYPE_FLOAT)
@@ -548,6 +586,7 @@ return_value :
         | STRING {
             // Return the global string indicator
             globalString = strdup($1);
+            globalCertainString = true;
             $$ = GLOBAL_STRING;
         }
         | number {
@@ -570,10 +609,16 @@ number :
 
 logical_expression :
         logical_expression L_OP_AND logical_expression2 {
-            $$ = $1 && $3;
+            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+                $$ = GLOBAL_UNCERTAIN;
+            else
+                $$ = $1 && $3;
         }
         | logical_expression L_OP_OR logical_expression2 {
-            $$ = $1 || $3;
+            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+                $$ = GLOBAL_UNCERTAIN;
+            else
+                $$ = $1 || $3;
         }
         | logical_expression2 {
             $$ = $1;
@@ -582,45 +627,58 @@ logical_expression :
 
 logical_expression2 :
         L_OP_NOT logical_expression2 {
-            $$ = !$2;
+            if ($2 == GLOBAL_UNCERTAIN)
+                $$ = GLOBAL_UNCERTAIN;
+            else
+                $$ = !$2;
         }
         | L_OP_NOT return_value {
-            // Parse the value in case of not being a string
-            int symbolIndex = $2;
-            float value;
-            if (symbolIndex == GLOBAL_STRING)
-                yyerror("Type mismatch\n");
-            else if (symbolIndex == GLOBAL_NUMBER)
-                value = globalNumber;
+            // Indicate uncertainty if exists
+            if ($2 == GLOBAL_UNCERTAIN)
+                $$ = GLOBAL_UNCERTAIN;
             else {
-                if (symbolTable[symbolIndex].type == TYPE_FLOAT)
-                    value = symbolTable[symbolIndex].fValue;
+                // Parse the value in case of not being a string
+                int symbolIndex = $2;
+                float value;
+                if (symbolIndex == GLOBAL_STRING)
+                    yyerror("Type mismatch\n");
+                else if (symbolIndex == GLOBAL_NUMBER)
+                    value = globalNumber;
+                else {
+                    if (symbolTable[symbolIndex].type == TYPE_FLOAT)
+                        value = symbolTable[symbolIndex].fValue;
+                    else
+                        value = symbolTable[symbolIndex].value;
+                }
+                if (value == 0)
+                    $$ = 1;
                 else
-                    value = symbolTable[symbolIndex].value;
+                    $$ = 0;
             }
-            if (value == 0)
-                $$ = 1;
-            else
-                $$ = 0;
         }
         | L_OP_EXACT return_value {
-            // Parse the value in case of not being a string
-            int symbolIndex = $2;
-            float value;
-            if (symbolIndex == GLOBAL_STRING)
-                yyerror("Type mismatch\n");
-            else if (symbolIndex == GLOBAL_NUMBER)
-                value = globalNumber;
+            // Indicate uncertainty if exists
+            if ($2 == GLOBAL_UNCERTAIN)
+                $$ = GLOBAL_UNCERTAIN;
             else {
-                if (symbolTable[symbolIndex].type == TYPE_FLOAT)
-                    value = symbolTable[symbolIndex].fValue;
+                // Parse the value in case of not being a string
+                int symbolIndex = $2;
+                float value;
+                if (symbolIndex == GLOBAL_STRING)
+                    yyerror("Type mismatch\n");
+                else if (symbolIndex == GLOBAL_NUMBER)
+                    value = globalNumber;
+                else {
+                    if (symbolTable[symbolIndex].type == TYPE_FLOAT)
+                        value = symbolTable[symbolIndex].fValue;
+                    else
+                        value = symbolTable[symbolIndex].value;
+                }
+                if (value == 0)
+                    $$ = 0;
                 else
-                    value = symbolTable[symbolIndex].value;
+                    $$ = 1;
             }
-            if (value == 0)
-                $$ = 0;
-            else
-                $$ = 1;
         }
         | TRUE {
             $$ = true;
@@ -640,79 +698,109 @@ comparison_expression :
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
 
-            // Send the two incoming values for parsing and the comparator
-            int result = processComparator($1, $3, EQ_OP);
+            // Indicate uncertainty if exists
+            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+                $$ = GLOBAL_UNCERTAIN;
+            else {
+                // Send the two incoming values for parsing and the comparator
+                int result = processComparator($1, $3, EQ_OP);
 
-            if (result == TWO_NUMBERS_COMPARISON)
-                yyerror("Failed to compare two direct values\n");
-            
-            // Return the output of the comparison
-            $$ = result;
+                if (result == TWO_NUMBERS_COMPARISON)
+                    yyerror("Failed to compare two direct values\n");
+                
+                // Return the output of the comparison
+                $$ = result;
+            }
         }
         | return_value OP_NOT_EQUAL return_value {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
 
-            // Send the two incoming values for parsing and the comparator
-            int result = processComparator($1, $3, NEQ_OP);
+            // Indicate uncertainty if exists
+            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+                $$ = GLOBAL_UNCERTAIN;
+            else {
+                // Send the two incoming values for parsing and the comparator
+                int result = processComparator($1, $3, NEQ_OP);
 
-            if (result == TWO_NUMBERS_COMPARISON)
-                yyerror("Failed to compare two direct values\n");
-            
-            // Return the output of the comparison
-            $$ = result;
+                if (result == TWO_NUMBERS_COMPARISON)
+                    yyerror("Failed to compare two direct values\n");
+                
+                // Return the output of the comparison
+                $$ = result;
+            }
         }
         | return_value OP_LESS return_value {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
 
-            // Send the two incoming values for parsing and the comparator
-            int result = processComparator($1, $3, LS_OP);
+            // Indicate uncertainty if exists
+            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+                $$ = GLOBAL_UNCERTAIN;
+            else {
+                // Send the two incoming values for parsing and the comparator
+                int result = processComparator($1, $3, LS_OP);
 
-            if (result == TWO_NUMBERS_COMPARISON)
-                yyerror("Failed to compare two direct values\n");
-            
-            // Return the output of the comparison
-            $$ = result;
+                if (result == TWO_NUMBERS_COMPARISON)
+                    yyerror("Failed to compare two direct values\n");
+                
+                // Return the output of the comparison
+                $$ = result;
+            }
         }
         | return_value OP_LESS_EQUAL return_value {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
-
-            // Send the two incoming values for parsing and the comparator
-            int result = processComparator($1, $3, LSE_OP);
-
-            if (result == TWO_NUMBERS_COMPARISON)
-                yyerror("Failed to compare two direct values\n");
             
-            // Return the output of the comparison
-            $$ = result;
+            // Indicate uncertainty if exists
+            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+                $$ = GLOBAL_UNCERTAIN;
+            else {
+                // Send the two incoming values for parsing and the comparator
+                int result = processComparator($1, $3, LSE_OP);
+
+                if (result == TWO_NUMBERS_COMPARISON)
+                    yyerror("Failed to compare two direct values\n");
+                
+                // Return the output of the comparison
+                $$ = result;
+            }
         }
         | return_value OP_GREATER return_value {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
 
-            // Send the two incoming values for parsing and the comparator
-            int result = processComparator($1, $3, GR_OP);
+            // Indicate uncertainty if exists
+            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+                $$ = GLOBAL_UNCERTAIN;
+            else {
+                // Send the two incoming values for parsing and the comparator
+                int result = processComparator($1, $3, GR_OP);
 
-            if (result == TWO_NUMBERS_COMPARISON)
-                yyerror("Failed to compare two direct values\n");
-            
-            // Return the output of the comparison
-            $$ = result;
+                if (result == TWO_NUMBERS_COMPARISON)
+                    yyerror("Failed to compare two direct values\n");
+                
+                // Return the output of the comparison
+                $$ = result;
+            }
         }
         | return_value OP_GREATER_EQUAL return_value {
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
 
-            // Send the two incoming values for parsing and the comparator
-            int result = processComparator($1, $3, GRE_OP);
+            // Indicate uncertainty if exists
+            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+                $$ = GLOBAL_UNCERTAIN;
+            else {
+                // Send the two incoming values for parsing and the comparator
+                int result = processComparator($1, $3, GRE_OP);
 
-            if (result == TWO_NUMBERS_COMPARISON)
-                yyerror("Failed to compare two direct values\n");
-            
-            // Return the output of the comparison
-            $$ = result;
+                if (result == TWO_NUMBERS_COMPARISON)
+                    yyerror("Failed to compare two direct values\n");
+                
+                // Return the output of the comparison
+                $$ = result;
+            }
         }
 
 %%

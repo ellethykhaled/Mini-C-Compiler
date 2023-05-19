@@ -1,15 +1,19 @@
-int i = 5;
-string k = "2";
-
-fun int f1(int y, string z) {
+fun int f1(float y) {
     int x = 5;
 
-    x = y;
-
-    string s = "string";
-    
-    return x;
+    return y;
 }
-int t = call:f1(i, k);
+int y;
+bool b = 5;
 
-int x;
+string s = "ok";
+
+if (b) then {
+    bool y;
+
+    b = 10;
+}
+
+int s2;
+
+int x = b;

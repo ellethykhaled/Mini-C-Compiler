@@ -6,6 +6,7 @@ void initSymbolTable() {
         symbolTable[i].type = "";
         symbolTable[i].scopeLevel = -1;
         symbolTable[i].isCertain = true;
+        symbolTable[i].isInitialized = false;
 
         symbolTable[i].parameters = NULL;
         symbolTable[i].parametersCount = 0;
@@ -45,6 +46,15 @@ int declareNewSymbol(char* id, char* type) {
     symbolTable[symbolCount].type = type;
     symbolTable[symbolCount].scopeLevel = scopeLevel;
 
+    // The following few lines frees the symbol item if it had a previous item
+    symbolTable[symbolCount].isInitialized = false;
+    symbolTable[symbolCount].isCertain = true;
+    symbolTable[symbolCount].isFunction = false;
+
+    free(symbolTable[symbolCount].parameters);
+    symbolTable[symbolCount].parameters = NULL;
+    symbolTable[symbolCount].parametersCount = 0;
+
     // Important for function parameters
     if (globalInitializer) {
         symbolTable[symbolCount].isCertain = false;
@@ -78,6 +88,13 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
     if (valueType == TYPE_FLOAT) {
         if (symbolTable[symbolIndex].type == TYPE_FLOAT) {
             symbolTable[symbolIndex].fValue = *(float*) value;
+
+            // Assert uncertainty if any
+            if (symbolTable[symbolIndex].fValue == GLOBAL_UNCERTAIN)
+                symbolTable[symbolIndex].isCertain = false;
+            else
+                symbolTable[symbolIndex].isCertain = true;
+
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
             
@@ -85,6 +102,13 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
         }
         else if (symbolTable[symbolIndex].type == TYPE_INT) {
             symbolTable[symbolIndex].value = (int) *(float*) value;
+
+            // Assert uncertainty if any
+            if (symbolTable[symbolIndex].value == GLOBAL_UNCERTAIN)
+                symbolTable[symbolIndex].isCertain = false;
+            else
+                symbolTable[symbolIndex].isCertain = true;
+
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
             
@@ -96,6 +120,13 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
                 symbolTable[symbolIndex].value = 0;
             else
                 symbolTable[symbolIndex].value = 1;
+
+            // Assert uncertainty if any
+            if (symbolTable[symbolIndex].value == GLOBAL_UNCERTAIN)
+                symbolTable[symbolIndex].isCertain = false;
+            else
+                symbolTable[symbolIndex].isCertain = true;
+
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
             
@@ -108,6 +139,13 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
     else if (valueType == TYPE_INT) {
         if (symbolTable[symbolIndex].type == TYPE_FLOAT) {
             symbolTable[symbolIndex].fValue = (float) *(int*) value;
+
+            // Assert uncertainty if any
+            if (symbolTable[symbolIndex].fValue == GLOBAL_UNCERTAIN)
+                symbolTable[symbolIndex].isCertain = false;
+            else
+                symbolTable[symbolIndex].isCertain = true;
+
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
             
@@ -115,6 +153,13 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
         }
         else if (symbolTable[symbolIndex].type == TYPE_INT) {
             symbolTable[symbolIndex].value = *(int*) value;
+
+            // Assert uncertainty if any
+            if (symbolTable[symbolIndex].value == GLOBAL_UNCERTAIN)
+                symbolTable[symbolIndex].isCertain = false;
+            else
+                symbolTable[symbolIndex].isCertain = true;
+
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
             
@@ -127,6 +172,13 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
     else if (valueType == TYPE_BOOL) {
         if (symbolTable[symbolIndex].type == TYPE_BOOL) {
             symbolTable[symbolIndex].value = *(bool*) value;
+
+            // Assert uncertainty if any
+            if (symbolTable[symbolIndex].value == GLOBAL_UNCERTAIN)
+                symbolTable[symbolIndex].isCertain = false;
+            else
+                symbolTable[symbolIndex].isCertain = true;
+        
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
             
@@ -141,6 +193,14 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
             symbolTable[symbolIndex].stringValue = strdup((char*) value);
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
+
+            // Assert uncertainty if any
+            if (globalCertainString)
+                symbolTable[symbolIndex].isCertain = true;
+            else
+                symbolTable[symbolIndex].isCertain = false;
+            
+            globalCertainString = true;
 
             return symbolIndex;
         }
@@ -207,16 +267,17 @@ int processComparator(float first, float second, char * operatorType) {
 }
 
 void deleteLatestScope() {
+    int newSymbolCount = 0;
     for (int i = 0; i < symbolCount; i++)
     {
         int currentScopeLevel = symbolTable[i].scopeLevel;
 
-        if (currentScopeLevel == scopeLevel) {
-            symbolCount = i;
+        if (currentScopeLevel == scopeLevel)
+            newSymbolCount++;
+        else
             break;
-        }
     }
-    
+    symbolCount = newSymbolCount;
 }
 
 void sortEnumElements(int startIndex, int endIndex) {
@@ -330,14 +391,14 @@ void addArgumentParameter(int symbolIndex) {
 }
 
 void printSymbolTable() {
-    printf("================================================================\n");
+    printf("============================================================================\n");
     printf("\t\t\t    Symbol-Table\n");
     // I|C|A indicated initialized, constant and akeed (certain)
     printf("Type\t\tName\t\tI|C|A\t\tScope\t\tValue\n");
     for(int i = 0; i < symbolCount; i++) {
         // Print format in case of function
         if (symbolTable[i].isFunction == true) {
-            printf("%s\t\t%s\t\t  _  \t\t%d\t\tfunction\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].scopeLevel);
+            printf("%s\t\t%s\t\t_|_|%d\t\t%d\t\tfunction\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isCertain, symbolTable[i].scopeLevel);
             // Print parameter types by order if any
             printf("-> Function parameters: ");
             if (symbolTable[i].parametersCount > 0) {
@@ -363,7 +424,7 @@ void printSymbolTable() {
             if (symbolTable[i].type == TYPE_STRING)
                 printf("%s\t\t%s\t\t%d-%d-%d\t\t%d\t\t%s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].stringValue);
             else if (symbolTable[i].type == TYPE_FLOAT)
-                printf("%s\t\t%s\t\t%d-%d-%d\t\t%d\t%f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].fValue);
+                printf("%s\t\t%s\t\t%d-%d-%d\t\t%d\t\t%f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].fValue);
             else if (symbolTable[i].type == TYPE_BOOL || symbolTable[i].type == TYPE_INT)
                 printf("%s\t\t%s\t\t%d-%d-%d\t\t%d\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].value);
             else if (symbolTable[i].type == TYPE_ENUM)

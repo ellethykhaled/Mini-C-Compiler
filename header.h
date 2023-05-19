@@ -45,6 +45,7 @@ int scopeLevel = 0;
 
 float globalNumber;
 char * globalString;
+bool globalCertainString = true;
 
 int globalParametersCount = 0;
 int* globalParameters = NULL;

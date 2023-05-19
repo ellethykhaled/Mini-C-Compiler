@@ -74,7 +74,7 @@
 
 \{                                  scopeLevel++; return OPENING_BRACES;
 \{\*                                scopeLevel++; return OPENING_BLOCK_BRACES;
-\}                                  deleteLatestScope(); scopeLevel--; return CLOSING_BRACES;
+\}                                  scopeLevel--; deleteLatestScope(); return CLOSING_BRACES;
 
 \n                                  lineNumber++;
 [ \t]+                              /* Ignore whitespace */;
