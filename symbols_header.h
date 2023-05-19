@@ -106,21 +106,3 @@ void ifStatementLogic(int conditionResult);
 void printSymbolTable();
 
 void destroySymbolTable();
-
-
-/* Quadruples definitions section */
-#define MAX_QUADRUPLE_COUNT 2000
-
-int quadrupleCount = 0;
-
-FILE* quadruplesFile;
-
-// Data structure for quadruples
-struct Quadruple {
-    char* operator;
-    char* operand1;
-    char* operand2;
-    char* result;
-} quadruples[MAX_QUADRUPLE_COUNT];
-
-void addQuadruple(char* op, char* op1, char* op2, char* res);

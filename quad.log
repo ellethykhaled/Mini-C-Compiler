@@ -1,0 +1,15 @@
+MOV R0, 1.00
+STR x, R0
+STR o, R-1
+MOV R0, 5.00
+STR x, R0
+STR s, R-1
+MOV R0, 5.00
+STR f, R0
+MOV R0, 0.00
+STR b, R0
+MOV R0, 0.00
+STR i, R0
+MOV R0, 5.00
+MOV R1, 1.00
+STR i, R1

@@ -10,6 +10,7 @@
     int extern getSymbolIndex(char* s);
     int extern deleteLatestScope();
     void extern destroySymbolTable();
+    void extern destroyQuadruples();
     int extern lineNumber, scopeLevel;
     bool extern globalInitializer;
 %}
@@ -95,8 +96,9 @@ int yywrap(void) {
 // TODO: Needs reimplementation
 void yyerror(const char *str)
 {
-    fprintf(stderr, "%s\nLine: %d\n", str, lineNumber);
+    fprintf(stderr, "Line %d: %s\n", lineNumber, str);
     
     destroySymbolTable();
+    destroyQuadruples();
     exit(0);
 }

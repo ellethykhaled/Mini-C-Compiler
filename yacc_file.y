@@ -8,6 +8,7 @@
     #ifndef HEADER_H
     #define HEADER_H
         #include "functions.c"
+        #include "quadruples.c"
     #endif
     
     extern int yylex();
@@ -78,12 +79,10 @@ program :
         ;
 
 sub_program : 
-        single_line TERMINATOR {
-            printSymbolTable();
-        }
-        | if_stmt { }
-        | for_loop { printSymbolTable(); }
-        | while_loop { printSymbolTable(); }
+        single_line TERMINATOR
+        | if_stmt
+        | for_loop
+        | while_loop
         | do_while { printf("Repeat-until/Do-while loop\n"); }
         | switch_case { printf("Switch case\n"); }
         | enumeration
@@ -359,26 +358,20 @@ for_loop :
         }
 
 line_or_null :
-    | single_line {
-        printSymbolTable();
-    }
+    | single_line
 
 if_stmt :
         IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES program CLOSING_BRACES else_stmt {
             ifStatementLogic($3);
-            printSymbolTable();
         }
         | IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES CLOSING_BRACES else_stmt {
             ifStatementLogic($3);
-            printSymbolTable();
         }
 
 else_stmt :
         | ELSE OPENING_BRACES program CLOSING_BRACES else_stmt {
-            printSymbolTable();
         }
         | ELSE OPENING_BRACES CLOSING_BRACES else_stmt {
-            printSymbolTable();
         }
 
 constant_variable_declaration :
@@ -469,6 +462,13 @@ variable_assignment :
             
             // The assignmentStatus holds the symbolIndex if any
             $$ = assignmentStatus;
+
+            // Store the value stored in the register to the variable
+            char tempBuffer[3];
+            sprintf(tempBuffer, "R%d", currentRegister - 1);
+
+            addQuadruple(STR, symbolTable[symbolIndex].name, tempBuffer, "");
+            resetRegisters();
         }
         | variable_or_function_declaration OP_ASSIGN expr {
             // Declare and assign a variable
@@ -491,6 +491,13 @@ variable_assignment :
                 yyerror("Unknown error\n");
             // The assignmentStatus holds the symbolIndex if any
             $$ = assignmentStatus;
+
+            // Store the value stored in the register to the variable
+            char tempBuffer[3];
+            sprintf(tempBuffer, "R%d", currentRegister - 1);
+
+            addQuadruple(STR, symbolTable[symbolIndex].name, tempBuffer, "");
+            resetRegisters();
         }
 
 expr :
@@ -613,6 +620,14 @@ return_value :
             // Return the global number indicator
             globalNumber = $1;
             $$ = GLOBAL_NUMBER;
+
+            // Store the number into a register
+            char tempBuffer[3];
+            sprintf(tempBuffer, "R%d", currentRegister++);
+
+            char tempBuffer2[5];
+            sprintf(tempBuffer2, "%.2f", globalNumber);
+            addQuadruple(MOV, tempBuffer, tempBuffer2, "");
         }
         | function_call {
             // Return the symbol index for the function
@@ -875,9 +890,10 @@ int main(int argc, char *argv[])
 
     fclose(yyin);
 
-    printSymbolTable();
-
     destroySymbolTable();
+
+    printQuadruples();
+    destroyQuadruples();
 
     fclose(symbolTableFile);
     fclose(quadruplesFile);

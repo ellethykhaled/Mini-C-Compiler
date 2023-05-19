@@ -2,16 +2,14 @@
 fun int f1(int x) {
     return x;
 }
-int x = 1;  
-int k = call:f1(x);
+int x = 1;
+bool o = false;
+x = 5;
 
 if (True) then {
 }
+
 else {
-}
-
-while (k) {
-
 }
 
 string s = "not ok";
