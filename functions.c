@@ -332,14 +332,14 @@ void addArgumentParameter(int symbolIndex) {
 void printSymbolTable() {
     printf("================================================================\n");
     printf("\t\t\t    Symbol-Table\n");
-    // I|C indicated initialized and constant
-    printf("Type\t\tName\t\tI|C\tValue\t\tScope\n");
+    // I|C|A indicated initialized, constant and akeed (certain)
+    printf("Type\t\tName\t\tI|C|A\t\tScope\t\tValue\n");
     for(int i = 0; i < symbolCount; i++) {
         // Print format in case of function
         if (symbolTable[i].isFunction == true) {
-            printf("%s\t\t%s\t\t _ \tfunction\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].scopeLevel);
+            printf("%s\t\t%s\t\t  _  \t\t%d\t\tfunction\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].scopeLevel);
             // Print parameter types by order if any
-            printf("---Function parameters: ");
+            printf("-> Function parameters: ");
             if (symbolTable[i].parametersCount > 0) {
                 for (int j = 0; j < symbolTable[i].parametersCount; j++) {
                     if (symbolTable[i].parameters[j] == PARAMETER_INT)
@@ -361,13 +361,13 @@ void printSymbolTable() {
         else {
         // Print format in case of non-function
             if (symbolTable[i].type == TYPE_STRING)
-                printf("%s\t\t%s\t\t%d-%d\t%s\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].stringValue, symbolTable[i].scopeLevel);
+                printf("%s\t\t%s\t\t%d-%d-%d\t\t%d\t\t%s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].stringValue);
             else if (symbolTable[i].type == TYPE_FLOAT)
-                printf("%s\t\t%s\t\t%d-%d\t%f\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].fValue, symbolTable[i].scopeLevel);
+                printf("%s\t\t%s\t\t%d-%d-%d\t\t%d\t%f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].fValue);
             else if (symbolTable[i].type == TYPE_BOOL || symbolTable[i].type == TYPE_INT)
-                printf("%s\t\t%s\t\t%d-%d\t%d\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].value, symbolTable[i].scopeLevel);
+                printf("%s\t\t%s\t\t%d-%d-%d\t\t%d\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].scopeLevel, symbolTable[i].value);
             else if (symbolTable[i].type == TYPE_ENUM)
-                printf("%s\t\t%s\t\t _ \tenum\t\t%d\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].scopeLevel);
+                printf("%s\t\t%s\t\t  _  \t\t%d\t\tenum\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].scopeLevel);
         }
     }
     printf("\n");
