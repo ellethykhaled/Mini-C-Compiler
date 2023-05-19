@@ -1,8 +1,14 @@
 
-fun int f1(int x) {
+fun string f1(int x) {
 
-    return x;
+    string s = "ok";
+
+    return s;
 }
+
+string s1 = "khaled";
+
+string s2 = s1;
 
 int x = 8;
 
@@ -10,5 +16,5 @@ call:f1(x);
 
 int k;
 
-int y;
+string y;
 y = call:f1(x);

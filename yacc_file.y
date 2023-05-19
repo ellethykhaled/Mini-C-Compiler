@@ -125,13 +125,18 @@ function_call :
             if (symbolTable[symbolIndex].type == TYPE_VOID)
                 $$ = GLOBAL_VOID;
             else {
-                printf("Here %s\n", symbolTable[symbolIndex].name);
-                if (symbolTable[symbolIndex].isCertain)
+                if (symbolTable[symbolIndex].isCertain) {
+                    if (symbolTable[symbolIndex].type == TYPE_STRING) {
+                        globalString = strdup(symbolTable[symbolIndex].stringValue);
+                        printf("Global String: %s\n", globalString);
+                        $$ = GLOBAL_STRING;
+                    }
                     // Return the symbol index
-                    $$ = symbolIndex;
+                    else
+                        $$ = symbolIndex;
+                }
                 else
                     $$ = GLOBAL_UNCERTAIN;
-                printf("Here error 1, %d\n", symbolTable[symbolIndex].isCertain);
             }
         }
 
@@ -178,7 +183,7 @@ function_definition :
                 yyerror("Symbol undeclared");
             else if (returnResult == ERROR_UNINITIALIZED)
                 yyerror("Symbol uninitialized");
-            
+
             int assignmentStatus = defineNonVoidFunction(functionIndex, returnResult);
             if (assignmentStatus == ERROR_TYPE_MISMATCH)
                 yyerror("Type mismatch");

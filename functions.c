@@ -190,6 +190,11 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
     // In case of value string, case it in case of string
     else if (valueType == TYPE_STRING) {
         if (symbolTable[symbolIndex].type == TYPE_STRING) {
+
+            // A function has a special condition here
+            if (symbolTable[symbolIndex].isFunction)
+                symbolTable[symbolIndex].stringValue = strdup(globalString);
+            else
             symbolTable[symbolIndex].stringValue = strdup((char*) value);
             // Mark the symbol as being initialized
             symbolTable[symbolIndex].isInitialized = true;
@@ -341,7 +346,7 @@ int defineNonVoidFunction(int functionIndex, int returnIndex) {
     int assignmentStatus;
     if (returnIndex == GLOBAL_STRING)
         // Try to assign the global string
-        assignmentStatus = assignValue(functionIndex, (void*)&globalString, TYPE_STRING);
+        assignmentStatus = assignValue(functionIndex, globalString, TYPE_STRING);
     else if (returnIndex == GLOBAL_NUMBER)
         // Try to assign the global number
         assignmentStatus = assignValue(functionIndex, (void*)&globalNumber, TYPE_FLOAT);
