@@ -61,11 +61,6 @@ namespace Complier
             // wait for the process to finish and then read the output files
             // if symtbl.log or quad.log doesnt exist wait for 1 more second
 
-            //to be deleted
-            TextWriter txt2 = new StreamWriter(@"..\\..\\..\\..\\error.txt");
-            txt2.Write("");
-            txt2.Close();
-
             while (!File.Exists(quadPath) || !File.Exists(symtblPath) || !File.Exists(errorPath))
             {
                 System.Threading.Thread.Sleep(100);
@@ -74,7 +69,7 @@ namespace Complier
 
             richTextBox2.Text = File.ReadAllText(quadPath);
             richTextBox3.Text = File.ReadAllText(symtblPath);
-            
+
             errorText = File.ReadAllText(errorPath);
 
             // change text in input code box to red if there is an error
