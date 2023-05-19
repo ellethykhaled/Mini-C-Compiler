@@ -3,7 +3,7 @@
     #include <stdio.h>
     #include <stdlib.h>
     #include <string.h>
-    #include "y.tab.h"
+    #include "yacc_file.tab.h"
     #include <stdbool.h>
 
     void extern yyerror(const char*);
