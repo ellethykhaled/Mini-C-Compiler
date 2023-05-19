@@ -404,7 +404,6 @@ void addArgumentParameter(int symbolIndex) {
 }
 
 void ifStatementLogic(int conditionResult) {
-    printf("Here if Logic %s\n", symbolTable[conditionResult].name);
     if (conditionResult == GLOBAL_STRING)
         yyerror("Type mismatch\n");
     if (conditionResult == GLOBAL_UNCERTAIN)  {

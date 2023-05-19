@@ -365,12 +365,10 @@ line_or_null :
 
 if_stmt :
         IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES program CLOSING_BRACES else_stmt {
-            printf("Here %d\n", $3);
             ifStatementLogic($3);
             printSymbolTable();
         }
         | IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES CLOSING_BRACES else_stmt {
-            printf("Here %d\n", $3);
             ifStatementLogic($3);
             printSymbolTable();
         }
