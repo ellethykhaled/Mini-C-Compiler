@@ -1,19 +1,14 @@
-fun int f1(float y) {
-    int x = 5;
 
-    return y;
+fun int f1(int x) {
+
+    return x;
 }
+
+int x = 8;
+
+call:f1(x);
+
+int k;
+
 int y;
-bool b = 5;
-
-string s = "ok";
-
-if (b) then {
-    bool y;
-
-    b = 10;
-}
-
-int s2;
-
-int x = b;
+y = call:f1(x);

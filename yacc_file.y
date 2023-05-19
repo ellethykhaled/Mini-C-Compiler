@@ -122,8 +122,17 @@ function_call :
             globalParametersCount = 0;
             globalParameters = NULL;
 
-            // Return the symbol index
-            $$ = symbolIndex;
+            if (symbolTable[symbolIndex].type == TYPE_VOID)
+                $$ = GLOBAL_VOID;
+            else {
+                printf("Here %s\n", symbolTable[symbolIndex].name);
+                if (symbolTable[symbolIndex].isCertain)
+                    // Return the symbol index
+                    $$ = symbolIndex;
+                else
+                    $$ = GLOBAL_UNCERTAIN;
+                printf("Here error 1, %d\n", symbolTable[symbolIndex].isCertain);
+            }
         }
 
 function_arguments :
@@ -173,6 +182,8 @@ function_definition :
             int assignmentStatus = defineNonVoidFunction(functionIndex, returnResult);
             if (assignmentStatus == ERROR_TYPE_MISMATCH)
                 yyerror("Type mismatch");
+            
+            setFunctionParameters(functionIndex);
         }
         | FUNCTION variable_or_function_declaration OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES RETURN return_value TERMINATOR CLOSING_BRACES {
             int functionIndex = $2;
@@ -188,6 +199,8 @@ function_definition :
             int assignmentStatus = defineNonVoidFunction(functionIndex, returnResult);
             if (assignmentStatus == ERROR_TYPE_MISMATCH)
                 yyerror("Type mismatch");
+            
+            setFunctionParameters(functionIndex);
         }
         | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES program RETURN VOID_TYPE TERMINATOR CLOSING_BRACES {
             // Get the symbol index from the symbol name
@@ -200,6 +213,8 @@ function_definition :
             
             symbolTable[resultIndex].isFunction = true;
             
+            setFunctionParameters(resultIndex);
+
             $$ = GLOBAL_VOID;
         }
         | FUNCTION VOID_TYPE IDENTIFIER OPENING_BRACKET function_parameters CLOSING_BRACKET OPENING_BRACES RETURN VOID_TYPE TERMINATOR CLOSING_BRACES {
@@ -212,6 +227,8 @@ function_definition :
                 yyerror("Symbol already declared\n");
             
             symbolTable[resultIndex].isFunction = true;
+
+            setFunctionParameters(resultIndex);
 
             $$ = GLOBAL_VOID;
         }
@@ -344,7 +361,6 @@ line_or_null :
 if_stmt :
         IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES program CLOSING_BRACES else_stmt {
             int lineResult = $3;
-            printf("Here %d\n", lineResult);
             if (lineResult == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
             if (lineResult == GLOBAL_UNCERTAIN)  {
@@ -455,7 +471,10 @@ variable_assignment :
                 yyerror("Undeclared Symbol\n");
 
             int assignmentStatus;
-            if ($3 == GLOBAL_STRING)
+            // In case the function is of type void
+            if ($3 == GLOBAL_VOID)
+                yyerror("Function of type void\n");
+            else if ($3 == GLOBAL_STRING)
                 assignmentStatus = assignValue(symbolIndex, globalString, TYPE_STRING);
             else
                 assignmentStatus = assignValue(symbolIndex, (void*)&$3, TYPE_FLOAT);
@@ -475,7 +494,10 @@ variable_assignment :
             int symbolIndex = $1;
 
             int assignmentStatus;
-            if ($3 == GLOBAL_STRING)
+            // In case the function is of type void
+            if ($3 == GLOBAL_VOID)
+                yyerror("Function of type void\n");
+            else if ($3 == GLOBAL_STRING)
                 assignmentStatus = assignValue(symbolIndex, globalString, TYPE_STRING);
             else
                 assignmentStatus = assignValue(symbolIndex, (void*)&$3, TYPE_FLOAT);
@@ -539,8 +561,14 @@ maths_expr : maths_expr M_OP_PLUS maths_expr %prec M_OP_PLUS {
             else if ($1 == GLOBAL_STRING){
                 $$ = GLOBAL_STRING;
             }
+            else if ($1 == GLOBAL_VOID){
+                $$ = GLOBAL_VOID;
+            }
             else if ($1 == GLOBAL_NUMBER){
                 $$ = globalNumber;
+            }
+            else if ($1 == GLOBAL_UNCERTAIN){
+                $$ = GLOBAL_UNCERTAIN;
             }
             else {
                 int symbolIndex = (int) $1;
@@ -609,13 +637,21 @@ number :
 
 logical_expression :
         logical_expression L_OP_AND logical_expression2 {
-            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+            // In case the function is of type void
+            if ($1 == GLOBAL_VOID || $3 == GLOBAL_VOID)
+                yyerror("Function of type void\n");
+            // Indicate uncertainty if exists
+            else if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
                 $$ = GLOBAL_UNCERTAIN;
             else
                 $$ = $1 && $3;
         }
         | logical_expression L_OP_OR logical_expression2 {
-            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+            // In case the function is of type void
+            if ($1 == GLOBAL_VOID || $3 == GLOBAL_VOID)
+                yyerror("Function of type void\n");
+            // Indicate uncertainty if exists
+            else if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
                 $$ = GLOBAL_UNCERTAIN;
             else
                 $$ = $1 || $3;
@@ -627,14 +663,21 @@ logical_expression :
 
 logical_expression2 :
         L_OP_NOT logical_expression2 {
-            if ($2 == GLOBAL_UNCERTAIN)
+            // In case the function is of type void
+            if ($2 == GLOBAL_VOID)
+                yyerror("Function of type void\n");
+            // Indicate uncertainty if exists
+            else if ($2 == GLOBAL_UNCERTAIN)
                 $$ = GLOBAL_UNCERTAIN;
             else
                 $$ = !$2;
         }
         | L_OP_NOT return_value {
+            // In case the function is of type void
+            if ($2 == GLOBAL_VOID)
+                yyerror("Function of type void\n");
             // Indicate uncertainty if exists
-            if ($2 == GLOBAL_UNCERTAIN)
+            else if ($2 == GLOBAL_UNCERTAIN)
                 $$ = GLOBAL_UNCERTAIN;
             else {
                 // Parse the value in case of not being a string
@@ -657,8 +700,11 @@ logical_expression2 :
             }
         }
         | L_OP_EXACT return_value {
+            // In case the function is of type void
+            if ($2 == GLOBAL_VOID)
+                yyerror("Function of type void\n");
             // Indicate uncertainty if exists
-            if ($2 == GLOBAL_UNCERTAIN)
+            else if ($2 == GLOBAL_UNCERTAIN)
                 $$ = GLOBAL_UNCERTAIN;
             else {
                 // Parse the value in case of not being a string
@@ -698,8 +744,11 @@ comparison_expression :
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
 
+            // In case the function is of type void
+            else if ($1 == GLOBAL_VOID || $3 == GLOBAL_VOID)
+                yyerror("Function of type void\n");
             // Indicate uncertainty if exists
-            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+            else if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
                 $$ = GLOBAL_UNCERTAIN;
             else {
                 // Send the two incoming values for parsing and the comparator
@@ -716,8 +765,11 @@ comparison_expression :
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
 
+            // In case the function is of type void
+            else if ($1 == GLOBAL_VOID || $3 == GLOBAL_VOID)
+                yyerror("Function of type void\n");
             // Indicate uncertainty if exists
-            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+            else if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
                 $$ = GLOBAL_UNCERTAIN;
             else {
                 // Send the two incoming values for parsing and the comparator
@@ -734,8 +786,11 @@ comparison_expression :
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
 
+            // In case the function is of type void
+            else if ($1 == GLOBAL_VOID || $3 == GLOBAL_VOID)
+                yyerror("Function of type void\n");
             // Indicate uncertainty if exists
-            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+            else if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
                 $$ = GLOBAL_UNCERTAIN;
             else {
                 // Send the two incoming values for parsing and the comparator
@@ -752,8 +807,11 @@ comparison_expression :
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
             
+            // In case the function is of type void
+            else if ($1 == GLOBAL_VOID || $3 == GLOBAL_VOID)
+                yyerror("Function of type void\n");
             // Indicate uncertainty if exists
-            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+            else if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
                 $$ = GLOBAL_UNCERTAIN;
             else {
                 // Send the two incoming values for parsing and the comparator
@@ -770,8 +828,11 @@ comparison_expression :
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
 
+            // In case the function is of type void
+            else if ($1 == GLOBAL_VOID || $3 == GLOBAL_VOID)
+                yyerror("Function of type void\n");
             // Indicate uncertainty if exists
-            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+            else if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
                 $$ = GLOBAL_UNCERTAIN;
             else {
                 // Send the two incoming values for parsing and the comparator
@@ -788,8 +849,11 @@ comparison_expression :
             if ($1 == GLOBAL_STRING || $3 == GLOBAL_STRING)
                 yyerror("Type mismatch\n");
 
+            // In case the function is of type void
+            else if ($1 == GLOBAL_VOID || $3 == GLOBAL_VOID)
+                yyerror("Function of type void\n");
             // Indicate uncertainty if exists
-            if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
+            else if ($1 == GLOBAL_UNCERTAIN || $3 == GLOBAL_UNCERTAIN)
                 $$ = GLOBAL_UNCERTAIN;
             else {
                 // Send the two incoming values for parsing and the comparator

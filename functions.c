@@ -355,16 +355,22 @@ int defineNonVoidFunction(int functionIndex, int returnIndex) {
         else if (symbolTable[returnIndex].type == TYPE_STRING)
             // Try to assign the string from incoming from the identifier
             assignmentStatus = assignValue(functionIndex, (void*)&symbolTable[returnIndex].stringValue, TYPE_STRING);
+        
+        symbolTable[functionIndex].isCertain = symbolTable[returnIndex].isCertain;
     }
 
+
+    return assignmentStatus;
+}
+
+void setFunctionParameters(int functionIndex) {
+    // Set the parameters of function
     if (globalParametersCount > 0) {
         symbolTable[functionIndex].parameters = globalParameters;
         symbolTable[functionIndex].parametersCount = globalParametersCount;
     }
     globalParametersCount = 0;
     globalParameters = NULL;
-
-    return assignmentStatus;
 }
 
 void addArgumentParameter(int symbolIndex) {
@@ -435,6 +441,6 @@ void printSymbolTable() {
 }
 
 void destroySymbolTable() {
-    for (int i = 0; i < symbolCount; i++)
+    for (int i = 0; i < MAX_SYMBOL_NUMBER; i++)
         free(symbolTable[i].parameters);
 }
