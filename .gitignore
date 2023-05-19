@@ -179,3 +179,4 @@ Debug/
 *.tlog/*
 *.vcxproj.*
 *.vcproj.*
+*.vsidx
