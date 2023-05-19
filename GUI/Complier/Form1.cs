@@ -30,14 +30,18 @@ namespace Complier
             richTextBox2.Clear();
             richTextBox3.Clear();
             // change text in input code box to black
+            string directoryPath = @"D:\Uni\Spring23\Compilers\Project\Compilers-Project\";
+            string quadPath = Path.Combine(directoryPath, "quad.log");
+            string symtblPath = Path.Combine(directoryPath, "symtbl.log");
+            string errorPath = Path.Combine(directoryPath, "error.txt");
 
-            if (File.Exists(@"D:\\Uni\\Spring23\\Compilers\\Project\\Compilers-Project\\quad.log"))
+            if (File.Exists(quadPath))
             {
-                File.Delete(@"D:\\Uni\\Spring23\\Compilers\\Project\\Compilers-Project\\quad.log");
+                File.Delete(quadPath);
             }
-            if (File.Exists(@"D:\\Uni\\Spring23\\Compilers\\Project\\Compilers-Project\\symtbl.log"))
+            if (File.Exists(symtblPath))
             {
-                File.Delete(@"D:\\Uni\\Spring23\\Compilers\\Project\\Compilers-Project\\symtbl.log");
+                File.Delete(symtblPath);
             }
 
 
@@ -52,15 +56,15 @@ namespace Complier
             System.Diagnostics.Process.Start("cmd.exe", "/C D: & cd D:\\Uni\\Spring23\\Compilers\\Project\\Compilers-Project & run.bat");
             // wait for the process to finish and then read the output files
             // if symtbl.log or quad.log doesnt exist wait for 1 more second
-            while (!File.Exists(@"D:\\Uni\\Spring23\\Compilers\\Project\\Compilers-Project\\quad.log") || !File.Exists(@"D:\\Uni\\Spring23\\Compilers\\Project\\Compilers-Project\\symtbl.log"))
+            while (!File.Exists(quadPath) || !File.Exists(symtblPath))
             {
                 System.Threading.Thread.Sleep(100);
             }
 
 
-            richTextBox2.Text = File.ReadAllText(@"D:\\Uni\\Spring23\\Compilers\\Project\\Compilers-Project\\quad.log");
-            richTextBox3.Text = File.ReadAllText(@"D:\\Uni\\Spring23\\Compilers\\Project\\Compilers-Project\\symtbl.log");
-            errorText = File.ReadAllText(@"D:\\Uni\\Spring23\\Compilers\\Project\\Compilers-Project\\error.txt");
+            richTextBox2.Text = File.ReadAllText(quadPath);
+            richTextBox3.Text = File.ReadAllText(symtblPath);
+            errorText = File.ReadAllText(errorPath);
 
             // change text in input code box to red if there is an error
             if (errorText != "")
