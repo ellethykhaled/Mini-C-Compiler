@@ -1,23 +1,15 @@
 int i = 5;
-string s = "k";
-float f = 5;
+string k = "2";
 
 fun int f1(int y, string z) {
     int x = 5;
+
+    x = y;
 
     string s = "string";
     
     return x;
 }
-
-fun int f2(int y) {    
-    return 5;
-}
-
-fun int f3() {    
-    return 5;
-}
-
-int t = call:f1(i, s);
+int t = call:f1(i, k);
 
 int x;

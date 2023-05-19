@@ -45,6 +45,12 @@ int declareNewSymbol(char* id, char* type) {
     symbolTable[symbolCount].type = type;
     symbolTable[symbolCount].scopeLevel = scopeLevel;
 
+    // Important for function parameters
+    if (globalInitializer) {
+        symbolTable[symbolCount].isCertain = false;
+        symbolTable[symbolCount].isInitialized = true;
+    }
+
     return symbolCount++;
 }
 
@@ -64,6 +70,9 @@ int assignValue(int symbolIndex, void* value, char* valueType) {
     if (symbolTable[symbolIndex].isConstant == true && symbolTable[symbolIndex].isInitialized == true) {
         return ERROR_CONSTANT_REASSIGNMENT;
     }
+
+    // Set the flag for marking the variable as having an untraceable value (out of compilers scope)
+    symbolTable[symbolIndex].isCertain = symbolTable[symbolIndex].scopeLevel == scopeLevel;
     
     // In case of value float, case it in case of number 
     if (valueType == TYPE_FLOAT) {

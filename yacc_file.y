@@ -79,7 +79,7 @@ program :
 
 sub_program : 
         single_line TERMINATOR {
-            // printSymbolTable();
+            printSymbolTable();
         }
         | if_stmt
         | for_loop
@@ -138,7 +138,7 @@ function_arguments :
                 yyerror("Undeclared symbol\n");
             }
             if (returnResult == ERROR_UNINITIALIZED) {
-                yyerror("Undeclared symbol\n");
+                yyerror("Uninitizialized symbol\n");
             }
 
             addArgumentParameter(returnResult);
@@ -152,7 +152,7 @@ function_arguments2 :
                 yyerror("Undeclared symbol\n");
             }
             if (returnResult == ERROR_UNINITIALIZED) {
-                yyerror("Undeclared symbol\n");
+                yyerror("Uninitizialized symbol\n");
             }
 
             addArgumentParameter(returnResult);

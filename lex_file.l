@@ -11,6 +11,7 @@
     int extern deleteLatestScope();
     void extern destroySymbolTable();
     int extern lineNumber, scopeLevel;
+    bool extern globalInitializer;
 %}
 
 
@@ -41,7 +42,7 @@
 [Ee]num|ENUM                        return ENUM;
 [,]                                 return COMMA;
 
-[Ff]un(c(tion)?)?|FUN(C(TION)?)?    return FUNCTION;
+[Ff]un(c(tion)?)?|FUN(C(TION)?)?    globalInitializer = true; return FUNCTION;
 ([Cc]all|CALL):                     return CALL;
 ([Rr]et(urn)?|RET(URN)?)            return RETURN;
 [Vv]oid|VOID                        return VOID_TYPE;
@@ -69,7 +70,7 @@
 [;]                                 return TERMINATOR;
 
 \(                                  scopeLevel++; return OPENING_BRACKET;
-\)                                  scopeLevel--; return CLOSING_BRACKET;
+\)                                  globalInitializer = false; scopeLevel--; return CLOSING_BRACKET;
 
 \{                                  scopeLevel++; return OPENING_BRACES;
 \{\*                                scopeLevel++; return OPENING_BLOCK_BRACES;
@@ -91,7 +92,7 @@ int yywrap(void) {
     return 1;
 }
 
-// TODO: Needs reimplementation Reimplement
+// TODO: Needs reimplementation
 void yyerror(const char *str)
 {
     fprintf(stderr, "%s\nLine: %d\n", str, lineNumber);

@@ -49,6 +49,8 @@ char * globalString;
 int globalParametersCount = 0;
 int* globalParameters = NULL;
 
+bool globalInitializer = false;
+
 struct symbolItem {
     char* type;
 
