@@ -97,7 +97,17 @@ namespace Complier
                         // create a dictionary to store the line number and the error message
                         // this will be used to show the error message when mouse is hovered over the line
 
-                        errorlines.Add(Int32.Parse(lineSplit2[0]), lineSplit[1]);
+                        // if the line number already exists in the dictionary then we will append the error message to the existing error message
+                        if (errorlines.ContainsKey(Int32.Parse(lineSplit2[0])))
+                        {
+                            errorlines[Int32.Parse(lineSplit2[0])] += "\n" + lineSplit[1];
+                        }
+                        else
+                        {
+                            errorlines.Add(Int32.Parse(lineSplit2[0]), lineSplit[1]);
+                        }
+
+
 
                         int lineNumber = Int32.Parse(lineSplit2[0]);
                         richTextBox1.Select(richTextBox1.GetFirstCharIndexFromLine(lineNumber - 1), richTextBox1.Lines[lineNumber - 1].Length);
@@ -145,7 +155,7 @@ namespace Complier
             }
             else if (c == Color.Orange)
             {
-                
+
                 // get the error message from the dictionary
                 string errorMessage = errorlines[line + 1];
 
