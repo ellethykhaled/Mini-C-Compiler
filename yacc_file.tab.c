@@ -754,12 +754,12 @@ static const yytype_int16 yyrline[] =
       88,    89,    90,    91,    92,    93,    96,    97,   100,   146,
      150,   163,   164,   178,   195,   212,   227,   244,   248,   261,
      262,   276,   306,   306,   319,   330,   340,   351,   362,   373,
-     386,   387,   390,   394,   398,   402,   408,   409,   411,   412,
-     415,   417,   420,   421,   424,   427,   431,   432,   434,   438,
-     452,   464,   476,   488,   502,   533,   564,   577,   582,   599,
-     617,   635,   653,   658,   664,   703,   708,   724,   730,   743,
-     749,   752,   757,   779,   801,   807,   823,   850,   889,   897,
-     905,   908,   913,   949,   985,  1021,  1057,  1093
+     386,   387,   390,   394,   398,   402,   408,   411,   415,   418,
+     423,   426,   430,   431,   434,   437,   441,   442,   444,   448,
+     462,   474,   486,   498,   512,   543,   574,   587,   592,   609,
+     627,   645,   663,   668,   674,   713,   718,   734,   740,   753,
+     759,   762,   767,   789,   811,   817,   833,   860,   899,   907,
+     915,   918,   923,   959,   995,  1031,  1067,  1103
 };
 #endif
 
@@ -2143,52 +2143,86 @@ yyreduce:
 #line 2144 "y.tab.c"
     break;
 
-  case 50: /* for_loop: FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES  */
-#line 415 "yacc_file.y"
-                                                                                                                                               {
+  case 46: /* while_loop: WHILE OPENING_BRACKET single_line CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES  */
+#line 408 "yacc_file.y"
+                                                                                                {
+            addLoopJump();
         }
-#line 2151 "y.tab.c"
+#line 2152 "y.tab.c"
+    break;
+
+  case 47: /* while_loop: WHILE OPENING_BRACKET single_line CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES  */
+#line 411 "yacc_file.y"
+                                                                                          {
+            addLoopJump();
+        }
+#line 2160 "y.tab.c"
+    break;
+
+  case 48: /* do_while: REPEAT OPENING_BRACES program CLOSING_BRACES WHILE single_line  */
+#line 415 "yacc_file.y"
+                                                                       {
+            addLoopJump();
+        }
+#line 2168 "y.tab.c"
+    break;
+
+  case 49: /* do_while: REPEAT OPENING_BRACES CLOSING_BRACES WHILE single_line  */
+#line 418 "yacc_file.y"
+                                                                 {
+            addLoopJump();
+        }
+#line 2176 "y.tab.c"
+    break;
+
+  case 50: /* for_loop: FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES  */
+#line 423 "yacc_file.y"
+                                                                                                                                               {
+            addLoopJump();
+        }
+#line 2184 "y.tab.c"
     break;
 
   case 51: /* for_loop: FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES  */
-#line 417 "yacc_file.y"
+#line 426 "yacc_file.y"
                                                                                                                                          {
+            addLoopJump();
         }
-#line 2158 "y.tab.c"
+#line 2192 "y.tab.c"
     break;
 
   case 54: /* if_stmt: IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES program CLOSING_BRACES else_stmt  */
-#line 424 "yacc_file.y"
+#line 434 "yacc_file.y"
                                                                                                             {
             ifStatementLogic((yyvsp[-8].iValue), (yyvsp[-6].iValue));
         }
-#line 2166 "y.tab.c"
+#line 2200 "y.tab.c"
     break;
 
   case 55: /* if_stmt: IF OPENING_BRACKET single_line CLOSING_BRACKET THEN OPENING_BRACES CLOSING_BRACES else_stmt  */
-#line 427 "yacc_file.y"
+#line 437 "yacc_file.y"
                                                                                                       {
             ifStatementLogic((yyvsp[-7].iValue), (yyvsp[-5].iValue));
         }
-#line 2174 "y.tab.c"
+#line 2208 "y.tab.c"
     break;
 
   case 57: /* else_stmt: ELSE OPENING_BRACES program CLOSING_BRACES else_stmt  */
-#line 432 "yacc_file.y"
+#line 442 "yacc_file.y"
                                                                {
         }
-#line 2181 "y.tab.c"
+#line 2215 "y.tab.c"
     break;
 
   case 58: /* else_stmt: ELSE OPENING_BRACES CLOSING_BRACES else_stmt  */
-#line 434 "yacc_file.y"
+#line 444 "yacc_file.y"
                                                        {
         }
-#line 2188 "y.tab.c"
+#line 2222 "y.tab.c"
     break;
 
   case 59: /* constant_variable_declaration: CONSTANT variable_assignment  */
-#line 438 "yacc_file.y"
+#line 448 "yacc_file.y"
                                      {
             // Using this grammar rule, a non-constant variable can be set as a constant after declaration
             // i.e.:
@@ -2201,11 +2235,11 @@ yyreduce:
 
             (yyval.iValue) = symbolIndex;
         }
-#line 2205 "y.tab.c"
+#line 2239 "y.tab.c"
     break;
 
   case 60: /* variable_or_function_declaration: INT_TYPE IDENTIFIER  */
-#line 452 "yacc_file.y"
+#line 462 "yacc_file.y"
                             {
             // Get the symbol index from the symbol name
             char * symbolName = (yyvsp[0].sName);
@@ -2218,11 +2252,11 @@ yyreduce:
             // Return the symbol index
             (yyval.sIndex) = result;
         }
-#line 2222 "y.tab.c"
+#line 2256 "y.tab.c"
     break;
 
   case 61: /* variable_or_function_declaration: FLOAT_TYPE IDENTIFIER  */
-#line 464 "yacc_file.y"
+#line 474 "yacc_file.y"
                                 {
             // Get the symbol index from the symbol name
             char * symbolName = (yyvsp[0].sName);
@@ -2235,11 +2269,11 @@ yyreduce:
             // Return the symbol index
             (yyval.sIndex) = result;
         }
-#line 2239 "y.tab.c"
+#line 2273 "y.tab.c"
     break;
 
   case 62: /* variable_or_function_declaration: STRING_TYPE IDENTIFIER  */
-#line 476 "yacc_file.y"
+#line 486 "yacc_file.y"
                                  {
             // Get the symbol index from the symbol name
             char * symbolName = (yyvsp[0].sName);
@@ -2252,11 +2286,11 @@ yyreduce:
             // Return the symbol index
             (yyval.sIndex) = result;
         }
-#line 2256 "y.tab.c"
+#line 2290 "y.tab.c"
     break;
 
   case 63: /* variable_or_function_declaration: BOOLEAN_TYPE IDENTIFIER  */
-#line 488 "yacc_file.y"
+#line 498 "yacc_file.y"
                                   {
             // Get the symbol index from the symbol name
             char * symbolName = (yyvsp[0].sName);
@@ -2269,11 +2303,11 @@ yyreduce:
             // Return the symbol index
             (yyval.sIndex) = result;
         }
-#line 2273 "y.tab.c"
+#line 2307 "y.tab.c"
     break;
 
   case 64: /* variable_assignment: IDENTIFIER OP_ASSIGN expr  */
-#line 502 "yacc_file.y"
+#line 512 "yacc_file.y"
                                   {
             int symbolIndex = getSymbolIndex((yyvsp[-2].sName));
             if (symbolIndex == -1)
@@ -2305,11 +2339,11 @@ yyreduce:
             addQuadruple(STR, symbolTable[symbolIndex].name, tempBuffer, "");
             resetRegisters();
         }
-#line 2309 "y.tab.c"
+#line 2343 "y.tab.c"
     break;
 
   case 65: /* variable_assignment: variable_or_function_declaration OP_ASSIGN expr  */
-#line 533 "yacc_file.y"
+#line 543 "yacc_file.y"
                                                           {
             // Declare and assign a variable
             int symbolIndex = (yyvsp[-2].sIndex);
@@ -2339,11 +2373,11 @@ yyreduce:
             addQuadruple(STR, symbolTable[symbolIndex].name, tempBuffer, "");
             resetRegisters();
         }
-#line 2343 "y.tab.c"
+#line 2377 "y.tab.c"
     break;
 
   case 66: /* expr: maths_expr  */
-#line 564 "yacc_file.y"
+#line 574 "yacc_file.y"
                    {
             // Return the symbol index or global reference (string or number)
             if ((yyvsp[0].fValue) == GLOBAL_STRING)
@@ -2357,20 +2391,20 @@ yyreduce:
             else
                 (yyval.fValue) = (yyvsp[0].fValue);
         }
-#line 2361 "y.tab.c"
+#line 2395 "y.tab.c"
     break;
 
   case 67: /* expr: logical_expression  */
-#line 577 "yacc_file.y"
+#line 587 "yacc_file.y"
                              {
             // Return the symbol index or global reference (string or number)
             (yyval.fValue) = (yyvsp[0].fValue);
         }
-#line 2370 "y.tab.c"
+#line 2404 "y.tab.c"
     break;
 
   case 68: /* maths_expr: maths_expr M_OP_PLUS maths_expr  */
-#line 582 "yacc_file.y"
+#line 592 "yacc_file.y"
                                                              {
             if ((yyvsp[-2].fValue) == GLOBAL_STRING || (yyvsp[0].fValue) == GLOBAL_STRING)
                 handleError(ERROR_TYPE_MISMATCH, -1, "");
@@ -2388,11 +2422,11 @@ yyreduce:
 
             addQuadruple(ADD, tempBuffer1, tempBuffer2, tempBuffer3);
         }
-#line 2392 "y.tab.c"
+#line 2426 "y.tab.c"
     break;
 
   case 69: /* maths_expr: maths_expr M_OP_MINUS maths_expr  */
-#line 599 "yacc_file.y"
+#line 609 "yacc_file.y"
                                                             {
             if ((yyvsp[-2].fValue) == GLOBAL_STRING || (yyvsp[0].fValue) == GLOBAL_STRING)
                 handleError(ERROR_TYPE_MISMATCH, -1, "");
@@ -2411,11 +2445,11 @@ yyreduce:
             addQuadruple(SUB, tempBuffer1, tempBuffer2, tempBuffer3);
             instructionsConsidered++;
         }
-#line 2415 "y.tab.c"
+#line 2449 "y.tab.c"
     break;
 
   case 70: /* maths_expr: maths_expr M_OP_MULT maths_expr  */
-#line 617 "yacc_file.y"
+#line 627 "yacc_file.y"
                                                           {
             if ((yyvsp[-2].fValue) == GLOBAL_STRING || (yyvsp[0].fValue) == GLOBAL_STRING)
                 handleError(ERROR_TYPE_MISMATCH, -1, "");
@@ -2434,11 +2468,11 @@ yyreduce:
             addQuadruple(MUL, tempBuffer1, tempBuffer2, tempBuffer3);
             instructionsConsidered++;
         }
-#line 2438 "y.tab.c"
+#line 2472 "y.tab.c"
     break;
 
   case 71: /* maths_expr: maths_expr M_OP_DIV maths_expr  */
-#line 635 "yacc_file.y"
+#line 645 "yacc_file.y"
                                                         {
             if ((yyvsp[-2].fValue) == GLOBAL_STRING || (yyvsp[0].fValue) == GLOBAL_STRING)
                 handleError(ERROR_TYPE_MISMATCH, -1, "");
@@ -2457,32 +2491,32 @@ yyreduce:
             addQuadruple(DIV, tempBuffer1, tempBuffer2, tempBuffer3);
             instructionsConsidered++;
         }
-#line 2461 "y.tab.c"
+#line 2495 "y.tab.c"
     break;
 
   case 72: /* maths_expr: maths_expr M_OP_MOD maths_expr  */
-#line 653 "yacc_file.y"
+#line 663 "yacc_file.y"
                                                         {
             if ((yyvsp[-2].fValue) == GLOBAL_STRING || (yyvsp[0].fValue) == GLOBAL_STRING)
                 handleError(ERROR_TYPE_MISMATCH, -1, "");
             (yyval.fValue) = (int) (yyvsp[-2].fValue) % (int) (yyvsp[0].fValue);
         }
-#line 2471 "y.tab.c"
+#line 2505 "y.tab.c"
     break;
 
   case 73: /* maths_expr: maths_expr M_OP_POWER maths_expr  */
-#line 658 "yacc_file.y"
+#line 668 "yacc_file.y"
                                                             {
             int answer = 1;
             for (int i = 0; i < (yyvsp[0].fValue); i++)
                 answer *= (yyvsp[-2].fValue);
             (yyval.fValue) = answer;
         }
-#line 2482 "y.tab.c"
+#line 2516 "y.tab.c"
     break;
 
   case 74: /* maths_expr: return_value  */
-#line 664 "yacc_file.y"
+#line 674 "yacc_file.y"
                        {
             if ((yyvsp[0].fValue) == ERROR_UNDECLARED)
                 handleError(ERROR_UNDECLARED, -1, "");
@@ -2522,19 +2556,19 @@ yyreduce:
                     (yyval.fValue) = symbolTable[symbolIndex].fValue;
             }
         }
-#line 2526 "y.tab.c"
+#line 2560 "y.tab.c"
     break;
 
   case 75: /* maths_expr: OPENING_BRACKET maths_expr CLOSING_BRACKET  */
-#line 703 "yacc_file.y"
+#line 713 "yacc_file.y"
                                                      {
             (yyval.fValue) = (yyvsp[-1].fValue);
         }
-#line 2534 "y.tab.c"
+#line 2568 "y.tab.c"
     break;
 
   case 76: /* return_value: IDENTIFIER  */
-#line 708 "yacc_file.y"
+#line 718 "yacc_file.y"
                    {
             int symbolIndex = getSymbolIndex((yyvsp[0].sName));
             // In case of undeclared symbol
@@ -2551,22 +2585,22 @@ yyreduce:
                 (yyval.fValue) = symbolIndex;
             }
         }
-#line 2555 "y.tab.c"
+#line 2589 "y.tab.c"
     break;
 
   case 77: /* return_value: STRING  */
-#line 724 "yacc_file.y"
+#line 734 "yacc_file.y"
                  {
             // Return the global string indicator
             globalString = strdup((yyvsp[0].cValue));
             globalCertainString = true;
             (yyval.fValue) = GLOBAL_STRING;
         }
-#line 2566 "y.tab.c"
+#line 2600 "y.tab.c"
     break;
 
   case 78: /* return_value: number  */
-#line 730 "yacc_file.y"
+#line 740 "yacc_file.y"
                  {
             // Return the global number indicator
             globalNumber = (yyvsp[0].fValue);
@@ -2580,36 +2614,36 @@ yyreduce:
             sprintf(tempBuffer2, "%.2f", globalNumber);
             addQuadruple(MOV, tempBuffer, tempBuffer2, "");
         }
-#line 2584 "y.tab.c"
+#line 2618 "y.tab.c"
     break;
 
   case 79: /* return_value: function_call  */
-#line 743 "yacc_file.y"
+#line 753 "yacc_file.y"
                         {
             // Return the symbol index for the function
             (yyval.fValue) = (yyvsp[0].iValue);
         }
-#line 2593 "y.tab.c"
+#line 2627 "y.tab.c"
     break;
 
   case 80: /* number: INTEGER_NUMBER  */
-#line 749 "yacc_file.y"
+#line 759 "yacc_file.y"
                        {
             (yyval.fValue) = (int) (yyvsp[0].iValue);
         }
-#line 2601 "y.tab.c"
+#line 2635 "y.tab.c"
     break;
 
   case 81: /* number: FLOAT_NUMBER  */
-#line 752 "yacc_file.y"
+#line 762 "yacc_file.y"
                        {
             (yyval.fValue) = (yyvsp[0].fValue);
         }
-#line 2609 "y.tab.c"
+#line 2643 "y.tab.c"
     break;
 
   case 82: /* logical_expression: logical_expression L_OP_AND logical_expression2  */
-#line 757 "yacc_file.y"
+#line 767 "yacc_file.y"
                                                         {
             // In case the function is of type void
             if ((yyvsp[-2].fValue) == GLOBAL_VOID || (yyvsp[0].fValue) == GLOBAL_VOID)
@@ -2632,11 +2666,11 @@ yyreduce:
 
             addQuadruple(AND, tempBuffer1, tempBuffer2, tempBuffer3);
         }
-#line 2636 "y.tab.c"
+#line 2670 "y.tab.c"
     break;
 
   case 83: /* logical_expression: logical_expression L_OP_OR logical_expression2  */
-#line 779 "yacc_file.y"
+#line 789 "yacc_file.y"
                                                          {
             // In case the function is of type void
             if ((yyvsp[-2].fValue) == GLOBAL_VOID || (yyvsp[0].fValue) == GLOBAL_VOID)
@@ -2659,19 +2693,19 @@ yyreduce:
 
             addQuadruple(OR, tempBuffer1, tempBuffer2, tempBuffer3);
         }
-#line 2663 "y.tab.c"
+#line 2697 "y.tab.c"
     break;
 
   case 84: /* logical_expression: logical_expression2  */
-#line 801 "yacc_file.y"
+#line 811 "yacc_file.y"
                               {
             (yyval.fValue) = (yyvsp[0].fValue);
         }
-#line 2671 "y.tab.c"
+#line 2705 "y.tab.c"
     break;
 
   case 85: /* logical_expression2: L_OP_NOT logical_expression2  */
-#line 807 "yacc_file.y"
+#line 817 "yacc_file.y"
                                      {
             // In case the function is of type void
             if ((yyvsp[0].fValue) == GLOBAL_VOID)
@@ -2688,11 +2722,11 @@ yyreduce:
 
             addQuadruple(NOT, tempBuffer1, tempBuffer1, "");
         }
-#line 2692 "y.tab.c"
+#line 2726 "y.tab.c"
     break;
 
   case 86: /* logical_expression2: L_OP_NOT return_value  */
-#line 823 "yacc_file.y"
+#line 833 "yacc_file.y"
                                 {
             // In case the function is of type void
             if ((yyvsp[0].fValue) == GLOBAL_VOID)
@@ -2720,11 +2754,11 @@ yyreduce:
                     (yyval.fValue) = 0;
             }
         }
-#line 2724 "y.tab.c"
+#line 2758 "y.tab.c"
     break;
 
   case 87: /* logical_expression2: L_OP_EXACT return_value  */
-#line 850 "yacc_file.y"
+#line 860 "yacc_file.y"
                                   {
             // In case the function is of type void
             if ((yyvsp[0].fValue) == GLOBAL_VOID)
@@ -2764,11 +2798,11 @@ yyreduce:
                 }
             }
         }
-#line 2768 "y.tab.c"
+#line 2802 "y.tab.c"
     break;
 
   case 88: /* logical_expression2: TRUE  */
-#line 889 "yacc_file.y"
+#line 899 "yacc_file.y"
                {
             (yyval.fValue) = true;
             // Put 1 into register
@@ -2777,11 +2811,11 @@ yyreduce:
 
             addQuadruple(MOV, tempBuffer1, "1", "");
         }
-#line 2781 "y.tab.c"
+#line 2815 "y.tab.c"
     break;
 
   case 89: /* logical_expression2: FALSE  */
-#line 897 "yacc_file.y"
+#line 907 "yacc_file.y"
                 {
             (yyval.fValue) = false;
             // Put 0 into register
@@ -2790,27 +2824,27 @@ yyreduce:
 
             addQuadruple(MOV, tempBuffer1, "0", "");
         }
-#line 2794 "y.tab.c"
+#line 2828 "y.tab.c"
     break;
 
   case 90: /* logical_expression2: comparison_expression  */
-#line 905 "yacc_file.y"
+#line 915 "yacc_file.y"
                                 {
             (yyval.fValue) = (yyvsp[0].iValue);
         }
-#line 2802 "y.tab.c"
+#line 2836 "y.tab.c"
     break;
 
   case 91: /* logical_expression2: OPENING_BRACKET logical_expression CLOSING_BRACKET  */
-#line 908 "yacc_file.y"
+#line 918 "yacc_file.y"
                                                              {
             (yyval.fValue) = (yyvsp[-1].fValue);
         }
-#line 2810 "y.tab.c"
+#line 2844 "y.tab.c"
     break;
 
   case 92: /* comparison_expression: return_value OP_EQUAL return_value  */
-#line 913 "yacc_file.y"
+#line 923 "yacc_file.y"
                                            {
             if ((yyvsp[-2].fValue) == GLOBAL_STRING || (yyvsp[0].fValue) == GLOBAL_STRING)
                 handleError(ERROR_TYPE_MISMATCH, -1, "");
@@ -2847,11 +2881,11 @@ yyreduce:
                 addQuadruple(CMPEQ, tempBuffer1, tempBuffer2, "");
             }
         }
-#line 2851 "y.tab.c"
+#line 2885 "y.tab.c"
     break;
 
   case 93: /* comparison_expression: return_value OP_NOT_EQUAL return_value  */
-#line 949 "yacc_file.y"
+#line 959 "yacc_file.y"
                                                  {
             if ((yyvsp[-2].fValue) == GLOBAL_STRING || (yyvsp[0].fValue) == GLOBAL_STRING)
                 handleError(ERROR_TYPE_MISMATCH, -1, "");
@@ -2888,11 +2922,11 @@ yyreduce:
                 addQuadruple(CMPNEQ, tempBuffer1, tempBuffer2, "");
             }
         }
-#line 2892 "y.tab.c"
+#line 2926 "y.tab.c"
     break;
 
   case 94: /* comparison_expression: return_value OP_LESS return_value  */
-#line 985 "yacc_file.y"
+#line 995 "yacc_file.y"
                                             {
             if ((yyvsp[-2].fValue) == GLOBAL_STRING || (yyvsp[0].fValue) == GLOBAL_STRING)
                 handleError(ERROR_TYPE_MISMATCH, -1, "");
@@ -2929,11 +2963,11 @@ yyreduce:
                 addQuadruple(CMPLT, tempBuffer1, tempBuffer2, "");
             }
         }
-#line 2933 "y.tab.c"
+#line 2967 "y.tab.c"
     break;
 
   case 95: /* comparison_expression: return_value OP_LESS_EQUAL return_value  */
-#line 1021 "yacc_file.y"
+#line 1031 "yacc_file.y"
                                                   {
             if ((yyvsp[-2].fValue) == GLOBAL_STRING || (yyvsp[0].fValue) == GLOBAL_STRING)
                 handleError(ERROR_TYPE_MISMATCH, -1, "");
@@ -2970,11 +3004,11 @@ yyreduce:
                 addQuadruple(CMPLE, tempBuffer1, tempBuffer2, "");
             }
         }
-#line 2974 "y.tab.c"
+#line 3008 "y.tab.c"
     break;
 
   case 96: /* comparison_expression: return_value OP_GREATER return_value  */
-#line 1057 "yacc_file.y"
+#line 1067 "yacc_file.y"
                                                {
             if ((yyvsp[-2].fValue) == GLOBAL_STRING || (yyvsp[0].fValue) == GLOBAL_STRING)
                 handleError(ERROR_TYPE_MISMATCH, -1, "");
@@ -3011,11 +3045,11 @@ yyreduce:
                 addQuadruple(CMPGT, tempBuffer1, tempBuffer2, "");
             }
         }
-#line 3015 "y.tab.c"
+#line 3049 "y.tab.c"
     break;
 
   case 97: /* comparison_expression: return_value OP_GREATER_EQUAL return_value  */
-#line 1093 "yacc_file.y"
+#line 1103 "yacc_file.y"
                                                      {
             if ((yyvsp[-2].fValue) == GLOBAL_STRING || (yyvsp[0].fValue) == GLOBAL_STRING)
                 handleError(ERROR_TYPE_MISMATCH, -1, "");
@@ -3052,11 +3086,11 @@ yyreduce:
                 addQuadruple(CMPGE, tempBuffer1, tempBuffer2, "");
             }
         }
-#line 3056 "y.tab.c"
+#line 3090 "y.tab.c"
     break;
 
 
-#line 3060 "y.tab.c"
+#line 3094 "y.tab.c"
 
       default: break;
     }
@@ -3249,7 +3283,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 1130 "yacc_file.y"
+#line 1140 "yacc_file.y"
 
 
   

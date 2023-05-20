@@ -62,6 +62,8 @@ void addJump();
 
 void addUJump();
 
+void addLoopJump();
+
 void resetRegisters();
 
 void printQuadruples();

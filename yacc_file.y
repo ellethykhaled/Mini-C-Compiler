@@ -405,16 +405,26 @@ single_line :
         }
 
 while_loop :
-        WHILE OPENING_BRACKET single_line CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES
-        | WHILE OPENING_BRACKET single_line CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES
+        WHILE OPENING_BRACKET single_line CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES {
+            addLoopJump();
+        }
+        | WHILE OPENING_BRACKET single_line CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES {
+            addLoopJump();
+        }
 do_while :
-        REPEAT OPENING_BRACES program CLOSING_BRACES WHILE single_line
-        | REPEAT OPENING_BRACES CLOSING_BRACES WHILE single_line
+        REPEAT OPENING_BRACES program CLOSING_BRACES WHILE single_line {
+            addLoopJump();
+        }
+        | REPEAT OPENING_BRACES CLOSING_BRACES WHILE single_line {
+            addLoopJump();
+        }
 
 for_loop :
         FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET OPENING_BRACES program CLOSING_BRACES {
+            addLoopJump();
         }
         | FOR OPENING_BRACKET line_or_null TERMINATOR line_or_null TERMINATOR line_or_null CLOSING_BRACKET OPENING_BRACES CLOSING_BRACES {
+            addLoopJump();
         }
 
 line_or_null :

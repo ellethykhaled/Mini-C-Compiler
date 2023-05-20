@@ -33,9 +33,9 @@
 [Tt]rue|TRUE                        return TRUE;
 [Ff]alse|FALSE                      return FALSE;
 
-[Ff]or|FOR                          return FOR;
-[Ww]hile|[Uu]ntil|WHILE|UNTIL       return WHILE;
-[Rr]epeat|REPEAT|[Dd]o|DO           return REPEAT;
+[Ff]or|FOR                          createLabel(); return FOR;
+[Ww]hile|[Uu]ntil|WHILE|UNTIL       createLabel(); return WHILE;
+[Rr]epeat|REPEAT|[Dd]o|DO           createLabel(); return REPEAT;
 
 [Ii]f|IF                            yylval.iValue=lineNumber; return IF;
 [Tt]hen|THEN                        addJump(); return THEN;

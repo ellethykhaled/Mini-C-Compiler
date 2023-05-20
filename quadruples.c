@@ -33,6 +33,12 @@ void addUJump() {
     addQuadruple(JMP, temp, "", "");
 }
 
+void addLoopJump() {
+    char temp[10];
+    sprintf(temp, "label_%d", labelCount - 1);
+    addQuadruple(JMP, temp, "", "");
+}
+
 void resetRegisters() {
     currentRegister = 0;
     instructionsConsidered = 0;
