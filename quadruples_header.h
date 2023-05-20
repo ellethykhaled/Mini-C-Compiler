@@ -9,6 +9,7 @@
 int quadrupleCount = 0;
 
 int currentRegister = 0;
+int instructionsConsidered = 0;
 
 FILE* quadruplesFile;
 
@@ -28,6 +29,17 @@ FILE* quadruplesFile;
 #define MUL "MUL"
 #define DIV "DIV"
 #define SUB "SUB"
+
+#define AND "AND"
+#define OR "OR"
+#define NOT "NOT"
+
+#define CMPEQ "CMPEQ"
+#define CMPNEQ "CMPNEQ"
+#define CMPLT "CMPLT"
+#define CMPLE "CMPLE"
+#define CMPGT "CMPGT"
+#define CMPGE "CMPGE"
 
 // Data structure for quadruples
 struct Quadruple {

@@ -17,10 +17,7 @@ void initSymbolTable() {
 int getSymbolIndex(char* s) {
     if (symbolCount == MAX_SYMBOL_NUMBER) {
         // In case the symbol count exceeded the maximum symbol count
-        char * errorMessage = "Number of symbols exceeded ";
-        sprintf(errorMessage, "%d\n", MAX_SYMBOL_NUMBER);
-
-        yyerror(errorMessage);
+        handleError(ERROR_SYMBOLS_EXCEEDED, -1, "");
     }
 
     int nearestSymbolIndex = -1;
@@ -344,7 +341,7 @@ void assignEnumElements(int startIndex, int endIndex, char * enumName) {
         symbolCount++;
     }
     else
-        yyerror("Symbol declared");
+        handleError(ERROR_DECLARED, -1, "");
         
     // Assign ascending values to enum elements;
     int value = 0;
@@ -414,25 +411,34 @@ void addArgumentParameter(int symbolIndex) {
     globalParametersCount++;
 }
 
-void ifStatementLogic(int conditionResult) {
+void ifStatementLogic(int ifLineNumber, int conditionResult) {
     if (conditionResult == GLOBAL_STRING)
-        yyerror("Type mismatch\n");
+        handleError(ERROR_TYPE_MISMATCH, ifLineNumber, "");
     if (conditionResult == GLOBAL_UNCERTAIN)  {
-        printf("Uncertain if\n");
     }
     else if (conditionResult == GLOBAL_NUMBER) {
-        if (globalNumber == 0)
-            printf("Warning: Never entering the if statement before line %d\n", lineNumber);
-        else 
-            printf("Warning: Unnecessary if statement before line %d\n", lineNumber);
+        char specialMessage[80];
+        if (globalNumber == 0) {
+            sprintf(specialMessage, "Warning: Never entering the if statement");
+            handleError(ALWAYS_FALSE_IF, ifLineNumber, "");
+        }
+        else {
+            sprintf(specialMessage, "Warning: Unnecessary if statement");
+            handleError(ALWAYS_TRUE_IF, ifLineNumber, "");
+        }
     }
     else {
         bool result = conditionResult != 0;
 
-        if (result == 0)
-            printf("Warning: Never entering the if statement before line %d\n", lineNumber);
-        else 
-            printf("Warning: Unnecessary if statement before line %d\n", lineNumber);
+        char specialMessage[80];
+        if (result == 0) {
+            sprintf(specialMessage, "Warning: Never entering the if statement");
+            handleError(ALWAYS_FALSE_IF, ifLineNumber, specialMessage);
+        }
+        else { 
+            sprintf(specialMessage, "Warning: Unnecessary if statement");
+            handleError(ALWAYS_TRUE_IF, ifLineNumber, specialMessage);
+        }
     }
 }
 
@@ -485,4 +491,34 @@ void printSymbolTable() {
 void destroySymbolTable() {
     for (int i = 0; i < MAX_SYMBOL_NUMBER; i++)
         free(symbolTable[i].parameters);
+}
+
+void handleError(const int errorCode, const int errorLine, const char* specialMessage)
+{
+    if (errorCode == UNEXPECTED_CHARACTER)
+        fprintf(errorsFile, "e,%d: Unexpected characted\n", lineNumber);
+    else if (errorCode == ERROR_DECLARED)
+        fprintf(errorsFile, "e,%d: Symbol already declared\n", lineNumber);
+    else if (errorCode == ERROR_UNDECLARED)
+        fprintf(errorsFile, "e,%d: Undeclared symbol\n", lineNumber);
+    else if (errorCode == ERROR_UNINITIALIZED)
+        fprintf(errorsFile, "e,%d: Uninitialized symbol\n", lineNumber);
+    else if (errorCode == ERROR_TYPE_MISMATCH)
+        fprintf(errorsFile, "e,%d: Type mismatch\n", lineNumber);
+    else if (errorCode == ERROR_CONSTANT_REASSIGNMENT)
+        fprintf(errorsFile, "e,%d: Constant reassignment\n", lineNumber);
+    else if (errorCode == ERROR_MISSING_ARGUMENTS)
+        fprintf(errorsFile, "e,%d: %s\n", lineNumber, specialMessage);
+    else if (errorCode == ERROR_MORE_ARGUMENTS)
+        fprintf(errorsFile, "e,%d: %s\n", lineNumber, specialMessage);
+    else if (errorCode == PARAMETER_TYPE_MISMATCH)
+        fprintf(errorsFile, "e,%d: Parameter type mismatch\n", lineNumber);
+    else if (errorCode == ERROR_SYMBOLS_EXCEEDED)
+        fprintf(errorsFile, "e,%d: Exceeded maximum symbol count\n", lineNumber);
+    else if (errorCode == ERROR_QUADRUPLES_EXCEEDED)
+        fprintf(errorsFile, "e,%d: Exceeded maximum quadruples count\n", lineNumber);
+    else if (errorCode == ALWAYS_TRUE_IF)
+        fprintf(errorsFile, "w,%d: %s\n", errorLine, specialMessage);
+    else if (errorCode == ALWAYS_FALSE_IF)
+        fprintf(errorsFile, "w,%d: %s\n", errorLine, specialMessage);
 }

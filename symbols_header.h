@@ -27,7 +27,17 @@
 #define ERROR_CONSTANT_REASSIGNMENT -6
 #define TWO_NUMBERS_COMPARISON -7
 #define ENUM_END -8
+#define ERROR_MISSING_ARGUMENTS -9
+#define ERROR_MORE_ARGUMENTS -10
+#define PARAMETER_TYPE_MISMATCH -11
+#define ERROR_SYMBOLS_EXCEEDED -12
+#define ERROR_QUADRUPLES_EXCEEDED -13
 #define ERROR_UNKNOWN -100
+#define UNEXPECTED_CHARACTER -110
+
+#define ALWAYS_TRUE_IF -200
+#define ALWAYS_FALSE_IF -201
+
 
 #define PARAMETER_INT       -101
 #define PARAMETER_FLOAT     -102
@@ -40,7 +50,7 @@
 
 #define GLOBAL_UNCERTAIN (2 * MAX_SYMBOL_NUMBER)
 
-extern void yyerror(const char *str);
+void extern yyerror(const char *str);
 
 FILE* symbolTableFile;
 FILE* errorsFile;
@@ -102,8 +112,10 @@ int defineNonVoidFunction(int functionIndex, int returnIndex);
 
 void addArgumentParameter(int symbolIndex);
 
-void ifStatementLogic(int conditionResult);
+void ifStatementLogic(int ifLineNumber, int conditionResult);
 
 void printSymbolTable();
 
 void destroySymbolTable();
+
+void handleError(const int, const int, const char*);

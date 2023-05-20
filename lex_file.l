@@ -6,13 +6,16 @@
     #include "yacc_file.tab.h"
     #include <stdbool.h>
 
-    void extern yyerror(const char*);
+    void extern yyerror(const char *str);
+    void extern handleError(const int, const int, const char*);
     int extern getSymbolIndex(char* s);
     int extern deleteLatestScope();
     void extern destroySymbolTable();
     void extern destroyQuadruples();
     int extern lineNumber, scopeLevel;
     bool extern globalInitializer;
+    int extern UNEXPECTED_CHARACTER, ERROR_DECLARED, ERROR_UNDECLARED, ERROR_UNINITIALIZED, ERROR_TYPE_MISMATCH, ERROR_CONSTANT_REASSIGNMENT, TWO_NUMBERS_COMPARISON, ERROR_UNKNOWN, ALWAYS_TRUE_IF, ALWAYS_FALSE_IF, ERROR_MISSING_ARGUMENTS, ERROR_MORE_ARGUMENTS, PARAMETER_TYPE_MISMATCH, ERROR_SYMBOLS_EXCEEDED, ERROR_QUADRUPLES_EXCEEDED;
+    extern FILE* errorsFile;
 %}
 
 
@@ -32,7 +35,7 @@
 [Ww]hile|[Uu]ntil|WHILE|UNTIL       return WHILE;
 [Rr]epeat|REPEAT|[Dd]o|DO           return REPEAT;
 
-[Ii]f|IF                            return IF;
+[Ii]f|IF                            yylval.iValue=lineNumber; return IF;
 [Tt]hen|THEN                        return THEN;
 [Ee]lse|ELSE                        return ELSE;
 
@@ -93,12 +96,7 @@ int yywrap(void) {
     return 1;
 }
 
-// TODO: Needs reimplementation
+// Just a dummy function to remove warnings
 void yyerror(const char *str)
 {
-    fprintf(stderr, "Line %d: %s\n", lineNumber, str);
-    
-    destroySymbolTable();
-    destroyQuadruples();
-    exit(0);
 }

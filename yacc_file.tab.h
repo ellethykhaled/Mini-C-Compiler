@@ -54,43 +54,43 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    INT_TYPE = 258,                /* INT_TYPE  */
-    FLOAT_TYPE = 259,              /* FLOAT_TYPE  */
-    STRING_TYPE = 260,             /* STRING_TYPE  */
-    BOOLEAN_TYPE = 261,            /* BOOLEAN_TYPE  */
-    CONSTANT = 262,                /* CONSTANT  */
-    TRUE = 263,                    /* TRUE  */
-    FALSE = 264,                   /* FALSE  */
-    M_OP_PLUS = 265,               /* M_OP_PLUS  */
-    M_OP_MINUS = 266,              /* M_OP_MINUS  */
-    M_OP_MULT = 267,               /* M_OP_MULT  */
-    M_OP_DIV = 268,                /* M_OP_DIV  */
-    M_OP_MOD = 269,                /* M_OP_MOD  */
-    M_OP_POWER = 270,              /* M_OP_POWER  */
-    L_OP_NOT = 271,                /* L_OP_NOT  */
-    L_OP_EXACT = 272,              /* L_OP_EXACT  */
-    L_OP_AND = 273,                /* L_OP_AND  */
-    L_OP_OR = 274,                 /* L_OP_OR  */
-    OP_ASSIGN = 275,               /* OP_ASSIGN  */
-    OP_EQUAL = 276,                /* OP_EQUAL  */
-    OP_NOT_EQUAL = 277,            /* OP_NOT_EQUAL  */
-    OP_LESS = 278,                 /* OP_LESS  */
-    OP_LESS_EQUAL = 279,           /* OP_LESS_EQUAL  */
-    OP_GREATER = 280,              /* OP_GREATER  */
-    OP_GREATER_EQUAL = 281,        /* OP_GREATER_EQUAL  */
-    TERMINATOR = 282,              /* TERMINATOR  */
-    CLOSING_BRACKET = 283,         /* CLOSING_BRACKET  */
-    OPENING_BLOCK_BRACES = 284,    /* OPENING_BLOCK_BRACES  */
-    OPENING_BRACKET = 285,         /* OPENING_BRACKET  */
-    CLOSING_BRACES = 286,          /* CLOSING_BRACES  */
-    OPENING_BRACES = 287,          /* OPENING_BRACES  */
-    FOR = 288,                     /* FOR  */
-    WHILE = 289,                   /* WHILE  */
-    REPEAT = 290,                  /* REPEAT  */
-    RETURN = 291,                  /* RETURN  */
-    ENUM = 292,                    /* ENUM  */
-    COMMA = 293,                   /* COMMA  */
-    IF = 294,                      /* IF  */
+    ERROR_TOKEN = 258,             /* ERROR_TOKEN  */
+    INT_TYPE = 259,                /* INT_TYPE  */
+    FLOAT_TYPE = 260,              /* FLOAT_TYPE  */
+    STRING_TYPE = 261,             /* STRING_TYPE  */
+    BOOLEAN_TYPE = 262,            /* BOOLEAN_TYPE  */
+    CONSTANT = 263,                /* CONSTANT  */
+    TRUE = 264,                    /* TRUE  */
+    FALSE = 265,                   /* FALSE  */
+    M_OP_PLUS = 266,               /* M_OP_PLUS  */
+    M_OP_MINUS = 267,              /* M_OP_MINUS  */
+    M_OP_MULT = 268,               /* M_OP_MULT  */
+    M_OP_DIV = 269,                /* M_OP_DIV  */
+    M_OP_MOD = 270,                /* M_OP_MOD  */
+    M_OP_POWER = 271,              /* M_OP_POWER  */
+    L_OP_NOT = 272,                /* L_OP_NOT  */
+    L_OP_EXACT = 273,              /* L_OP_EXACT  */
+    L_OP_AND = 274,                /* L_OP_AND  */
+    L_OP_OR = 275,                 /* L_OP_OR  */
+    OP_ASSIGN = 276,               /* OP_ASSIGN  */
+    OP_EQUAL = 277,                /* OP_EQUAL  */
+    OP_NOT_EQUAL = 278,            /* OP_NOT_EQUAL  */
+    OP_LESS = 279,                 /* OP_LESS  */
+    OP_LESS_EQUAL = 280,           /* OP_LESS_EQUAL  */
+    OP_GREATER = 281,              /* OP_GREATER  */
+    OP_GREATER_EQUAL = 282,        /* OP_GREATER_EQUAL  */
+    TERMINATOR = 283,              /* TERMINATOR  */
+    CLOSING_BRACKET = 284,         /* CLOSING_BRACKET  */
+    OPENING_BLOCK_BRACES = 285,    /* OPENING_BLOCK_BRACES  */
+    OPENING_BRACKET = 286,         /* OPENING_BRACKET  */
+    CLOSING_BRACES = 287,          /* CLOSING_BRACES  */
+    OPENING_BRACES = 288,          /* OPENING_BRACES  */
+    FOR = 289,                     /* FOR  */
+    WHILE = 290,                   /* WHILE  */
+    REPEAT = 291,                  /* REPEAT  */
+    RETURN = 292,                  /* RETURN  */
+    ENUM = 293,                    /* ENUM  */
+    COMMA = 294,                   /* COMMA  */
     THEN = 295,                    /* THEN  */
     ELSE = 296,                    /* ELSE  */
     SWITCH = 297,                  /* SWITCH  */
@@ -101,8 +101,9 @@ extern int yydebug;
     VOID_TYPE = 302,               /* VOID_TYPE  */
     IDENTIFIER = 303,              /* IDENTIFIER  */
     INTEGER_NUMBER = 304,          /* INTEGER_NUMBER  */
-    FLOAT_NUMBER = 305,            /* FLOAT_NUMBER  */
-    STRING = 306                   /* STRING  */
+    IF = 305,                      /* IF  */
+    FLOAT_NUMBER = 306,            /* FLOAT_NUMBER  */
+    STRING = 307                   /* STRING  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -111,43 +112,43 @@ extern int yydebug;
 #define YYEOF 0
 #define YYerror 256
 #define YYUNDEF 257
-#define INT_TYPE 258
-#define FLOAT_TYPE 259
-#define STRING_TYPE 260
-#define BOOLEAN_TYPE 261
-#define CONSTANT 262
-#define TRUE 263
-#define FALSE 264
-#define M_OP_PLUS 265
-#define M_OP_MINUS 266
-#define M_OP_MULT 267
-#define M_OP_DIV 268
-#define M_OP_MOD 269
-#define M_OP_POWER 270
-#define L_OP_NOT 271
-#define L_OP_EXACT 272
-#define L_OP_AND 273
-#define L_OP_OR 274
-#define OP_ASSIGN 275
-#define OP_EQUAL 276
-#define OP_NOT_EQUAL 277
-#define OP_LESS 278
-#define OP_LESS_EQUAL 279
-#define OP_GREATER 280
-#define OP_GREATER_EQUAL 281
-#define TERMINATOR 282
-#define CLOSING_BRACKET 283
-#define OPENING_BLOCK_BRACES 284
-#define OPENING_BRACKET 285
-#define CLOSING_BRACES 286
-#define OPENING_BRACES 287
-#define FOR 288
-#define WHILE 289
-#define REPEAT 290
-#define RETURN 291
-#define ENUM 292
-#define COMMA 293
-#define IF 294
+#define ERROR_TOKEN 258
+#define INT_TYPE 259
+#define FLOAT_TYPE 260
+#define STRING_TYPE 261
+#define BOOLEAN_TYPE 262
+#define CONSTANT 263
+#define TRUE 264
+#define FALSE 265
+#define M_OP_PLUS 266
+#define M_OP_MINUS 267
+#define M_OP_MULT 268
+#define M_OP_DIV 269
+#define M_OP_MOD 270
+#define M_OP_POWER 271
+#define L_OP_NOT 272
+#define L_OP_EXACT 273
+#define L_OP_AND 274
+#define L_OP_OR 275
+#define OP_ASSIGN 276
+#define OP_EQUAL 277
+#define OP_NOT_EQUAL 278
+#define OP_LESS 279
+#define OP_LESS_EQUAL 280
+#define OP_GREATER 281
+#define OP_GREATER_EQUAL 282
+#define TERMINATOR 283
+#define CLOSING_BRACKET 284
+#define OPENING_BLOCK_BRACES 285
+#define OPENING_BRACKET 286
+#define CLOSING_BRACES 287
+#define OPENING_BRACES 288
+#define FOR 289
+#define WHILE 290
+#define REPEAT 291
+#define RETURN 292
+#define ENUM 293
+#define COMMA 294
 #define THEN 295
 #define ELSE 296
 #define SWITCH 297
@@ -158,14 +159,15 @@ extern int yydebug;
 #define VOID_TYPE 302
 #define IDENTIFIER 303
 #define INTEGER_NUMBER 304
-#define FLOAT_NUMBER 305
-#define STRING 306
+#define IF 305
+#define FLOAT_NUMBER 306
+#define STRING 307
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 48 "yacc_file.y"
+#line 50 "yacc_file.y"
 
     struct symbolItem *sValue;
 
@@ -176,7 +178,7 @@ union YYSTYPE
     int iValue;
     char * cValue;
 
-#line 180 "y.tab.h"
+#line 182 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
