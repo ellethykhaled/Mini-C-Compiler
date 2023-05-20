@@ -281,12 +281,13 @@ int processComparator(float first, float second, char * operatorType) {
 }
 
 void deleteLatestScope() {
+    printf("Clearing %d %d\n", lineNumber, scopeLevel);
     int newSymbolCount = 0;
     for (int i = 0; i < symbolCount; i++)
     {
         int currentScopeLevel = symbolTable[i].scopeLevel;
 
-        if (currentScopeLevel == scopeLevel)
+        if (currentScopeLevel <= scopeLevel)
             newSymbolCount++;
         else
             break;

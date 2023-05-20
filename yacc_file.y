@@ -131,7 +131,6 @@ function_call :
                 if (symbolTable[symbolIndex].isCertain) {
                     if (symbolTable[symbolIndex].type == TYPE_STRING) {
                         globalString = strdup(symbolTable[symbolIndex].stringValue);
-                        printf("Global String: %s\n", globalString);
                         $$ = GLOBAL_STRING;
                     }
                     // Return the symbol index
