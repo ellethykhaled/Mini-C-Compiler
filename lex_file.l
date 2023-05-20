@@ -6,17 +6,24 @@
     #include "yacc_file.tab.h"
     #include <stdbool.h>
 
-    void extern yyerror(const char*);
+    void extern yyerror(const char *str);
+    void extern handleError(const int, const int, const char*);
     int extern getSymbolIndex(char* s);
     int extern deleteLatestScope();
     void extern destroySymbolTable();
     void extern destroyQuadruples();
+    int extern createLabel();
+    void extern addJump();
+    void extern addUJump();
+    void extern addPush();
+    void extern addPop();
     int extern lineNumber, scopeLevel;
     bool extern globalInitializer;
+    int extern UNEXPECTED_CHARACTER, ERROR_DECLARED, ERROR_UNDECLARED, ERROR_UNINITIALIZED, ERROR_TYPE_MISMATCH, ERROR_CONSTANT_REASSIGNMENT, TWO_NUMBERS_COMPARISON, ERROR_UNKNOWN, ALWAYS_TRUE_IF, ALWAYS_FALSE_IF, ERROR_MISSING_ARGUMENTS, ERROR_MORE_ARGUMENTS, PARAMETER_TYPE_MISMATCH, ERROR_SYMBOLS_EXCEEDED, ERROR_QUADRUPLES_EXCEEDED, SWITCH_TYPE_MISMATCH;
+    extern FILE* symbolTableFile;
 %}
 
 
-/* ^(.)*\n                             { printf("%4d\t%s\n", ++lineNumber, yytext); return TESTY_TOKEN; } */
 %%
 
 [Cc]onst(ant)?                      return CONSTANT;
@@ -28,24 +35,24 @@
 [Tt]rue|TRUE                        return TRUE;
 [Ff]alse|FALSE                      return FALSE;
 
-[Ff]or|FOR                          return FOR;
-[Ww]hile|[Uu]ntil|WHILE|UNTIL       return WHILE;
-[Rr]epeat|REPEAT|[Dd]o|DO           return REPEAT;
+[Ff]or|FOR                          createLabel(); return FOR;
+[Ww]hile|[Uu]ntil|WHILE|UNTIL       createLabel(); return WHILE;
+[Rr]epeat|REPEAT|[Dd]o|DO           createLabel(); return REPEAT;
 
-[Ii]f|IF                            return IF;
-[Tt]hen|THEN                        return THEN;
-[Ee]lse|ELSE                        return ELSE;
+[Ii]f|IF                            yylval.iValue=lineNumber; return IF;
+[Tt]hen|THEN                        addJump(); return THEN;
+[Ee]lse|ELSE                        addJump(); yylval.iValue=createLabel(); return ELSE;
 
-[Ss]witch|SWITCH                    return SWITCH;
-[Cc]ase|CASE                        return CASE;
-[Dd]ef(ault)?|DEF(AULT)?            return DEFAULT;
+[Ss]witch|SWITCH                    yylval.iValue=lineNumber; return SWITCH;
+[Cc]ase|CASE                        createLabel(); yylval.iValue=lineNumber; return CASE;
+[Dd]ef(ault)?|DEF(AULT)?            createLabel(); return DEFAULT;
 
 [Ee]num|ENUM                        return ENUM;
 [,]                                 return COMMA;
 
-[Ff]un(c(tion)?)?|FUN(C(TION)?)?    globalInitializer = true; return FUNCTION;
-([Cc]all|CALL):                     return CALL;
-([Rr]et(urn)?|RET(URN)?)            return RETURN;
+[Ff]un(c(tion)?)?|FUN(C(TION)?)?    createLabel(); globalInitializer = true; return FUNCTION;
+([Cc]all|CALL):                     addPush(); return CALL;
+([Rr]et(urn)?|RET(URN)?)            addPop(); return RETURN;
 [Vv]oid|VOID                        return VOID_TYPE;
 
 [+]                                 return M_OP_PLUS;
@@ -93,12 +100,10 @@ int yywrap(void) {
     return 1;
 }
 
-// TODO: Needs reimplementation
 void yyerror(const char *str)
 {
-    fprintf(stderr, "Line %d: %s\n", lineNumber, str);
-    
+    printf("Lexical error at line %d\n", lineNumber);
+    fprintf(symbolTableFile, "Lexical error at line %d\n", lineNumber);
     destroySymbolTable();
     destroyQuadruples();
-    exit(0);
 }
