@@ -474,7 +474,7 @@ void printSymbolTable() {
         else {
         // Print format in case of non-function
             if (symbolTable[i].type == TYPE_STRING)
-                fprintf(symbolTableFile, "%s\t%s\t\t%d-%d-%d-%d\t\t%d\t\t%s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].isUsed == true, symbolTable[i].scopeLevel, symbolTable[i].stringValue);
+                fprintf(symbolTableFile, "%s\t\t%s\t\t%d-%d-%d-%d\t\t%d\t\t%s\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].isUsed == true, symbolTable[i].scopeLevel, symbolTable[i].stringValue);
             else if (symbolTable[i].type == TYPE_FLOAT)
                 fprintf(symbolTableFile, "%s\t\t%s\t\t%d-%d-%d-%d\t\t%d\t\t%f\n", symbolTable[i].type, symbolTable[i].name, symbolTable[i].isInitialized == true, symbolTable[i].isConstant == true, symbolTable[i].isCertain == true, symbolTable[i].isUsed == true, symbolTable[i].scopeLevel, symbolTable[i].fValue);
             else if (symbolTable[i].type == TYPE_INT)

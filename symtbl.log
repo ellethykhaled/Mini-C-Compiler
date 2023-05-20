@@ -1,149 +1,183 @@
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		0-0-1-0		0		0
-
-============================================================================
-			    Symbol-Table
-Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
-
-============================================================================
-			    Symbol-Table
-Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
 Int		z		0-0-1-0		0		0
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
 Int		z		0-0-1-0		0		0
-Int		a		0-0-1-0		2		0
+Int		sum		1-0-0-0		0		0
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
 Int		z		0-0-1-0		0		0
-Int		a		1-0-1-0		2		1
+Int		sum		1-0-0-0		0		0
+Int		x		1-0-0-0		1		0
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
 Int		z		0-0-1-0		0		0
+Int		sum		1-0-0-0		0		0
+Int		x		1-0-0-0		1		0
+Int		y		1-0-0-0		1		0
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
 Int		z		0-0-1-0		0		0
-Int		b		0-0-1-0		2		1
+Int		sum		1-0-0-0		0		0
+Int		x		1-0-0-0		1		0
+Int		y		1-0-0-0		1		0
+Int		result		0-0-1-0		1		0
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
 Int		z		0-0-1-0		0		0
-Int		b		1-0-1-0		2		2
+Int		sum		1-0-0-0		0		0
+Int		x		1-0-0-1		1		0
+Int		y		1-0-0-1		1		0
+Int		result		1-0-1-0		1		4000
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
 Int		z		0-0-1-0		0		0
+Int		sum		1-0-0-0		0		0
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
 Int		z		0-0-1-0		0		0
-Int		c		0-0-1-0		2		2
+Int		sum		-|-|1|-		0		function
+-> Function parameters: None
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
 Int		z		0-0-1-0		0		0
-Int		c		1-0-1-0		2		3
+Int		sum		-|-|1|-		0		function
+-> Function parameters: Integer - Integer
+Int		p		1-0-0-0		1		0
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
-Int		z		0-0-1-0		0		0
+Int		z		1-0-0-0		0		2000
+Int		sum		-|-|1|-		0		function
+-> Function parameters: Integer - Integer
+Int		p		1-0-0-1		1		0
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
-Int		z		0-0-1-0		0		0
-Int		d		0-0-1-0		2		3
+Int		z		1-0-0-0		0		2000
+Int		sum		-|-|1|-		0		function
+-> Function parameters: Integer - Integer
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
-Int		z		0-0-1-0		0		0
-Int		d		1-0-1-0		2		4
+Int		z		1-0-0-0		0		2000
+Int		sum		-|-|1|-		0		function
+-> Function parameters: Integer - Integer
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
-Int		z		0-0-1-0		0		0
+Int		z		1-0-0-0		0		2000
+Int		sum		-|-|1|-		0		function
+-> Function parameters: Integer - Integer
+Void		assignZ		-|-|1|-		0		function
+-> Function parameters: Integer
+Int		u		0-0-1-0		1		0
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-0		0		0
-Int		z		0-0-1-0		0		0
+Int		z		1-0-0-0		0		2000
+Int		sum		-|-|1|-		0		function
+-> Function parameters: Integer - Integer
+Void		assignZ		-|-|1|-		0		function
+-> Function parameters: Integer
+Int		u		1-0-1-0		1		10
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-1		0		0
-Int		z		0-0-1-0		0		0
+Int		z		1-0-0-0		0		2000
+Int		sum		-|-|1|-		0		function
+-> Function parameters: Integer - Integer
+Void		assignZ		-|-|1|-		0		function
+-> Function parameters: Integer
+Int		u		1-0-1-0		1		10
+Int		v		0-0-1-0		1		4000
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-1		0		0
-Int		z		0-0-1-0		0		0
+Int		z		1-0-0-0		0		2000
+Int		sum		-|-|1|-		0		function
+-> Function parameters: Integer - Integer
+Void		assignZ		-|-|1|-		0		function
+-> Function parameters: Integer
+Int		u		1-0-1-0		1		10
+Int		v		1-0-1-0		1		10
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-1		0		0
-Int		z		0-0-1-0		0		0
-Int		i		0-0-1-0		1		4
+Int		z		1-0-0-0		0		2000
+Int		sum		-|-|1|-		0		function
+-> Function parameters: Integer - Integer
+Void		assignZ		-|-|1|-		0		function
+-> Function parameters: Integer
+Int		u		1-0-1-0		1		10
+Int		v		1-0-1-0		1		10
+Int		a		0-0-1-0		1		0
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-1		0		0
-Int		z		0-0-1-0		0		0
-Int		i		1-0-1-0		1		0
+Int		z		1-0-0-0		0		2000
+Int		sum		-|-|1|-		0		function
+-> Function parameters: Integer - Integer
+Void		assignZ		-|-|1|-		0		function
+-> Function parameters: Integer
+Int		u		1-0-1-1		1		10
+Int		v		1-0-1-1		1		10
+Int		a		1-0-1-0		1		4000
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-1		0		0
-Int		z		0-0-1-0		0		0
-Int		i		1-0-0-1		1		1
+Int		z		1-0-0-0		0		2000
+Int		sum		-|-|1|-		0		function
+-> Function parameters: Integer - Integer
+Void		assignZ		-|-|1|-		0		function
+-> Function parameters: Integer
+Int		u		1-0-1-1		1		10
+Int		v		1-0-1-1		1		10
+Int		a		1-0-1-1		1		4000
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-1		0		0
-Int		z		0-0-1-0		0		0
-Int		i		1-0-0-1		1		1
-Int		k		0-0-1-0		1		0
+Int		z		1-0-0-0		0		2000
+Int		sum		-|-|1|-		0		function
+-> Function parameters: Integer - Integer
+Void		assignZ		-|-|1|-		0		function
+-> Function parameters: Integer
 
 ============================================================================
 			    Symbol-Table
 Type		Name		I|C|A|U		Scope		Value
-Int		x		1-0-1-1		0		0
-Int		z		0-0-1-0		0		0
+Int		z		1-0-0-0		0		2000
+Int		sum		-|-|1|-		0		function
+-> Function parameters: Integer - Integer
+Void		assignZ		-|-|1|-		0		function
+-> Function parameters: Integer
 

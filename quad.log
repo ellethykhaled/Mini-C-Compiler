@@ -1,37 +1,18 @@
-MOV R0, 0.00
-STR x, R0
 LBL: label_0
-MOV R0, 1.00
-MOV R1, 1.00
-STR a, R1
-CMPEQ 1.00, var
-JMP label_1
+ADD , R-1, R0
+STR result, R0
+POP stack
 LBL: label_1
-MOV R0, 2.00
-MOV R1, 2.00
-STR b, R1
-CMPEQ 2.00, var
-JMP label_2
+STR z, R-1
+POP stack
 LBL: label_2
-MOV R0, 3.00
-MOV R1, 3.00
-STR c, R1
-CMPEQ 3.00, var
-JMP label_3
-LBL: label_3
-MOV R0, 4.00
-STR d, R0
-MOV R0, 0.00
-CMPEQ x, 0.00
-JPNZ label_4
-JPNZ label_4
-LBL: label_4
-LBL: label_5
-MOV R1, 0.00
-STR i, R1
-MOV R0, 5.00
-CMPLT i, 5.00
-MOV R1, 1.00
-ADD R0, R1, R2
-STR i, R2
-JMP label_5
+MOV , 10.00
+STR u, R0
+MOV , 10.00
+STR v, R0
+PUSH stack
+STR a, R-1
+PUSH stack
+STR a, R-1
+PUSH stack
+POP stack

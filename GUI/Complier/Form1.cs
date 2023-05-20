@@ -34,7 +34,7 @@ namespace Complier
             errorlines.Clear();
 
             // change text in input code box to black
-            string directoryPath = @"D:\Uni\Spring23\Compilers\Project\Compilers-Project\";
+            string directoryPath = @"D:\Files\Spring 2023\Languages and Compilers\Project\Implementation\";
             string quadPath = Path.Combine(directoryPath, "quad.log");
             string symtblPath = Path.Combine(directoryPath, "symtbl.log");
             string errorPath = Path.Combine(directoryPath, "error.txt");
@@ -61,7 +61,7 @@ namespace Complier
             richTextBox1.SelectionColor = Color.Black;
 
             // TODO: Change path acoordingly
-            System.Diagnostics.Process.Start("cmd.exe", "/C D: & cd D:\\Uni\\Spring23\\Compilers\\Project\\Compilers-Project & run.bat");
+            System.Diagnostics.Process.Start("cmd.exe", "/C D: & cd D:\\Files\\Spring 2023\\Languages and Compilers\\Project\\Implementation & run.bat");
             // wait for the process to finish and then read the output files
             // if symtbl.log or quad.log doesnt exist wait for 1 more second
 
