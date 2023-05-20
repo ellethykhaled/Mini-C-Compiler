@@ -64,6 +64,10 @@ void addUJump();
 
 void addLoopJump();
 
+void addPush();
+
+void addPop();
+
 void resetRegisters();
 
 void printQuadruples();

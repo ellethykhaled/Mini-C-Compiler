@@ -15,6 +15,8 @@
     int extern createLabel();
     void extern addJump();
     void extern addUJump();
+    void extern addPush();
+    void extern addPop();
     int extern lineNumber, scopeLevel;
     bool extern globalInitializer;
     int extern UNEXPECTED_CHARACTER, ERROR_DECLARED, ERROR_UNDECLARED, ERROR_UNINITIALIZED, ERROR_TYPE_MISMATCH, ERROR_CONSTANT_REASSIGNMENT, TWO_NUMBERS_COMPARISON, ERROR_UNKNOWN, ALWAYS_TRUE_IF, ALWAYS_FALSE_IF, ERROR_MISSING_ARGUMENTS, ERROR_MORE_ARGUMENTS, PARAMETER_TYPE_MISMATCH, ERROR_SYMBOLS_EXCEEDED, ERROR_QUADRUPLES_EXCEEDED, SWITCH_TYPE_MISMATCH;
@@ -48,9 +50,9 @@
 [Ee]num|ENUM                        return ENUM;
 [,]                                 return COMMA;
 
-[Ff]un(c(tion)?)?|FUN(C(TION)?)?    globalInitializer = true; return FUNCTION;
-([Cc]all|CALL):                     return CALL;
-([Rr]et(urn)?|RET(URN)?)            return RETURN;
+[Ff]un(c(tion)?)?|FUN(C(TION)?)?    createLabel(); globalInitializer = true; return FUNCTION;
+([Cc]all|CALL):                     addPush(); return CALL;
+([Rr]et(urn)?|RET(URN)?)            addPop(); return RETURN;
 [Vv]oid|VOID                        return VOID_TYPE;
 
 [+]                                 return M_OP_PLUS;

@@ -39,6 +39,14 @@ void addLoopJump() {
     addQuadruple(JMP, temp, "", "");
 }
 
+void addPush() {
+    addQuadruple(PUSH, "stack", "", "");
+}
+
+void addPop() {
+    addQuadruple(POP, "stack", "", "");
+}
+
 void resetRegisters() {
     currentRegister = 0;
     instructionsConsidered = 0;
@@ -51,7 +59,7 @@ void printQuadruples() {
             fprintf(quadruplesFile, "%s %s, %s\n", quadruples[i].op, quadruples[i].operand1, quadruples[i].operand2);
         else if (quadruples[i].op == LBL)
             fprintf(quadruplesFile, "%s: %s\n", quadruples[i].op, quadruples[i].operand1);
-        else if (quadruples[i].op == JPNZ || quadruples[i].op == JMP)
+        else if (quadruples[i].op == JPNZ || quadruples[i].op == JMP || quadruples[i].op == PUSH || quadruples[i].op == POP)
             fprintf(quadruplesFile, "%s %s\n", quadruples[i].op, quadruples[i].operand1);
         else
             fprintf(quadruplesFile, "%s %s, %s, %s\n", quadruples[i].op, quadruples[i].operand1, quadruples[i].operand2, quadruples[i].result);
