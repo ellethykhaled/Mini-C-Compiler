@@ -49,7 +49,7 @@ namespace Complier
             }
             if (File.Exists(errorPath))
             {
-                //File.Delete(errorPath);
+                File.Delete(errorPath);
             }
 
 
@@ -87,28 +87,30 @@ namespace Complier
                 string[] lines = errorText.Split('\n');
                 foreach (string line in lines)
                 {
-                    // we will split the line by , then by : and then get the line number
-                    string[] lineSplit = line.Split(',');
-                    string[] lineSplit2 = lineSplit[1].Split(':');
-
-
-                    // create a dictionary to store the line number and the error message
-                    // this will be used to show the error message when mouse is hovered over the line
-
-                    errorlines.Add(Int32.Parse(lineSplit2[0]), lineSplit[1]);
-
-                    int lineNumber = Int32.Parse(lineSplit2[0]);
-                    richTextBox1.Select(richTextBox1.GetFirstCharIndexFromLine(lineNumber - 1), richTextBox1.Lines[lineNumber - 1].Length);
-
-                    if (lineSplit[0] == "e")
+                    if (line != "")
                     {
-                        richTextBox1.SelectionColor = Color.Red;
-                    }
-                    else if (lineSplit[0] == "w")
-                    {
-                        richTextBox1.SelectionColor = Color.Orange;
-                    }
+                        // we will split the line by , then by : and then get the line number
+                        string[] lineSplit = line.Split(',');
+                        string[] lineSplit2 = lineSplit[1].Split(':');
 
+
+                        // create a dictionary to store the line number and the error message
+                        // this will be used to show the error message when mouse is hovered over the line
+
+                        errorlines.Add(Int32.Parse(lineSplit2[0]), lineSplit[1]);
+
+                        int lineNumber = Int32.Parse(lineSplit2[0]);
+                        richTextBox1.Select(richTextBox1.GetFirstCharIndexFromLine(lineNumber - 1), richTextBox1.Lines[lineNumber - 1].Length);
+
+                        if (lineSplit[0] == "e")
+                        {
+                            richTextBox1.SelectionColor = Color.Red;
+                        }
+                        else if (lineSplit[0] == "w")
+                        {
+                            richTextBox1.SelectionColor = Color.Orange;
+                        }
+                    }
                 }
             }
 
