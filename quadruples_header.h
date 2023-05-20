@@ -31,7 +31,6 @@ FILE* quadruplesFile;
 #define SUB "SUB"
 #define MUL "MUL"
 #define DIV "DIV"
-#define SUB "SUB"
 
 #define AND "AND"
 #define OR "OR"
