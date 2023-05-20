@@ -29,6 +29,10 @@ namespace Complier
         {
             richTextBox2.Clear();
             richTextBox3.Clear();
+
+            // clear the error lines dictionary
+            errorlines.Clear();
+
             // change text in input code box to black
             string directoryPath = @"D:\Uni\Spring23\Compilers\Project\Compilers-Project\";
             string quadPath = Path.Combine(directoryPath, "quad.log");
@@ -45,7 +49,7 @@ namespace Complier
             }
             if (File.Exists(errorPath))
             {
-                File.Delete(errorPath);
+                //File.Delete(errorPath);
             }
 
 
@@ -121,9 +125,15 @@ namespace Complier
             // get the line number
             int line = richTextBox1.GetLineFromCharIndex(pos);
             // select the line and check if color is red
-            richTextBox1.Select(richTextBox1.GetFirstCharIndexFromLine(line), richTextBox1.Lines[line].Length);
-            if (richTextBox1.SelectionColor == Color.Red)
+            richTextBox1.Select(richTextBox1.GetFirstCharIndexFromLine(line), 1);
+            Color c = richTextBox1.SelectionColor;
+            richTextBox1.DeselectAll();
+
+
+
+            if (c == Color.Red)
             {
+                //richTextBox1.DeselectAll();
                 // get the error message from the dictionary
                 string errorMessage = errorlines[line + 1];
 
@@ -131,8 +141,9 @@ namespace Complier
                 toolTip1.Show(errorMessage, richTextBox1, e.X, e.Y, 5000);
 
             }
-            else if (richTextBox1.SelectionColor == Color.Orange)
+            else if (c == Color.Orange)
             {
+                
                 // get the error message from the dictionary
                 string errorMessage = errorlines[line + 1];
 
@@ -143,7 +154,6 @@ namespace Complier
             {
                 toolTip1.Hide(richTextBox1);
             }
-
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -246,21 +256,6 @@ namespace Complier
         private void Form1_Load(object sender, EventArgs e)
         {
             AddLineNumbers();
-        }
-
-        private void richTextBox1_SelectionChanged(object sender, EventArgs e)
-        {
-            Point pt = richTextBox1.GetPositionFromCharIndex(richTextBox1.SelectionStart);
-            if (pt.X == 1)
-            {
-                AddLineNumbers();
-            }
-        }
-
-        private void richTextBox1_MouseDown(object sender, MouseEventArgs e)
-        {
-            richTextBox1.Select();
-            richTextBox4.DeselectAll();
         }
 
         private void toolTip1_Popup(object sender, PopupEventArgs e)
