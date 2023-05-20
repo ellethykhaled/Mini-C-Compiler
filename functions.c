@@ -499,8 +499,12 @@ void handleError(const int errorCode, const int errorLine, const char* specialMe
         fprintf(errorsFile, "e,%d: Unexpected characted\n", lineNumber);
     else if (errorCode == ERROR_DECLARED)
         fprintf(errorsFile, "e,%d: Symbol already declared\n", lineNumber);
-    else if (errorCode == ERROR_UNDECLARED)
-        fprintf(errorsFile, "e,%d: Undeclared symbol\n", lineNumber);
+    else if (errorCode == ERROR_UNDECLARED) {
+        if (errorLine == -1)
+            fprintf(errorsFile, "e,%d: Undeclared symbol\n", lineNumber);
+        else
+            fprintf(errorsFile, "e,%d: Undeclared symbol\n", errorLine);
+    }
     else if (errorCode == ERROR_UNINITIALIZED)
         fprintf(errorsFile, "e,%d: Uninitialized symbol\n", lineNumber);
     else if (errorCode == ERROR_TYPE_MISMATCH)
@@ -521,4 +525,6 @@ void handleError(const int errorCode, const int errorLine, const char* specialMe
         fprintf(errorsFile, "w,%d: %s\n", errorLine, specialMessage);
     else if (errorCode == ALWAYS_FALSE_IF)
         fprintf(errorsFile, "w,%d: %s\n", errorLine, specialMessage);
+    else if (errorCode == SWITCH_TYPE_MISMATCH)
+        fprintf(errorsFile, "e,%d: Switch type mismatch\n", errorLine);
 }

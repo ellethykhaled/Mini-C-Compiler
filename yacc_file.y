@@ -43,7 +43,7 @@
 
 %token THEN ELSE
 
-%token SWITCH CASE DEFAULT
+%token DEFAULT
 
 %token FUNCTION CALL VOID_TYPE
 
@@ -59,7 +59,7 @@
 }
 
 %token <sName> IDENTIFIER
-%token <iValue> INTEGER_NUMBER IF
+%token <iValue> INTEGER_NUMBER IF SWITCH CASE
 %token <fValue> FLOAT_NUMBER
 %token <cValue> STRING
 
@@ -85,11 +85,11 @@ sub_program :
         | if_stmt
         | for_loop
         | while_loop
-        | do_while { printf("Repeat-until/Do-while loop\n"); }
-        | switch_case { printf("Switch case\n"); }
+        | do_while
+        | switch_case { resetRegisters(); }
         | enumeration
         | function_definition
-        | block_structure { printf("Block structure\n"); }
+        | block_structure
         | ERROR_TOKEN { handleError(UNEXPECTED_CHARACTER, -1, ""); }
 
 block_structure :
@@ -317,14 +317,40 @@ enum_body :
         }
 
 switch_case :
-        SWITCH IDENTIFIER OPENING_BRACES switch_body switch_end CLOSING_BRACES
-        | SWITCH IDENTIFIER OPENING_BRACES switch_end CLOSING_BRACES
+        SWITCH IDENTIFIER OPENING_BRACES switch_body switch_end CLOSING_BRACES {
+            int resultIndex = getSymbolIndex($2);
+            if (resultIndex == -1)
+                handleError(ERROR_UNDECLARED, $1, "");
+            else if (symbolTable[resultIndex].type != TYPE_INT) {
+                handleError(SWITCH_TYPE_MISMATCH, $1, "");
+            }
+        }
+        | SWITCH IDENTIFIER OPENING_BRACES switch_end CLOSING_BRACES {
+            int resultIndex = getSymbolIndex($2);
+            if (resultIndex == -1)
+                handleError(ERROR_UNDECLARED, $1, "");
+            else if (symbolTable[resultIndex].type != TYPE_INT) {
+                handleError(SWITCH_TYPE_MISMATCH, $1, "");
+            }
+        }
 
 switch_body :
-        CASE return_value OPENING_BRACES program CLOSING_BRACES 
-        | CASE return_value OPENING_BRACES CLOSING_BRACES 
-        | switch_body CASE return_value OPENING_BRACES program CLOSING_BRACES 
-        | switch_body CASE return_value OPENING_BRACES CLOSING_BRACES 
+        CASE return_value OPENING_BRACES program CLOSING_BRACES {
+            if ((int) $2 != GLOBAL_NUMBER)
+                handleError(SWITCH_TYPE_MISMATCH, $1, "");
+        }
+        | CASE return_value OPENING_BRACES CLOSING_BRACES {
+            if ((int) $2 != GLOBAL_NUMBER)
+                handleError(SWITCH_TYPE_MISMATCH, $1, "");
+        }
+        | switch_body CASE return_value OPENING_BRACES program CLOSING_BRACES {
+            if ((int) $3 != GLOBAL_NUMBER)
+                handleError(SWITCH_TYPE_MISMATCH, $2, "");
+        }
+        | switch_body CASE return_value OPENING_BRACES CLOSING_BRACES {
+            if ((int) $3 != GLOBAL_NUMBER)
+                handleError(SWITCH_TYPE_MISMATCH, $2, "");
+        }
 
 switch_end :
         DEFAULT OPENING_BRACES program CLOSING_BRACES

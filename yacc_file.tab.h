@@ -93,15 +93,15 @@ extern int yydebug;
     COMMA = 294,                   /* COMMA  */
     THEN = 295,                    /* THEN  */
     ELSE = 296,                    /* ELSE  */
-    SWITCH = 297,                  /* SWITCH  */
-    CASE = 298,                    /* CASE  */
-    DEFAULT = 299,                 /* DEFAULT  */
-    FUNCTION = 300,                /* FUNCTION  */
-    CALL = 301,                    /* CALL  */
-    VOID_TYPE = 302,               /* VOID_TYPE  */
-    IDENTIFIER = 303,              /* IDENTIFIER  */
-    INTEGER_NUMBER = 304,          /* INTEGER_NUMBER  */
-    IF = 305,                      /* IF  */
+    DEFAULT = 297,                 /* DEFAULT  */
+    FUNCTION = 298,                /* FUNCTION  */
+    CALL = 299,                    /* CALL  */
+    VOID_TYPE = 300,               /* VOID_TYPE  */
+    IDENTIFIER = 301,              /* IDENTIFIER  */
+    INTEGER_NUMBER = 302,          /* INTEGER_NUMBER  */
+    IF = 303,                      /* IF  */
+    SWITCH = 304,                  /* SWITCH  */
+    CASE = 305,                    /* CASE  */
     FLOAT_NUMBER = 306,            /* FLOAT_NUMBER  */
     STRING = 307                   /* STRING  */
   };
@@ -151,15 +151,15 @@ extern int yydebug;
 #define COMMA 294
 #define THEN 295
 #define ELSE 296
-#define SWITCH 297
-#define CASE 298
-#define DEFAULT 299
-#define FUNCTION 300
-#define CALL 301
-#define VOID_TYPE 302
-#define IDENTIFIER 303
-#define INTEGER_NUMBER 304
-#define IF 305
+#define DEFAULT 297
+#define FUNCTION 298
+#define CALL 299
+#define VOID_TYPE 300
+#define IDENTIFIER 301
+#define INTEGER_NUMBER 302
+#define IF 303
+#define SWITCH 304
+#define CASE 305
 #define FLOAT_NUMBER 306
 #define STRING 307
 

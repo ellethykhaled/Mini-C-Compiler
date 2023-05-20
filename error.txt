@@ -1,2 +1,1 @@
-w,12: Warning: Unnecessary if statement
-w,22: Warning: Never entering the if statement
+e,3: Undeclared symbol
