@@ -12,6 +12,9 @@
     int extern deleteLatestScope();
     void extern destroySymbolTable();
     void extern destroyQuadruples();
+    int extern createLabel();
+    void extern addJump();
+    void extern addUJump();
     int extern lineNumber, scopeLevel;
     bool extern globalInitializer;
     int extern UNEXPECTED_CHARACTER, ERROR_DECLARED, ERROR_UNDECLARED, ERROR_UNINITIALIZED, ERROR_TYPE_MISMATCH, ERROR_CONSTANT_REASSIGNMENT, TWO_NUMBERS_COMPARISON, ERROR_UNKNOWN, ALWAYS_TRUE_IF, ALWAYS_FALSE_IF, ERROR_MISSING_ARGUMENTS, ERROR_MORE_ARGUMENTS, PARAMETER_TYPE_MISMATCH, ERROR_SYMBOLS_EXCEEDED, ERROR_QUADRUPLES_EXCEEDED, SWITCH_TYPE_MISMATCH;
@@ -36,8 +39,8 @@
 [Rr]epeat|REPEAT|[Dd]o|DO           return REPEAT;
 
 [Ii]f|IF                            yylval.iValue=lineNumber; return IF;
-[Tt]hen|THEN                        return THEN;
-[Ee]lse|ELSE                        return ELSE;
+[Tt]hen|THEN                        addJump(); return THEN;
+[Ee]lse|ELSE                        addJump(); yylval.iValue=createLabel(); return ELSE;
 
 [Ss]witch|SWITCH                    yylval.iValue=lineNumber; return SWITCH;
 [Cc]ase|CASE                        yylval.iValue=lineNumber; return CASE;
@@ -99,4 +102,6 @@ int yywrap(void) {
 void yyerror(const char *str)
 {
     printf("Lexical error at line %d\n", lineNumber);
+    destroySymbolTable();
+    destroyQuadruples();
 }

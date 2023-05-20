@@ -11,6 +11,8 @@ int quadrupleCount = 0;
 int currentRegister = 0;
 int instructionsConsidered = 0;
 
+int labelCount = 0;
+
 FILE* quadruplesFile;
 
 // Main operations
@@ -19,7 +21,8 @@ FILE* quadruplesFile;
 #define MOV "MOV"
 
 #define JMP "JMP"
-#define CJMP "CJMP"
+#define JPNZ "JPNZ"
+#define JPEZ "JPEZ"
 
 #define PUSH "PUSH"
 #define POP "POP"
@@ -41,6 +44,8 @@ FILE* quadruplesFile;
 #define CMPGT "CMPGT"
 #define CMPGE "CMPGE"
 
+#define LBL "LBL"
+
 // Data structure for quadruples
 struct Quadruple {
     char* op;
@@ -50,6 +55,12 @@ struct Quadruple {
 } quadruples[MAX_QUADRUPLE_COUNT];
 
 void addQuadruple(char* op, char* op1, char* op2, char* res);
+
+int createLabel();
+
+void addJump();
+
+void addUJump();
 
 void resetRegisters();
 

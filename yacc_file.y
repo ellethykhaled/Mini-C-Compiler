@@ -34,14 +34,14 @@
 %token L_OP_NOT L_OP_EXACT L_OP_AND L_OP_OR
 %token OP_ASSIGN OP_EQUAL OP_NOT_EQUAL OP_LESS OP_LESS_EQUAL OP_GREATER OP_GREATER_EQUAL
 
-%token TERMINATOR CLOSING_BRACKET OPENING_BLOCK_BRACES OPENING_BRACKET CLOSING_BRACES OPENING_BRACES
+%token TERMINATOR CLOSING_BRACKET OPENING_BLOCK_BRACES OPENING_BRACKET OPENING_BRACES
 
 %token FOR WHILE REPEAT
 %token RETURN
 
 %token ENUM COMMA
 
-%token THEN ELSE
+%token THEN
 
 %token DEFAULT
 
@@ -59,7 +59,7 @@
 }
 
 %token <sName> IDENTIFIER
-%token <iValue> INTEGER_NUMBER IF SWITCH CASE
+%token <iValue> INTEGER_NUMBER IF SWITCH CASE ELSE CLOSING_BRACES
 %token <fValue> FLOAT_NUMBER
 %token <cValue> STRING
 
@@ -322,6 +322,9 @@ switch_case :
                 handleError(ERROR_UNDECLARED, $1, "");
             else if (symbolTable[resultIndex].type != TYPE_INT) {
                 handleError(SWITCH_TYPE_MISMATCH, $1, "");
+            }
+            else if (symbolTable[resultIndex].isInitialized == false) {
+                handleError(ERROR_UNINITIALIZED, $1, "");
             }
         }
         | SWITCH IDENTIFIER OPENING_BRACES switch_end CLOSING_BRACES {

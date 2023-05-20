@@ -83,25 +83,25 @@ extern int yydebug;
     CLOSING_BRACKET = 284,         /* CLOSING_BRACKET  */
     OPENING_BLOCK_BRACES = 285,    /* OPENING_BLOCK_BRACES  */
     OPENING_BRACKET = 286,         /* OPENING_BRACKET  */
-    CLOSING_BRACES = 287,          /* CLOSING_BRACES  */
-    OPENING_BRACES = 288,          /* OPENING_BRACES  */
-    FOR = 289,                     /* FOR  */
-    WHILE = 290,                   /* WHILE  */
-    REPEAT = 291,                  /* REPEAT  */
-    RETURN = 292,                  /* RETURN  */
-    ENUM = 293,                    /* ENUM  */
-    COMMA = 294,                   /* COMMA  */
-    THEN = 295,                    /* THEN  */
-    ELSE = 296,                    /* ELSE  */
-    DEFAULT = 297,                 /* DEFAULT  */
-    FUNCTION = 298,                /* FUNCTION  */
-    CALL = 299,                    /* CALL  */
-    VOID_TYPE = 300,               /* VOID_TYPE  */
-    IDENTIFIER = 301,              /* IDENTIFIER  */
-    INTEGER_NUMBER = 302,          /* INTEGER_NUMBER  */
-    IF = 303,                      /* IF  */
-    SWITCH = 304,                  /* SWITCH  */
-    CASE = 305,                    /* CASE  */
+    OPENING_BRACES = 287,          /* OPENING_BRACES  */
+    FOR = 288,                     /* FOR  */
+    WHILE = 289,                   /* WHILE  */
+    REPEAT = 290,                  /* REPEAT  */
+    RETURN = 291,                  /* RETURN  */
+    ENUM = 292,                    /* ENUM  */
+    COMMA = 293,                   /* COMMA  */
+    THEN = 294,                    /* THEN  */
+    DEFAULT = 295,                 /* DEFAULT  */
+    FUNCTION = 296,                /* FUNCTION  */
+    CALL = 297,                    /* CALL  */
+    VOID_TYPE = 298,               /* VOID_TYPE  */
+    IDENTIFIER = 299,              /* IDENTIFIER  */
+    INTEGER_NUMBER = 300,          /* INTEGER_NUMBER  */
+    IF = 301,                      /* IF  */
+    SWITCH = 302,                  /* SWITCH  */
+    CASE = 303,                    /* CASE  */
+    ELSE = 304,                    /* ELSE  */
+    CLOSING_BRACES = 305,          /* CLOSING_BRACES  */
     FLOAT_NUMBER = 306,            /* FLOAT_NUMBER  */
     STRING = 307                   /* STRING  */
   };
@@ -141,25 +141,25 @@ extern int yydebug;
 #define CLOSING_BRACKET 284
 #define OPENING_BLOCK_BRACES 285
 #define OPENING_BRACKET 286
-#define CLOSING_BRACES 287
-#define OPENING_BRACES 288
-#define FOR 289
-#define WHILE 290
-#define REPEAT 291
-#define RETURN 292
-#define ENUM 293
-#define COMMA 294
-#define THEN 295
-#define ELSE 296
-#define DEFAULT 297
-#define FUNCTION 298
-#define CALL 299
-#define VOID_TYPE 300
-#define IDENTIFIER 301
-#define INTEGER_NUMBER 302
-#define IF 303
-#define SWITCH 304
-#define CASE 305
+#define OPENING_BRACES 287
+#define FOR 288
+#define WHILE 289
+#define REPEAT 290
+#define RETURN 291
+#define ENUM 292
+#define COMMA 293
+#define THEN 294
+#define DEFAULT 295
+#define FUNCTION 296
+#define CALL 297
+#define VOID_TYPE 298
+#define IDENTIFIER 299
+#define INTEGER_NUMBER 300
+#define IF 301
+#define SWITCH 302
+#define CASE 303
+#define ELSE 304
+#define CLOSING_BRACES 305
 #define FLOAT_NUMBER 306
 #define STRING 307
 

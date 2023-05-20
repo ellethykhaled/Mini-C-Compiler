@@ -281,7 +281,6 @@ int processComparator(float first, float second, char * operatorType) {
 }
 
 void deleteLatestScope() {
-    printf("Clearing %d %d\n", lineNumber, scopeLevel);
     int newSymbolCount = 0;
     for (int i = 0; i < symbolCount; i++)
     {
@@ -506,8 +505,12 @@ void handleError(const int errorCode, const int errorLine, const char* specialMe
         else
             fprintf(errorsFile, "e,%d: Undeclared symbol\n", errorLine);
     }
-    else if (errorCode == ERROR_UNINITIALIZED)
-        fprintf(errorsFile, "e,%d: Uninitialized symbol\n", lineNumber);
+    else if (errorCode == ERROR_UNINITIALIZED) {
+        if (errorLine == -1)
+            fprintf(errorsFile, "e,%d: Uninitialized symbol\n", lineNumber);
+        else
+            fprintf(errorsFile, "e,%d: Uninitialized symbol\n", errorLine);
+    }
     else if (errorCode == ERROR_TYPE_MISMATCH)
         fprintf(errorsFile, "e,%d: Type mismatch\n", lineNumber);
     else if (errorCode == ERROR_CONSTANT_REASSIGNMENT)
