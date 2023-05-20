@@ -340,18 +340,46 @@ switch_body :
         CASE return_value OPENING_BRACES program CLOSING_BRACES {
             if ((int) $2 != GLOBAL_NUMBER)
                 handleError(SWITCH_TYPE_MISMATCH, $1, "");
+            // Compare the return values
+            char tempBuffer1[8];
+            if ($2 == GLOBAL_NUMBER)
+                sprintf(tempBuffer1, "%.2f", globalNumber);
+
+            addQuadruple(CMPEQ, tempBuffer1, "var", "");
+            addUJump();
         }
         | CASE return_value OPENING_BRACES CLOSING_BRACES {
             if ((int) $2 != GLOBAL_NUMBER)
                 handleError(SWITCH_TYPE_MISMATCH, $1, "");
+            // Compare the return values
+            char tempBuffer1[8];
+            if ($2 == GLOBAL_NUMBER)
+                sprintf(tempBuffer1, "%.2f", globalNumber);
+
+            addQuadruple(CMPEQ, tempBuffer1, "s var", "");
+            addUJump();
         }
         | switch_body CASE return_value OPENING_BRACES program CLOSING_BRACES {
             if ((int) $3 != GLOBAL_NUMBER)
                 handleError(SWITCH_TYPE_MISMATCH, $2, "");
+            // Compare the return values
+            char tempBuffer1[8];
+            if ($3 == GLOBAL_NUMBER)
+                sprintf(tempBuffer1, "%.2f", globalNumber);
+
+            addQuadruple(CMPEQ, tempBuffer1, "var", "");
+            addUJump();
         }
         | switch_body CASE return_value OPENING_BRACES CLOSING_BRACES {
             if ((int) $3 != GLOBAL_NUMBER)
                 handleError(SWITCH_TYPE_MISMATCH, $2, "");
+            // Compare the return values
+            char tempBuffer1[8];
+            if ($3 == GLOBAL_NUMBER)
+                sprintf(tempBuffer1, "%.2f", globalNumber);
+
+            addQuadruple(CMPEQ, tempBuffer1, "var", "");
+            addUJump();
         }
 
 switch_end :

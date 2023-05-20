@@ -18,11 +18,10 @@
     int extern lineNumber, scopeLevel;
     bool extern globalInitializer;
     int extern UNEXPECTED_CHARACTER, ERROR_DECLARED, ERROR_UNDECLARED, ERROR_UNINITIALIZED, ERROR_TYPE_MISMATCH, ERROR_CONSTANT_REASSIGNMENT, TWO_NUMBERS_COMPARISON, ERROR_UNKNOWN, ALWAYS_TRUE_IF, ALWAYS_FALSE_IF, ERROR_MISSING_ARGUMENTS, ERROR_MORE_ARGUMENTS, PARAMETER_TYPE_MISMATCH, ERROR_SYMBOLS_EXCEEDED, ERROR_QUADRUPLES_EXCEEDED, SWITCH_TYPE_MISMATCH;
-    extern FILE* errorsFile;
+    extern FILE* symbolTableFile;
 %}
 
 
-/* ^(.)*\n                             { printf("%4d\t%s\n", ++lineNumber, yytext); return TESTY_TOKEN; } */
 %%
 
 [Cc]onst(ant)?                      return CONSTANT;
@@ -43,8 +42,8 @@
 [Ee]lse|ELSE                        addJump(); yylval.iValue=createLabel(); return ELSE;
 
 [Ss]witch|SWITCH                    yylval.iValue=lineNumber; return SWITCH;
-[Cc]ase|CASE                        yylval.iValue=lineNumber; return CASE;
-[Dd]ef(ault)?|DEF(AULT)?            return DEFAULT;
+[Cc]ase|CASE                        createLabel(); yylval.iValue=lineNumber; return CASE;
+[Dd]ef(ault)?|DEF(AULT)?            createLabel(); return DEFAULT;
 
 [Ee]num|ENUM                        return ENUM;
 [,]                                 return COMMA;
@@ -102,6 +101,7 @@ int yywrap(void) {
 void yyerror(const char *str)
 {
     printf("Lexical error at line %d\n", lineNumber);
+    fprintf(symbolTableFile, "Lexical error at line %d\n", lineNumber);
     destroySymbolTable();
     destroyQuadruples();
 }

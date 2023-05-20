@@ -1,16 +1,23 @@
 MOV R0, 0.00
 STR x, R0
-MOV R0, 1.00
-MOV R1, 2.00
-MOV R2, 3.00
-MOV R0, 0.00
-CMPEQ x, 0.00
-JPNZ label_0
-MOV R1, 5.00
-STR j, R1
-JPNZ label_0
 LBL: label_0
-MOV R0, 8.00
-STR k, R0
-MOV R0, 7.00
-STR y, R0
+MOV R0, 1.00
+MOV R1, 1.00
+STR a, R1
+CMPEQ 1.00, var
+JMP label_1
+LBL: label_1
+MOV R0, 2.00
+MOV R1, 2.00
+STR b, R1
+CMPEQ 2.00, var
+JMP label_2
+LBL: label_2
+MOV R0, 3.00
+MOV R1, 3.00
+STR c, R1
+CMPEQ 3.00, var
+JMP label_3
+LBL: label_3
+MOV R0, 4.00
+STR d, R0

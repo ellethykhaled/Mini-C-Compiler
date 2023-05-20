@@ -3,27 +3,17 @@ int z;
 Switch x {
     case 1 {
 
+        int a = 1;
+
     }
     case 2 {
+        int b = 2;
 
     }
     case 3 {
-
+        int c = 3;
     }
     DEFAULT {
-        
+        int d = 4;
     }
 }
-
-if (x == 0) then {
-    int j = 5;
-} else {
-
-    int k = 8;
-
-}
-
-
-int y;
-
-y = 7;
