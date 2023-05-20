@@ -21,12 +21,17 @@ JMP label_3
 LBL: label_3
 MOV R0, 4.00
 STR d, R0
-LBL: label_4
 MOV R0, 0.00
-STR i, R0
+CMPEQ x, 0.00
+JPNZ label_4
+JPNZ label_4
+LBL: label_4
+LBL: label_5
+MOV R1, 0.00
+STR i, R1
 MOV R0, 5.00
 CMPLT i, 5.00
 MOV R1, 1.00
 ADD R0, R1, R2
 STR i, R2
-JMP label_4
+JMP label_5

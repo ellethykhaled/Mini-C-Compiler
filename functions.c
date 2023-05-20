@@ -419,11 +419,11 @@ void ifStatementLogic(int ifLineNumber, int conditionResult) {
     else if (conditionResult == GLOBAL_NUMBER) {
         char specialMessage[80];
         if (globalNumber == 0) {
-            sprintf(specialMessage, "Warning: Never entering the if statement");
+            sprintf(specialMessage, "Warning Never entering the if statement");
             handleError(ALWAYS_FALSE_IF, ifLineNumber, "");
         }
         else {
-            sprintf(specialMessage, "Warning: Unnecessary if statement");
+            sprintf(specialMessage, "Warning Unnecessary if statement");
             handleError(ALWAYS_TRUE_IF, ifLineNumber, "");
         }
     }
@@ -432,11 +432,11 @@ void ifStatementLogic(int ifLineNumber, int conditionResult) {
 
         char specialMessage[80];
         if (result == 0) {
-            sprintf(specialMessage, "Warning: Never entering the if statement");
+            sprintf(specialMessage, "Warning Never entering the if statement");
             handleError(ALWAYS_FALSE_IF, ifLineNumber, specialMessage);
         }
         else { 
-            sprintf(specialMessage, "Warning: Unnecessary if statement");
+            sprintf(specialMessage, "Warning Unnecessary if statement");
             handleError(ALWAYS_TRUE_IF, ifLineNumber, specialMessage);
         }
     }
